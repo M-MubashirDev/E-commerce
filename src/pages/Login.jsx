@@ -2,18 +2,25 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Link } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import {
-  CheckboxField,
   PasswordInputField,
   SubmitButton,
   TextInputField,
 } from "../components/Form";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../features/auth/authSlice";
 
 export default function Login() {
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.auth);
+
   const methods = useForm({
     defaultValues: { email: "", password: "", remember: false },
   });
 
-  const onSubmit = (data) => console.log("Login data:", data);
+  const onSubmit = (data) => {
+    dispatch(loginUser({ email: data.email, password: data.password }));
+    console.log("Login data:", data);
+  };
 
   return (
     <AuthLayout>
@@ -58,7 +65,7 @@ export default function Login() {
           </div>
 
           {/* Submit */}
-          <SubmitButton>Login</SubmitButton>
+          <SubmitButton loading={loading}>Login</SubmitButton>
 
           {/* Signup link */}
           <p className="text-center text-sm text-dark-secondary">

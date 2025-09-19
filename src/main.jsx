@@ -4,12 +4,28 @@ import "./index.css";
 import App from "./App.jsx";
 import "@mantine/core/styles.css";
 
-import { MantineProvider } from "@mantine/core";
+import { createTheme, MantineProvider } from "@mantine/core";
+import { Provider } from "react-redux";
+import { store } from "./store.js";
+
+const theme = createTheme({
+  colors: {
+    light: ["#ffffff"],
+    dark: ["#060607", "#111f28"],
+    gray: ["#484e52", "#afb9c5"],
+    accent: ["#e3cdb3"],
+  },
+  primaryColor: "accent",
+  primaryShade: 0,
+  fontFamily: "Inter, sans-serif",
+});
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <App />
+    <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
+      <Provider store={store}>
+        <App />
+      </Provider>
     </MantineProvider>
   </StrictMode>
 );

@@ -48,9 +48,10 @@ export function SubmitButton({ children, loading }) {
   return (
     <Button
       type="submit"
-      className="!bg-dark"
       fullWidth
+      color="dark"
       radius="md"
+      loaderProps={{ type: "bars" }}
       loading={loading}
     >
       {children}
