@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-light: "white";
+  --color-dark: #060607;
+  --color-dark-secondary: #111f28;
+  --color-gray: #484e52;
+  --color-gray-light: #afb9c5;
+  --color-accent: #e3cdb3;
+
+  /* glassy background */
+  --color-glass: rgba(255, 255, 255, 0.15);
+}
+
+.diagonal-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #afb9c5 0% 41.9%, #111f28 42% 100%);
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
