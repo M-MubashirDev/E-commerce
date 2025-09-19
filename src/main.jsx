@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
+import "@mantine/carousel/styles.css";
 import "@mantine/core/styles.css";
 
 import { createTheme, MantineProvider } from "@mantine/core";
@@ -11,7 +12,7 @@ import { store } from "./store.js";
 const theme = createTheme({
   colors: {
     light: ["#ffffff"],
-    dark: ["#060607", "#111f28"],
+    dark: ["#060607", "#101828"],
     gray: ["#484e52", "#afb9c5"],
     accent: ["#e3cdb3"],
   },
