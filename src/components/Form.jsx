@@ -1,11 +1,5 @@
 import { useFormContext, FormProvider } from "react-hook-form";
-import {
-  TextInput,
-  PasswordInput,
-  Checkbox,
-  Button,
-  Group,
-} from "@mantine/core";
+import { TextInput, PasswordInput, Checkbox, Button } from "@mantine/core";
 
 // Text Input Field with validation
 export function TextInputField({ name, label, placeholder, rules = {} }) {
