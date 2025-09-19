@@ -1,6 +1,4 @@
 import { Container, Text } from "@mantine/core";
-// import { MantineLogo } from "@mantinex/mantine-logo";
-import classes from "./FooterLinks.module.css";
 
 const data = [
   {
@@ -25,48 +23,64 @@ const data = [
     title: "Community",
     links: [
       { label: "Join Discord", link: "#" },
+      { label: "Follow on Twitter", link: "#" },
       { label: "Email newsletter", link: "#" },
       { label: "GitHub discussions", link: "#" },
     ],
   },
 ];
 
-export function FooterLinks() {
-  const groups = data.map((group) => {
-    const links = group.links.map((link, index) => (
-      <Text
-        key={index}
-        className={classes.link}
-        component="a"
-        href={link.link}
-        onClick={(event) => event.preventDefault()}
-      >
-        {link.label}
-      </Text>
-    ));
-
-    return (
-      <div className={classes.wrapper} key={group.title}>
-        <Text className={classes.title}>{group.title}</Text>
-        {links}
-      </div>
-    );
-  });
-
+export function Footer() {
   return (
-    <footer className={classes.footer}>
-      <Container className={classes.inner}>
-        <div className={classes.logo}>
-          {/* <MantineLogo size={30} /> */}
-          <Text size="xs" c="dimmed" className={classes.description}>
+    <footer
+      className="py-10 mt-16"
+      style={{
+        backgroundColor: "var(--color-dark)",
+        color: "var(--color-light)",
+      }}
+    >
+      <Container className="flex flex-col md:flex-row md:justify-between gap-10">
+        {/* Logo + description */}
+        <div className="max-w-xs">
+          <Text className="text-lg font-bold">MyShop</Text>
+          <Text
+            size="sm"
+            style={{ color: "var(--color-gray-light)" }}
+            className="mt-2"
+          >
             Build fully functional accessible web applications faster than ever
           </Text>
         </div>
-        <div className={classes.groups}>{groups}</div>
+
+        {/* Links */}
+        <div className="flex gap-16">
+          {data.map((group) => (
+            <div key={group.title}>
+              <Text className="font-semibold mb-2">{group.title}</Text>
+              <div className="flex flex-col gap-2">
+                {group.links.map((link, i) => (
+                  <a
+                    key={i}
+                    href={link.link}
+                    style={{ color: "var(--color-gray-light)" }}
+                    className="text-sm hover:text-[--color-accent] transition"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </Container>
-      <Container className={classes.afterFooter}>
-        <Text c="dimmed" size="sm">
-          © 2025 YourCompany. All rights reserved.
+
+      {/* Bottom bar */}
+      <Container
+        className="mt-10 pt-6 flex justify-between items-center"
+        style={{ borderTop: "1px solid var(--color-gray)" }}
+      >
+        <Text size="sm" style={{ color: "var(--color-gray-light)" }}>
+          © {new Date().getFullYear()} MyShop. All rights reserved.
         </Text>
       </Container>
     </footer>
