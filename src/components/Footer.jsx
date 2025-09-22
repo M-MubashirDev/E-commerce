@@ -33,7 +33,7 @@ const data = [
 export function Footer() {
   return (
     <footer
-      className="py-10 mt-16"
+      className="py-10 border-t border-white   mt-16"
       style={{
         backgroundColor: "var(--color-dark)",
         color: "var(--color-light)",

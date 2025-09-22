@@ -8,6 +8,10 @@ export default function AvatarButton({ user, onLogout }) {
       position="bottom-end"
       width={240}
       withinPortal
+      classNames={{
+        dropdown: "!bg-glass backdrop-blur-md shadow-lg border-0", // removed border
+        item: "hover:bg-dark-secondary text-gray-light",
+      }}
     >
       <Menu.Target>
         <Button
@@ -17,7 +21,7 @@ export default function AvatarButton({ user, onLogout }) {
           className="flex items-center gap-2"
           rightSection={
             <div className="pl-2 ml-2 border-l border-gray-light flex items-center">
-              <FaChevronDown size={14} color="" />
+              <FaChevronDown size={14} />
             </div>
           }
         >
@@ -30,14 +34,16 @@ export default function AvatarButton({ user, onLogout }) {
         <div className="p-3 flex items-center gap-3">
           <Avatar src={user?.avatar} radius="xl" size={48} />
           <div>
-            <p className="text-sm font-medium">{user?.name || "Guest User"}</p>
-            <p className="text-xs text-gray-light">
+            <p className="text-sm font-semibold text-white">
+              {user?.name || "Guest User"}
+            </p>
+            <p className="text-xs text-gray-400">
               {user?.email || "example@mail.com"}
             </p>
           </div>
         </div>
 
-        <Divider />
+        <Divider className="border-gray-700" />
 
         {/* Logout */}
         <Menu.Item

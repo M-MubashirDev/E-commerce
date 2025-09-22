@@ -1,16 +1,13 @@
-import CategoryBar from "../components/CatergorySlider";
-import CategorySection from "../components/CatergorySlider";
-import { Footer } from "./Footer";
 import HeaderNav from "./Navbar";
+import { Footer } from "./Footer";
+import { Outlet } from "react-router-dom";
 
-function Layout() {
+export default function Layout() {
   return (
-    <div>
+    <div className="bg-dark">
       <HeaderNav />
-      <CategoryBar />
+      <Outlet />
       <Footer />
     </div>
   );
 }
-
-export default Layout;
