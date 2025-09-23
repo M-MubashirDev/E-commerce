@@ -33,13 +33,13 @@ const data = [
 export function Footer() {
   return (
     <footer
-      className="py-10 border-t border-white   mt-16"
+      className="py-10 border-t border-white mt-16  "
       style={{
         backgroundColor: "var(--color-dark)",
         color: "var(--color-light)",
       }}
     >
-      <Container className="flex flex-col md:flex-row md:justify-between gap-10">
+      <div className="flex flex-col layout-spacing  md:flex-row md:justify-between gap-10">
         {/* Logo + description */}
         <div className="max-w-xs">
           <Text className="text-lg font-bold">MyShop</Text>
@@ -53,9 +53,9 @@ export function Footer() {
         </div>
 
         {/* Links */}
-        <div className="flex gap-16">
+        <div className="flex flex-wrap gap-8 sm:gap-16 w-full md:w-auto justify-between">
           {data.map((group) => (
-            <div key={group.title}>
+            <div key={group.title} className="min-w-[120px]">
               <Text className="font-semibold mb-2">{group.title}</Text>
               <div className="flex flex-col gap-2">
                 {group.links.map((link, i) => (
@@ -72,17 +72,17 @@ export function Footer() {
             </div>
           ))}
         </div>
-      </Container>
+      </div>
 
       {/* Bottom bar */}
-      <Container
-        className="mt-10 pt-6 flex justify-between items-center"
+      <div
+        className="mt-10 pt-6 layout-spacing  flex flex-col sm:flex-row gap-4 justify-between items-center text-center sm:text-left"
         style={{ borderTop: "1px solid var(--color-gray)" }}
       >
         <Text size="sm" style={{ color: "var(--color-gray-light)" }}>
           © {new Date().getFullYear()} MyShop. All rights reserved.
         </Text>
-      </Container>
+      </div>
     </footer>
   );
 }

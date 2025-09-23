@@ -1,13 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --color-light: "white";
-  --color-dark: #060607;
+  /* --color-light: "white"; */
+  /* --color-dark: #060607;
   --color-dark-secondary: #101828;
   --color-gray: #484e52;
   --color-gray-light: #afb9c5;
-  --color-accent: #e3cdb3;
+  --color-accent: #e3cdb3; */
 
+  /* secondary set  Monochrome*/
+  --color-light: white;
+  --color-light-gray: #f5f5f5;
+  --color-medium-gray: #e0e0e0;
+  --color-dark-gray: #757575;
+  --color-dark: #212121;
+
+  --text-darker-gray:#4a5565,
   /* glassy background */
   --color-glass: rgba(255, 255, 255, 0.15);
   --color-glasses: #364153;
@@ -28,3 +36,16 @@
 .section-spacing {
   @apply py-20 md:py-16 sm:py-12;
 }
+/* globals.css or your Tailwind layer file */
+@layer utilities {
+  /* Content spacing (more inset) */
+  .content-spacing {
+    @apply px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24;
+  }
+
+  /* Header & Footer spacing (less inset) */
+  .layout-spacing {
+    @apply px-4 sm:px-6 lg:px-8 xl:px-12;
+  }
+}
+

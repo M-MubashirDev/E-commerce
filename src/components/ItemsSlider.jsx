@@ -1,6 +1,8 @@
 "use client";
 
+import { Button } from "@mantine/core";
 import { useState, useRef, useEffect } from "react";
+import { SubmitButton } from "./Form";
 
 const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -17,6 +19,12 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
         setItemsPerView(2);
       } else if (width < 1024) {
         setItemsPerView(3);
+      } else if (width < 1400) {
+        setItemsPerView(4);
+      } else if (width < 2200) {
+        setItemsPerView(5);
+      } else if (width < 2800) {
+        setItemsPerView(6);
       } else {
         setItemsPerView(4);
       }
@@ -50,10 +58,10 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   }
 
   return (
-    <section className="relative px-4 py-4 bg-dark">
+    <section className="relative px-4 py-16  ">
       {/* Header with Flash Sale badge and navigation */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between gap-2 mb-6">
+        <div className="hidden sm:flex items-center gap-4">
           <div className="flex items-center gap-2 bg-gray-900 rounded-full px-4 py-2">
             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
               <svg
@@ -73,7 +81,7 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
         </div>
 
         {/* Navigation arrows */}
-        <div className="flex gap-2">
+        <div className="flex w-full sm:w-fit justify-center sm:justify-end   gap-2">
           <button
             onClick={goToPrevious}
             disabled={currentIndex === 0}
@@ -118,96 +126,84 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
       </div>
 
       {/* Carousel container */}
-      <div className="relative overflow-hidden" ref={carouselRef}>
+      <div
+        className="relative py-2 overflow-x-hidden h-[26rem]"
+        ref={carouselRef}
+      >
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{
             transform: `translateX(-${(currentIndex * 100) / itemsPerView}%)`,
           }}
         >
-          {items.map((item, index) => (
-            <div
-              key={item.id || index}
-              className="flex-shrink-0 px-2"
-              style={{ width: `${100 / itemsPerView}%` }}
-            >
-              <div className="bg-glasses transition-hover hover:bg-dark  backdrop-blur-sm border border-gray-700 rounded-2xl relative group hover:shadow-xl transition-shadow  h-80 flex flex-col">
-                {/* Wishlist heart */}
-                <button className="absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors">
-                  <svg
-                    className="w-4 h-4 text-gray-400 hover:text-red-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+          {items.map((item, index) => {
+            const safeTitle =
+              item.title?.toString().slice(0, 100) || "Untitled Product";
+            const safeDescription =
+              item.description?.toString().slice(0, 150) ||
+              "No description available";
+            return (
+              <div
+                key={item.id || index}
+                className="flex-shrink-0 px-2"
+                style={{ width: `${100 / itemsPerView}%` }}
+              >
+                <div className="bg-white  max-w-[16rem] mx-auto  transition-hover  backdrop-blur-sm  rounded-2xl relative group hover:shadow-xl transition-shadow shadow-md  h-88 flex flex-col">
+                  {/* Wishlist heart */}
+                  <button className="absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors">
+                    <svg
+                      className="w-4 h-4 text- hover:text-red-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      />
+                    </svg>
+                  </button>
+
+                  <div className="h-48 rounded-t-2xl overflow-hidden flex-shrink-0">
+                    <img
+                      src={item.images?.[0] || item.image}
+                      alt={item.title || item.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
-                  </svg>
-                </button>
-
-                <div className="h-48 rounded-t-2xl overflow-hidden flex-shrink-0">
-                  <img
-                    src={item.images?.[0] || item.image}
-                    alt={item.title || item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                </div>
-
-                <div className="p-4 flex-grow flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-white text-sm line-clamp-2 leading-tight">
-                      {item.title || item.name}
-                    </h3>
-
-                    {/* Price */}
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-white">
-                        {formatPrice(item.price)}
-                      </span>
-                      {item.price && (
-                        <span className="text-sm text-gray-light line-through">
-                          {formatPrice(item.price)}
-                        </span>
-                      )}
-                    </div>
                   </div>
 
-                  <div className="space-y-2 mt-2">
-                    {/* Rating and sales */}
-                    <div className="flex items-center justify-between text-xs text-gray-light">
-                      <div className="flex items-center gap-1">
-                        <div className="flex text-yellow-400">
-                          {[...Array(5)].map((_, i) => (
-                            <svg
-                              key={i}
-                              className="w-3 h-3 fill-current"
-                              viewBox="0 0 20 20"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          ))}
-                        </div>
-                        <span>5/10 Sale</span>
+                  {/* Content */}
+                  {/* Content */}
+                  <div className="p-4 flex-grow flex flex-col justify-between relative">
+                    <div className="space-y-3">
+                      <h3 className="font-semibold text-dark text-base leading-tight truncate transition-colors">
+                        {safeTitle}
+                      </h3>
+                      <p className="text-sm text-dark-gray line-clamp-2 leading-relaxed">
+                        {safeDescription}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-dark text-lg">
+                          {formatPrice(item.price)}
+                        </span>
+                        {item.oldPrice && (
+                          <span className="text-sm text-dark-gray line-through">
+                            {formatPrice(item.oldPrice)}
+                          </span>
+                        )}
                       </div>
                     </div>
-
-                    {/* Progress bar */}
-                    <div className="w-full bg-gray rounded-full h-2">
-                      <div
-                        className="bg-white h-2 rounded-full transition-all duration-300"
-                        style={{ width: "50%" }}
-                      ></div>
+                    <div className="absolute  -bottom-4 left-[50%]">
+                      <SubmitButton>Add to Cart</SubmitButton>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
