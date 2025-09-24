@@ -59,7 +59,7 @@ export default function ExploreCategories() {
                   />
                 }
                 classNames={{
-                  root: `transition-hover !cursor-pointer !min-w-40 !font-normal ${
+                  root: `transition-hover !cursor-pointer !min-w-fit !min-h-fit !h-12 !font-normal ${
                     selectedCategory === "All"
                       ? "!bg-dark !text-white border-2 border-blue-500"
                       : "!text-[#4a5565] !bg-light-gray border border-medium-gray hover:!border-dark hover:!bg-transparent"
@@ -92,13 +92,13 @@ export default function ExploreCategories() {
                       )
                     }
                     classNames={{
-                      root: `transition-hover !cursor-pointer !min-w-40 !font-normal ${
+                      root: `transition-hover !cursor-pointer !h-12 !min-w-fit !min-h-fit !font-normal ${
                         selectedCategory === cat.name
                           ? "!bg-dark !text-white border-2 border-blue-500"
                           : "!text-[#4a5565] !bg-light-gray border border-medium-gray hover:!border-dark hover:!bg-transparent"
                       }`,
                     }}
-                    size="lg"
+                    // size="md"
                   >
                     {cat?.name}
                   </Button>

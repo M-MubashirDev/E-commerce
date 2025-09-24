@@ -35,12 +35,14 @@ function Home() {
             {category === "All" ? (
               <>
                 <ItemSlider
-                  items={products.filter((p) => p.category?.name === "Clothes")}
+                  items={products.filter(
+                    (p) => p.category?.name === products[0].category.name
+                  )}
                   title="Trending in Clothes"
                 />
                 <ItemSlider
                   items={products.filter(
-                    (p) => p.category?.name === "Electronics"
+                    (p) => p.category?.name === products[1].category.name
                   )}
                   title="Best in Electronics"
                 />

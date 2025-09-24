@@ -1,4 +1,4 @@
-import { Container, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 
 const data = [
   {
@@ -6,8 +6,6 @@ const data = [
     links: [
       { label: "Features", link: "#" },
       { label: "Pricing", link: "#" },
-      { label: "Support", link: "#" },
-      { label: "Forums", link: "#" },
     ],
   },
   {
@@ -15,8 +13,6 @@ const data = [
     links: [
       { label: "Contribute", link: "#" },
       { label: "Media assets", link: "#" },
-      { label: "Changelog", link: "#" },
-      { label: "Releases", link: "#" },
     ],
   },
   {
@@ -24,8 +20,6 @@ const data = [
     links: [
       { label: "Join Discord", link: "#" },
       { label: "Follow on Twitter", link: "#" },
-      { label: "Email newsletter", link: "#" },
-      { label: "GitHub discussions", link: "#" },
     ],
   },
 ];
@@ -33,13 +27,13 @@ const data = [
 export function Footer() {
   return (
     <footer
-      className="py-10 border-t border-white mt-16  "
+      className="py-10 border-t border-white   "
       style={{
         backgroundColor: "var(--color-dark)",
         color: "var(--color-light)",
       }}
     >
-      <div className="flex flex-col layout-spacing  md:flex-row md:justify-between gap-10">
+      <div className="flex flex-col layout-spacing  md:flex-row md:justify-between ">
         {/* Logo + description */}
         <div className="max-w-xs">
           <Text className="text-lg font-bold">MyShop</Text>

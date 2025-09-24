@@ -1,8 +1,6 @@
-"use client";
-
-import { Button } from "@mantine/core";
 import { useState, useRef, useEffect } from "react";
 import { SubmitButton } from "./Form";
+import ProductCard from "./ProductCard";
 
 const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -58,7 +56,7 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   }
 
   return (
-    <section className="relative px-4 py-16  ">
+    <section className="relative  py-16  ">
       {/* Header with Flash Sale badge and navigation */}
       <div className="flex items-center justify-between gap-2 mb-6">
         <div className="hidden sm:flex items-center gap-4">
@@ -126,12 +124,9 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
       </div>
 
       {/* Carousel container */}
-      <div
-        className="relative py-2 overflow-x-hidden h-[26rem]"
-        ref={carouselRef}
-      >
+      <div className="relative  overflow-x-hidden h-[26rem]" ref={carouselRef}>
         <div
-          className="flex transition-transform duration-500 ease-in-out"
+          className="flex transition-transform  duration-500 ease-in-out gap-4"
           style={{
             transform: `translateX(-${(currentIndex * 100) / itemsPerView}%)`,
           }}
@@ -145,62 +140,12 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
             return (
               <div
                 key={item.id || index}
-                className="flex-shrink-0 px-2"
-                style={{ width: `${100 / itemsPerView}%` }}
+                className="flex-shrink-0 "
+                style={{
+                  width: `calc(${100 / itemsPerView}% - 1rem)`,
+                }}
               >
-                <div className="bg-white  max-w-[16rem] mx-auto  transition-hover  backdrop-blur-sm  rounded-2xl relative group hover:shadow-xl transition-shadow shadow-md  h-88 flex flex-col">
-                  {/* Wishlist heart */}
-                  <button className="absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors">
-                    <svg
-                      className="w-4 h-4 text- hover:text-red-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                      />
-                    </svg>
-                  </button>
-
-                  <div className="h-48 rounded-t-2xl overflow-hidden flex-shrink-0">
-                    <img
-                      src={item.images?.[0] || item.image}
-                      alt={item.title || item.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  </div>
-
-                  {/* Content */}
-                  {/* Content */}
-                  <div className="p-4 flex-grow flex flex-col justify-between relative">
-                    <div className="space-y-3">
-                      <h3 className="font-semibold text-dark text-base leading-tight truncate transition-colors">
-                        {safeTitle}
-                      </h3>
-                      <p className="text-sm text-dark-gray line-clamp-2 leading-relaxed">
-                        {safeDescription}
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold text-dark text-lg">
-                          {formatPrice(item.price)}
-                        </span>
-                        {item.oldPrice && (
-                          <span className="text-sm text-dark-gray line-through">
-                            {formatPrice(item.oldPrice)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="absolute  -bottom-4 left-[50%]">
-                      <SubmitButton>Add to Cart</SubmitButton>
-                    </div>
-                  </div>
-                </div>
+                <ProductCard item={item} />
               </div>
             );
           })}

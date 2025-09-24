@@ -37,7 +37,7 @@ export default function Login() {
           onSubmit={methods.handleSubmit(onSubmit)}
           className="space-y-4 w-full"
         >
-          <h1 className="text-2xl font-bold text-center text-dark">Login</h1>
+          <h1 className="text-2xl font-bold text-center text-light">Login</h1>
 
           {/* Email */}
           <TextInputField

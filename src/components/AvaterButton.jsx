@@ -34,12 +34,8 @@ export default function AvatarButton({ user, onLogout }) {
         <div className="p-3 flex items-center gap-3">
           <Avatar src={user?.avatar} radius="xl" size={48} />
           <div>
-            <p className="text-sm font-semibold text-white">
-              {user?.name || "Guest User"}
-            </p>
-            <p className="text-xs text-gray-400">
-              {user?.email || "example@mail.com"}
-            </p>
+            <p className="text-sm font-semibold text-white">{user?.name}</p>
+            <p className="text-xs text-dark">{user?.email}</p>
           </div>
         </div>
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Burger, Drawer, Group, Box, ScrollArea } from "@mantine/core";
@@ -8,18 +8,38 @@ export default function HeaderNav() {
   const { user } = useSelector((state) => state.auth);
   const [opened, setOpened] = useState(false);
 
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 0);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const navLinks = [
     { label: "Products", to: "/" },
     { label: "About", to: "/about" },
   ];
 
   return (
-    <header className="bg-glass layout-spacing  py-4 border-b-[1.4px] border-medium-gray sticky top-0 z-50">
-      <div className="shadow-m bg-white p-4 rounded-full">
+    <header
+      // sticky top-0
+      className={`layout-spacing  py-2   z-50 ${
+        scrolled ? "bg-transparent" : "bg-light-gray"
+      }`}
+    >
+      <div
+        className={`${
+          scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)]"
+        }   !bg-light-gray/60   backdrop-blur-lg   p-6  rounded-xl`}
+      >
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="text-2xl font-bold text-main">NeoCart</div>
 
+          {/* <div>
+            <img src="logo.png" alt="logo" className="max-w-[40px]" />
+          </div> */}
           {/* Desktop Navigation (hidden on < md) */}
           <div className="hidden md:flex">
             <Group spacing="lg">
@@ -27,7 +47,7 @@ export default function HeaderNav() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="hover:underline text-gray-light font-medium"
+                  className="hover:underline text-dark-gray  font-semibold"
                 >
                   {link.label}
                 </Link>

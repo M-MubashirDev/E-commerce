@@ -12,7 +12,7 @@ export default function AuthLayout({ children }) {
       </div>
 
       {/* Left: Glassy Auth Card */}
-      <div className="flex-1  flex items-center justify-center lg:justify-start px-6 sm:px-12 md:px-20 h-screen lg:px-32">
+      <div className="flex-1  flex items-center justify-center  px-6 sm:px-12 md:px-20 h-screen lg:px-32">
         <GlassCard>{children}</GlassCard>
       </div>
 

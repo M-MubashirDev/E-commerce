@@ -4,6 +4,8 @@ import Signup from "./pages/Signup";
 import Layout from "./components/Layout";
 import About from "./pages/About";
 import Home from "./pages/Home";
+import Products from "./pages/Products";
+import Checkout from "./pages/CheckOut";
 
 function App() {
   return (
@@ -14,7 +16,9 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="products" element={<Products />} />
             <Route path="about" element={<About />} />
+            <Route path="checkout" element={<Checkout />} />
           </Route>
         </Routes>
       </BrowserRouter>

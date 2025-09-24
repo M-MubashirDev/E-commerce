@@ -15,16 +15,16 @@
   --color-dark-gray: #757575;
   --color-dark: #212121;
 
-  --text-darker-gray:#4a5565,
   /* glassy background */
   --color-glass: rgba(255, 255, 255, 0.15);
   --color-glasses: #364153;
+  --text-darker-gray: #4a5565;
 }
 
 .diagonal-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, #afb9c5 0% 41.9%, #111f28 42% 100%);
+  background: linear-gradient(120deg, #bbbaba 20% 41.9%, black 42% 100%);
   z-index: -1;
   width: 100vw;
   height: 100vh;
@@ -48,4 +48,3 @@
     @apply px-4 sm:px-6 lg:px-8 xl:px-12;
   }
 }
-
