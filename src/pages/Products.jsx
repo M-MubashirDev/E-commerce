@@ -29,7 +29,7 @@ const Products = () => {
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [sortBy, setSortBy] = useState("name");
   const [showFilters, setShowFilters] = useState(true);
@@ -117,13 +117,24 @@ const Products = () => {
     setSortBy("name");
   };
 
-  const categoryOptions = [
-    { value: "all", label: "All Categories" },
-    ...categories.map((cat) => ({
-      value: cat.name,
-      label: cat.name,
-    })),
-  ];
+  const categoryOptions = useMemo(() => {
+    const seen = new Set();
+    const cleaned = categories
+      .filter((cat) => {
+        const valid = cat.name && cat.name.trim() !== "";
+        if (!valid || seen.has(cat.name.trim().toLowerCase())) return false;
+        seen.add(cat.name.trim().toLowerCase());
+        return true;
+      })
+      .map((cat) => ({
+        value: cat.name.trim(),
+        label: cat.name.trim(),
+      }));
+
+    return [{ value: "all", label: "All Categories" }, ...cleaned];
+  }, [categories]);
+
+  console.log(categories);
 
   if (productsLoading || categoriesLoading) {
     return (
