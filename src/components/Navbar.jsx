@@ -17,7 +17,9 @@ export default function HeaderNav() {
   }, []);
 
   const navLinks = [
-    { label: "Products", to: "/" },
+    { label: "Home", to: "/" },
+    { label: "Products", to: "/products" },
+    { label: "Cart", to: "/cart" },
     { label: "About", to: "/about" },
   ];
 
