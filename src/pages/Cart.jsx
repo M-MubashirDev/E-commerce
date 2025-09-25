@@ -23,6 +23,7 @@ import {
   FiChevronUp,
   FiTag,
 } from "react-icons/fi";
+import SmallHero from "../components/SmallHero";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([
@@ -175,7 +176,9 @@ const CartPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-gray">
+    <div className="min-h-screen bg-light-gray ">
+      <SmallHero />
+
       <div className="layout-spacing">
         <div>
           <div className="flex flex-col lg:flex-row gap-8 h-[90vh] py-12">
@@ -314,12 +317,15 @@ const CartPage = () => {
             </div>
 
             {/* Order Summary - Right Side */}
-            <div className="lg:w-1/3 flex-shrink-0">
-              <div className="sticky top-4 h-fit">
-                <Paper
-                  radius="lg"
-                  shadow="md"
-                  className="bg-white border border-gray-200"
+            <div className="lg:w-1/3  ">
+              <div className=" h-fit">
+                <div
+                  style={{
+                    backgroundImage: "url('bg-Summery_2.png')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                  className="bg-white border shadow-md rounded-lg z-10 relative border-gray-200"
                 >
                   <div className="p-6">
                     <Text fw={700} size="xl" className="text-dark mb-6">
@@ -370,35 +376,19 @@ const CartPage = () => {
                         size="lg"
                         radius="xl"
                         fullWidth
+                        color="dark"
                         className="bg-dark hover:bg-gray-800 text-white font-semibold mt-4"
                       >
                         Proceed to Checkout
                       </Button>
                     </Stack>
                   </div>
-                </Paper>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        id="visual"
-        viewBox="0 0 960 540"
-        width="960"
-        height="540"
-        version="1.1"
-      >
-        <rect x="0" y="0" width="960" height="540" fill="#f5f5f5" />
-        <path
-          d="M0 385L22.8 381.7C45.7 378.3 91.3 371.7 137 366.3C182.7 361 228.3 357 274 353C319.7 349 365.3 345 411.2 345.2C457 345.3 503 349.7 548.8 357.5C594.7 365.3 640.3 376.7 686 394.8C731.7 413 777.3 438 823 448.8C868.7 459.7 914.3 456.3 937.2 454.7L960 453L960 541L937.2 541C914.3 541 868.7 541 823 541C777.3 541 731.7 541 686 541C640.3 541 594.7 541 548.8 541C503 541 457 541 411.2 541C365.3 541 319.7 541 274 541C228.3 541 182.7 541 137 541C91.3 541 45.7 541 22.8 541L0 541Z"
-          fill="#fff"
-          stroke-linecap="round"
-          stroke-linejoin="miter"
-        />
-      </svg>
     </div>
   );
 };
