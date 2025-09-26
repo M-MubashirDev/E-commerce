@@ -12,9 +12,9 @@ function ProductHeaderToolbar({
 }) {
   return (
     <div className="p-4 mb-4 backdrop-blur-lg shadow-md rounded-lg bg-white/60 ">
-      <div className="flex justify-end md:justify-between items-center">
+      <div className="flex justify-end lg:justify-between items-center">
         {/* Products count (hidden in your code but can be re-enabled if needed) */}
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <Text fw={600} size="lg" className="text-gray-900">
             {filteredProducts.length} Products Found
           </Text>
@@ -31,7 +31,7 @@ function ProductHeaderToolbar({
         {/* Toggle button only for small screens */}
         <Button
           variant="outline"
-          color="gray"
+          color="dark"
           leftSection={<FiSliders size={16} />}
           onClick={() => setShowFilters(!showFilters)}
           radius="md"

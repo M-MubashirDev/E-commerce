@@ -7,15 +7,15 @@ export default function SmallHero() {
       className="relative flex flex-col md:flex-row items-center justify-between 
                  bg-no-repeat bg-center bg-cover 
                  py-10 md:h-[250px] overflow-hidden 
-                 content-spacing"
+                          "
     >
       {/* Overlay layer */}
-      <div className="absolute inset-0 bg-black/60 md:bg-black/60"></div>
+      <div className="absolute inset-0  bg-black/60 md:bg-black/60"></div>
 
       {/* Text Section */}
-      <div className="relative flex-1 text-center  md:text-left z-10">
+      <div className="relative content-spacing  flex-1 text-center  md:text-left z-10">
         <p className="text-sm text-light mb-2"> #Discover Your Style</p>
-        <HeadingTitle className="!text-light">
+        <HeadingTitle>
           {" "}
           Shop by Category, <br /> Find Your Perfect Fit
         </HeadingTitle>

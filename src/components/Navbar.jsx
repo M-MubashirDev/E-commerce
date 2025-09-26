@@ -25,17 +25,17 @@ export default function HeaderNav() {
 
   return (
     <header
-      // sticky top-0
-      className={`layout-spacing  py-2   z-50 ${
+      //
+      className={`px-3 sticky top-0 h-fit   z-50 ${
         scrolled ? "bg-transparent" : "bg-light-gray"
       }`}
     >
       <div
         className={`${
           scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)]"
-        }   !bg-light-gray/60   backdrop-blur-lg   p-6  rounded-xl`}
+        }   !bg-light-gray/60 container mx-auto  backdrop-blur-lg p-6   rounded-xl`}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex   items-center justify-between">
           {/* Logo */}
           <div className="text-2xl font-bold text-main">NeoCart</div>
 

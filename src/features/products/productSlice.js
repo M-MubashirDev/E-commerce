@@ -17,8 +17,12 @@ export const fetchProducts = createAsyncThunk(
         "https://api.escuelajs.co/api/v1/products?limit=50"
       );
       return data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || "Failed to fetch products");
+    } catch (error) {
+      if (error.message && error.response.data.message) {
+        return rejectWithValue(error.response?.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
     }
   }
 );

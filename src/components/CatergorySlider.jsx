@@ -19,7 +19,7 @@ export default function ExploreCategories() {
   return (
     <section
       id="exploreCategories"
-      className="mx-auto relative bg-light  content-spacing"
+      className="relative   max-w-[calc(100vw-48px)]  content-spacing   mx-auto bg-light  "
     >
       {loading && (
         <div className="text-center text-gray-300 rounded-md font-medium text-lg py-4 bg-gray-800 border-l-4 border-blue-500 shadow-md">
@@ -34,7 +34,7 @@ export default function ExploreCategories() {
       )}
 
       {!loading && !error && categories.length > 0 && (
-        <Box className="bg-light  py-4 flex justify-center">
+        <Box className="py-4  flex justify-center">
           <ScrollArea
             offsetScrollbars
             // scrollbarSize={8}

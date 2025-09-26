@@ -12,13 +12,36 @@ import { store } from "./store.js";
 const theme = createTheme({
   colors: {
     light: ["#ffffff"],
-    dark: ["#060607", "#101828"],
-    gray: ["#484e52", "#afb9c5"],
-    accent: ["#e3cdb3"],
+    dark: ["#000", "#212121"],
+    gray: ["#e0e0e0", "#f5f5f5"],
+    textGray: ["#4a5565"],
   },
-  primaryColor: "accent",
+  primaryColor: "gray",
   primaryShade: 0,
   fontFamily: "Inter, sans-serif",
+
+  // 👇 This is where you set defaults
+  components: {
+    Button: {
+      defaultProps: {
+        radius: "md",
+        size: "md",
+        color: "dark",
+      },
+      styles: {
+        root: {
+          fontWeight: 600,
+        },
+      },
+    },
+    Text: {
+      defaultProps: {
+        fw: 400,
+        size: "sm",
+        c: "dark",
+      },
+    },
+  },
 });
 
 createRoot(document.getElementById("root")).render(

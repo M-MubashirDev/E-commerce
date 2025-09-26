@@ -154,10 +154,10 @@ const Products = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <div className="min-h-screen bg-light-gray ">
       <SmallHero />
-      <div className="content-spacing py-6">
-        <div className="flex flex-col md:flex-row gap-8">
+      <div className="content-spacing h-full  py-6">
+        <div className="flex flex-col h-full  md:flex-row gap-8">
           <ProductFilterSideBar
             showFilters={showFilters}
             clearFilters={clearFilters}
@@ -185,7 +185,7 @@ const Products = () => {
             />
             {paginatedProducts.length === 0 ? (
               <Paper
-                className="p-12 text-center backdrop-blur-lg border border-gray-300/30"
+                className="p-12 text-center  "
                 style={{
                   background: "rgba(255, 255, 255, 0.85)",
                   backdropFilter: "blur(20px)",
@@ -206,7 +206,10 @@ const Products = () => {
             ) : (
               <>
                 {/* Scrollable Grid */}
-                <ProductGrid paginatedProducts={paginatedProducts} />
+                <ProductGrid
+                  paginatedProducts={paginatedProducts}
+                  showFilters={showFilters}
+                />
 
                 {/* Improved Pagination */}
                 {totalPages > 1 && (

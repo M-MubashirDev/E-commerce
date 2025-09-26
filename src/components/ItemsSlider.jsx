@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { SubmitButton } from "./Form";
 import ProductCard from "./ProductCard";
+import { Button } from "@mantine/core";
 
 const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -56,9 +57,9 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   }
 
   return (
-    <section className="relative  py-16  ">
+    <section className="relative content-spacing  py-16  ">
       {/* Header with Flash Sale badge and navigation */}
-      <div className="flex items-center justify-between gap-2 mb-6">
+      <div className="flex items-center   justify-between gap-2 mb-6">
         <div className="hidden sm:flex items-center gap-4">
           <div className="flex items-center gap-2 bg-gray-900 rounded-full px-4 py-2">
             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
@@ -80,10 +81,11 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
 
         {/* Navigation arrows */}
         <div className="flex w-full sm:w-fit justify-center sm:justify-end   gap-2">
-          <button
+          <Button
             onClick={goToPrevious}
             disabled={currentIndex === 0}
-            className="w-10 h-10 rounded-lg border border-gray-600 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
+            size="sm"
+            className="   disabled:cursor-not-allowed flex items-center justify-center  transition-colors"
             aria-label="Previous products"
           >
             <svg
@@ -99,11 +101,12 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={goToNext}
             disabled={currentIndex >= maxIndex}
-            className="w-10 h-10 rounded-lg bg-gray-900 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
+            size="sm"
+            className=" disabled:cursor-not-allowed flex items-center justify-center  transition-colors"
             aria-label="Next products"
           >
             <svg
@@ -119,7 +122,7 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
                 d="M9 5l7 7-7 7"
               />
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
 

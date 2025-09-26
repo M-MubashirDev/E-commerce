@@ -5,6 +5,7 @@ import CategoryBar from "../components/CatergorySlider";
 // import ProductRecent from "../components/ProductRecent";
 import { useDispatch, useSelector } from "react-redux";
 import SmallHero from "../components/SmallHero";
+import { Button } from "@mantine/core";
 
 function Home() {
   const dispatch = useDispatch();
@@ -29,11 +30,23 @@ function Home() {
       {loading && <div className="text-center text-white py-4">Loading...</div>}
 
       {error && <div className="text-center text-red-400 py-4">{error}</div>}
-      <div className="content-spacing bg-light-gray">
+      <div className=" bg-light-gray">
         {!loading && !error && (
           <>
             {category === "All" ? (
               <>
+                <ItemSlider
+                  items={products.filter(
+                    (p) => p.category?.name === products[0].category.name
+                  )}
+                  title="Trending in Clothes"
+                />
+                <ItemSlider
+                  items={products.filter(
+                    (p) => p.category?.name === products[1].category.name
+                  )}
+                  title="Best in Electronics"
+                />
                 <ItemSlider
                   items={products.filter(
                     (p) => p.category?.name === products[0].category.name

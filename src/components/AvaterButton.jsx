@@ -16,8 +16,7 @@ export default function AvatarButton({ user, onLogout }) {
       <Menu.Target>
         <Button
           variant="outline"
-          color="gray"
-          radius="md"
+          color="dark"
           className="flex items-center gap-2"
           rightSection={
             <div className="pl-2 ml-2 border-l border-gray-light flex items-center">

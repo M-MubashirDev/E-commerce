@@ -27,13 +27,13 @@ const data = [
 export function Footer() {
   return (
     <footer
-      className="py-10 border-t border-white   "
+      className="py-6  px-9 border-t border-white   "
       style={{
-        backgroundColor: "var(--color-dark)",
-        color: "var(--color-light)",
+        backgroundColor: "var(--color-light) ",
+        color: "var(--text-darker-gray)",
       }}
     >
-      <div className="flex flex-col layout-spacing  md:flex-row md:justify-between ">
+      <div className="flex flex-col  container mx-auto  md:flex-row md:justify-between ">
         {/* Logo + description */}
         <div className="max-w-xs">
           <Text className="text-lg font-bold">MyShop</Text>

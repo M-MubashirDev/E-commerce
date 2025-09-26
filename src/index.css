@@ -1,13 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* --color-light: "white"; */
-  /* --color-dark: #060607;
-  --color-dark-secondary: #101828;
-  --color-gray: #484e52;
-  --color-gray-light: #afb9c5;
-  --color-accent: #e3cdb3; */
-
   /* secondary set  Monochrome*/
   --color-light: white;
   --color-light-gray: #f5f5f5;
@@ -40,7 +33,7 @@
 @layer utilities {
   /* Content spacing (more inset) */
   .content-spacing {
-    @apply px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24;
+    @apply mx-auto container px-6;
   }
 
   /* Header & Footer spacing (less inset) */
