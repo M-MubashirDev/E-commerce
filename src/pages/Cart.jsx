@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Paper,
   Group,
@@ -160,7 +160,7 @@ const CartPage = () => {
     <div className="min-h-screen bg-light-gray">
       <SmallHero />
 
-      <div className="layout-spacing px-4 sm:px-6 lg:px-8">
+      <div className="content-spacing">
         <div className="flex flex-col lg:flex-row gap-8 py-12">
           {/* Cart Items */}
           <div className="flex-1 lg:w-2/3">

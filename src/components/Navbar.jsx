@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { Burger, Drawer, Group, Box, ScrollArea } from "@mantine/core";
+import { Link, NavLink } from "react-router-dom";
+import { Burger, Drawer, Box, ScrollArea } from "@mantine/core";
 import AvatarButton from "./AvaterButton";
+import { FaHome } from "react-icons/fa";
+import { AiFillProduct } from "react-icons/ai";
+import { FaCartShopping } from "react-icons/fa6";
+import { FaInfoCircle } from "react-icons/fa";
 
 export default function HeaderNav() {
   const { user } = useSelector((state) => state.auth);
@@ -17,23 +21,23 @@ export default function HeaderNav() {
   }, []);
 
   const navLinks = [
-    { label: "Home", to: "/" },
-    { label: "Products", to: "/products" },
-    { label: "Cart", to: "/cart" },
-    { label: "About", to: "/about" },
+    { label: <FaHome size={28} />, to: "/" },
+    { label: <AiFillProduct size={28} />, to: "/products" },
+    { label: <FaCartShopping size={28} />, to: "/cart" },
+    { label: <FaInfoCircle size={28} />, to: "/about" },
   ];
 
   return (
     <header
       //
-      className={`px-3 sticky top-0 h-fit   z-50 ${
+      className={`sticky top-0 h-fit   z-50 ${
         scrolled ? "bg-transparent" : "bg-light-gray"
       }`}
     >
       <div
         className={`${
           scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)]"
-        }   !bg-light-gray/60 container mx-auto  backdrop-blur-lg p-6   rounded-xl`}
+        }   !bg-light-gray/60 container mx-auto px-4   backdrop-blur-lg py-6`}
       >
         <div className="flex   items-center justify-between">
           {/* Logo */}
@@ -44,23 +48,30 @@ export default function HeaderNav() {
           </div> */}
           {/* Desktop Navigation (hidden on < md) */}
           <div className="hidden md:flex">
-            <Group spacing="lg">
+            <div className="flex gap-8 items-center">
               {navLinks.map((link) => (
-                <Link
+                <NavLink
                   key={link.to}
                   to={link.to}
-                  className="hover:underline text-dark-gray  font-semibold"
+                  className={({ isActive }) =>
+                    `font-semibold ${
+                      isActive
+                        ? "!text-[#3c4046]" // active link
+                        : "text-dark hover:underline"
+                    }`
+                  }
                 >
                   {link.label}
-                </Link>
+                </NavLink>
               ))}
-              <AvatarButton
-                user={user}
-                onLogout={() => console.log("Logging out...")}
-              />
-            </Group>
+            </div>
           </div>
-
+          <div className="hidden md:flex">
+            <AvatarButton
+              user={user}
+              onLogout={() => console.log("Logging out...")}
+            />
+          </div>
           {/* Burger for mobile */}
           <Burger
             opened={opened}

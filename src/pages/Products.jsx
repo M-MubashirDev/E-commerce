@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
@@ -10,8 +10,8 @@ import {
   Center,
 } from "@mantine/core";
 
-import { fetchProducts } from "../features/products/productSlice";
-import { fetchCategories } from "../features/categories/categoriesSlice";
+import { fetchProducts } from "../features/products/productsThunks";
+import { fetchCategories } from "../features/categories/categoriesThunks";
 import ProductFilterSideBar from "../ui/ProductFilterSideBar";
 import ProductHeaderToolbar from "../ui/ProductHeaderToolbar";
 import ProductGrid from "../ui/ProductItemGrid";
@@ -57,7 +57,7 @@ const Products = () => {
     if (maxPrice > 0 && priceRange[1] === 1000) {
       setPriceRange([0, maxPrice]);
     }
-  }, [maxPrice]);
+  }, [maxPrice, priceRange]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {

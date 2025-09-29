@@ -1,29 +1,12 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchCategories } from "./categoriesThunks";
 
 const initialState = {
   categories: [],
-  selectedCategory: "All", // default
+  selectedCategory: "All",
   loading: false,
   error: null,
 };
-
-// Thunk to fetch categories
-export const fetchCategories = createAsyncThunk(
-  "categories/fetchCategories",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        "https://api.escuelajs.co/api/v1/categories/"
-      );
-      return response.data;
-    } catch (err) {
-      return rejectWithValue(
-        "Failed to load categories. Please try again later."
-      );
-    }
-  }
-);
 
 const categoriesSlice = createSlice({
   name: "categories",

@@ -1,31 +1,12 @@
-// src/features/product/productSlice.js
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchProducts, fetchProduct } from "./productsThunks";
 
 const initialState = {
   products: [],
   loading: false,
   error: null,
+  product: null,
 };
-
-// Async thunk to fetch products
-export const fetchProducts = createAsyncThunk(
-  "products/fetchProducts",
-  async (_, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.get(
-        "https://api.escuelajs.co/api/v1/products?limit=50"
-      );
-      return data;
-    } catch (error) {
-      if (error.message && error.response.data.message) {
-        return rejectWithValue(error.response?.data.message);
-      } else {
-        return rejectWithValue(error.message);
-      }
-    }
-  }
-);
 
 const productSlice = createSlice({
   name: "products",
@@ -42,6 +23,21 @@ const productSlice = createSlice({
         state.products = action.payload;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //single email
+    builder
+      .addCase(fetchProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.product = action.payload;
+      })
+      .addCase(fetchProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

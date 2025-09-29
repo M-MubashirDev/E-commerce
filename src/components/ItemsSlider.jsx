@@ -17,13 +17,13 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
       } else if (width < 768) {
         setItemsPerView(2);
       } else if (width < 1024) {
-        setItemsPerView(3);
+        setItemsPerView(2);
       } else if (width < 1400) {
-        setItemsPerView(4);
+        setItemsPerView(3);
       } else if (width < 2200) {
-        setItemsPerView(5);
+        setItemsPerView(4);
       } else if (width < 2800) {
-        setItemsPerView(6);
+        setItemsPerView(4);
       } else {
         setItemsPerView(4);
       }

@@ -15,13 +15,17 @@ export function HeadingSubtitle({ children, maxWidth = "max-w-2xl" }) {
   );
 }
 
-export function HeadingTitle({ children, maxWidth = "max-w-3xl" }) {
+export function HeadingTitle({
+  children,
+  color = "!text-light",
+  maxWidth = "max-w-3xl",
+}) {
   return (
     <Title
       data-aos="fade-up"
-      className="!text-light"
+      className={color}
       classNames={{
-        root: `lg:!text-[3rem] sm:!text-[2rem] md:!text-[2.5rem] !text-[1.7rem] !font-bold !text-center md:!text-start  !tracking-wide !leading-tight !break-words !${maxWidth} !mx-auto`,
+        root: `lg:!text-[3rem]   sm:!text-[2rem] md:!text-[2.5rem] !text-[1.7rem] !font-bold !text-center md:!text-start  !tracking-wide !leading-tight !break-words !${maxWidth} !mx-auto`,
       }}
     >
       {children}

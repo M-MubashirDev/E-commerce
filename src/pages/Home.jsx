@@ -1,11 +1,9 @@
 import { useEffect } from "react";
-import { fetchProducts } from "../features/products/productSlice";
+import { fetchProducts } from "../features/products/productsThunks";
 import ItemSlider from "../components/ItemsSlider";
 import CategoryBar from "../components/CatergorySlider";
-// import ProductRecent from "../components/ProductRecent";
 import { useDispatch, useSelector } from "react-redux";
 import SmallHero from "../components/SmallHero";
-import { Button } from "@mantine/core";
 
 function Home() {
   const dispatch = useDispatch();

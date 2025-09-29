@@ -3,28 +3,37 @@ import globals from "globals";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import { defineConfig, globalIgnores } from "eslint/config";
 
-export default defineConfig([
-  globalIgnores(["dist"]),
+export default [
+  { ignores: ["dist", "build", "node_modules"] },
   {
     files: ["**/*.{js,jsx}"],
-    extends: [
-      js.configs.recommended,
-      react.configs.recommended,
-      react.configs["jsx-runtime"],
-      reactHooks.configs.recommended,
-      reactRefresh.configs.vite,
-    ],
     languageOptions: {
       ecmaVersion: "latest",
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.es2020,
+        React: "readonly",
+      },
       parserOptions: {
         ecmaFeatures: { jsx: true },
         sourceType: "module",
       },
     },
+    settings: {
+      react: { version: "detect" }, // auto-detects React 18 or 19
+    },
+    plugins: {
+      react,
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh,
+    },
     rules: {
+      ...js.configs.recommended.rules,
+      ...react.configs.recommended.rules,
+      ...react.configs["jsx-runtime"].rules,
+      ...reactHooks.configs.recommended.rules,
+
       "react/prop-types": "off",
       "react/jsx-no-target-blank": "off",
       "react-refresh/only-export-components": [
@@ -33,4 +42,4 @@ export default defineConfig([
       ],
     },
   },
-]);
+];

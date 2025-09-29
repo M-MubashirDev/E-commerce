@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+import { loginUser } from "./authThunks";
 
 const initialState = {
   user: null,
@@ -8,35 +8,6 @@ const initialState = {
   loading: false,
   error: null,
 };
-
-// Async thunk for login
-export const loginUser = createAsyncThunk(
-  "auth/loginUser",
-  async ({ email, password }, { rejectWithValue }) => {
-    try {
-      // Get tokens
-      const res = await axios.post(
-        "https://api.escuelajs.co/api/v1/auth/login",
-        { email, password }
-      );
-      const { access_token, refresh_token } = res.data;
-
-      // Fetch profile
-      const profileRes = await axios.get(
-        "https://api.escuelajs.co/api/v1/auth/profile",
-        { headers: { Authorization: `Bearer ${access_token}` } }
-      );
-
-      return {
-        user: profileRes.data,
-        accessToken: access_token,
-        refreshToken: refresh_token,
-      };
-    } catch (err) {
-      return rejectWithValue(err.response?.data || "Login failed");
-    }
-  }
-);
 
 const authSlice = createSlice({
   name: "auth",

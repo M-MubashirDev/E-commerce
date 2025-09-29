@@ -7,7 +7,7 @@ import {
   TextInputField,
 } from "../components/Form";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../features/auth/authSlice";
+import { loginUser } from "../features/auth/authThunks";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -38,8 +38,6 @@ export default function Login() {
           className="space-y-4 w-full"
         >
           <h1 className="text-2xl font-bold text-center text-light">Login</h1>
-
-          {/* Email */}
           <TextInputField
             name="email"
             label="Email"
@@ -53,7 +51,6 @@ export default function Login() {
             }}
           />
 
-          {/* Password */}
           <PasswordInputField
             name="password"
             label="Password"
@@ -61,9 +58,7 @@ export default function Login() {
             rules={{ required: "Password is required" }}
           />
 
-          {/* Remember + Forgot password */}
           <div className="flex items-center justify-between text-sm">
-            {/* <CheckboxField name="remember" label="Remember me" /> */}
             <Link
               to="/forgot-password"
               className="text-white hover:underline font-medium"
@@ -72,12 +67,9 @@ export default function Login() {
             </Link>
           </div>
 
-          {/* Submit */}
           <SubmitButton loading={loading}>Login</SubmitButton>
-
-          {/* Signup link */}
           <p className="text-center text-sm text-dark-secondary">
-            Don’t have an account?{" "}
+            Don’t have an account?
             <Link
               to="/signup"
               className="text-white font-medium hover:underline"

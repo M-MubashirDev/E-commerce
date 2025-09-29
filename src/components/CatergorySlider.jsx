@@ -1,10 +1,8 @@
 import { Avatar, Button, ScrollArea, Box } from "@mantine/core";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchCategories,
-  setCategory,
-} from "../features/categories/categoriesSlice";
+import { setCategory } from "../features/categories/categoriesSlice";
+import { fetchCategories } from "../features/categories/categoriesThunks";
 
 export default function ExploreCategories() {
   const dispatch = useDispatch();
