@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { SubmitButton } from "./Form";
+// import { SubmitButton } from "./Form";
 import ProductCard from "./ProductCard";
 import { Button } from "@mantine/core";
+import HeaderButton from "../ui/HeaderButton";
 
 const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,7 +34,6 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
     window.addEventListener("resize", updateItemsPerView);
     return () => window.removeEventListener("resize", updateItemsPerView);
   }, []);
-  console.log(items, "items");
   const maxIndex = Math.max(0, items.length - itemsPerView);
 
   const goToPrevious = () => {
@@ -44,40 +44,22 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
     setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(price);
-  };
+  // const formatPrice = (price) => {
+  //   return new Intl.NumberFormat("en-US", {
+  //     style: "currency",
+  //     currency: "USD",
+  //     minimumFractionDigits: 2,
+  //   }).format(price);
+  // };
 
   if (!items || items.length === 0) {
     return null;
   }
 
   return (
-    <section className="relative content-spacing  py-16  ">
-      {/* Header with Flash Sale badge and navigation */}
+    <section className="relative content-spacing    ">
       <div className="flex items-center   justify-between gap-2 mb-6">
-        <div className="hidden sm:flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-gray-900 rounded-full px-4 py-2">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <svg
-                className="w-4 h-4 text-gray-900"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <span className="text-white font-semibold">{title}</span>
-          </div>
-        </div>
+        <HeaderButton title={title} />
 
         {/* Navigation arrows */}
         <div className="flex w-full sm:w-fit justify-center sm:justify-end   gap-2">
@@ -135,11 +117,11 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
           }}
         >
           {items.map((item, index) => {
-            const safeTitle =
-              item.title?.toString().slice(0, 100) || "Untitled Product";
-            const safeDescription =
-              item.description?.toString().slice(0, 150) ||
-              "No description available";
+            // const safeTitle =
+            //   item.title?.toString().slice(0, 100) || "Untitled Product";
+            // const safeDescription =
+            //   item.description?.toString().slice(0, 150) ||
+            //   "No description available";
             return (
               <div
                 key={item.id || index}

@@ -1,12 +1,30 @@
-import { SubmitButton } from "./Form";
+import { Button } from "@mantine/core";
+import { useDispatch } from "react-redux";
+import { setCartItem } from "../features/cart/cartSlice";
 
 const ProductCard = ({ item }) => {
+  const dispatch = useDispatch();
+
   const formatPrice = (price) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 2,
     }).format(price);
+
+  function HandleAddTOCart() {
+    console.log(item);
+    dispatch(
+      setCartItem({
+        category: item.category,
+        id: item.id,
+        images: item.images,
+        price: item.price,
+        title: item.title,
+        description: item.description,
+      })
+    );
+  }
 
   const safeTitle = item.title?.toString().slice(0, 100) || "Untitled Product";
   const safeDescription =
@@ -62,7 +80,7 @@ const ProductCard = ({ item }) => {
           </div>
         </div>
         <div className="absolute -bottom-4 left-[50%]">
-          <SubmitButton>Add to Cart</SubmitButton>
+          <Button onClick={HandleAddTOCart}>Add to Cart</Button>
         </div>
       </div>
     </div>

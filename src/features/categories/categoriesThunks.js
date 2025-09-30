@@ -7,7 +7,8 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await getCategories();
-      return data;
+
+      return Array.from(new Map(data.map((c) => [c.name, c])).values());
     } catch (error) {
       const backendMessage = error.response?.data?.message;
       return rejectWithValue(backendMessage || error.message);
