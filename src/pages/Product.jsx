@@ -3,16 +3,32 @@ import { fetchProduct } from "../features/products/productsThunks";
 import { useEffect } from "react";
 import { ProductDetailCarousel } from "../ui/ProductDetailCarasoul";
 import { Button } from "@mantine/core";
+import { useParams } from "react-router-dom";
+import { setCartItem } from "../features/cart/cartSlice";
 
 function Product() {
   const dispatch = useDispatch();
-  const { loading, error, product } = useSelector((state) => state.products);
+  const { id } = useParams();
 
+  const { loading, error, product } = useSelector((state) => state.products);
   const { images, price, title, description, category } = product || {};
 
+  function HandleAddTOCart() {
+    dispatch(
+      setCartItem({
+        category: category,
+        id: id,
+        images: images,
+        price: price,
+        title: title,
+        description: description,
+      })
+    );
+  }
+
   useEffect(() => {
-    dispatch(fetchProduct(1));
-  }, [dispatch]);
+    dispatch(fetchProduct(id));
+  }, [dispatch, id]);
 
   if (loading) return <h1>loading</h1>;
   if (error) return <h1>error</h1>;
@@ -80,19 +96,10 @@ function Product() {
             </div>
           </div>
 
-          {/* Quantity */}
-          <div className="flex items-center gap-4">
-            <span className="font-medium">Quantity:</span>
-            <div className="flex items-center border rounded-lg">
-              <button className="px-3 py-1 text-lg font-bold">-</button>
-              <span className="px-4 py-1">1</span>
-              <button className="px-3 py-1 text-lg font-bold">+</button>
-            </div>
-          </div>
-
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button fullWidth>Add To Cart</Button>
+            <Button fullWidth onClick={HandleAddTOCart}>
+              Add To Cart
+            </Button>
             <Button fullWidth variant="outline">
               Checkout Now
             </Button>

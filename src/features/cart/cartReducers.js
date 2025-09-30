@@ -29,3 +29,11 @@ export function setDescreaseCartItemReducer(state, action) {
   }
   calculateTotals(state.cart);
 }
+export function getSingleCartItem(state, action) {
+  const existingItem = state.cart.items.find(
+    (val) => val.id === action.payload.id
+  );
+  if (existingItem) {
+    state.singleCart = existingItem;
+  }
+}

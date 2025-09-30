@@ -3,7 +3,6 @@ import {
   Group,
   Text,
   Button,
-  ActionIcon,
   Divider,
   Stack,
   Container,
@@ -11,28 +10,18 @@ import {
   Image,
   Modal,
 } from "@mantine/core";
-import { FiMinus, FiPlus, FiTrash2, FiShoppingBag } from "react-icons/fi";
+import { FiShoppingBag } from "react-icons/fi";
 import SmallHero from "../components/SmallHero";
-import { useDispatch, useSelector } from "react-redux";
-import { setCartItem, setReduceItem } from "../features/cart/cartSlice";
+import { useSelector } from "react-redux";
 import { useState } from "react";
+import ItemQuantityButton from "../components/ItemQuantityButton";
 
 const Cart = () => {
-  const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.cart);
   const cartItems = cart.items;
 
   const [opened, setOpened] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-
-  const updateQuantity = (item, type) => {
-    if (type === "increase") {
-      dispatch(setCartItem({ ...item }));
-    } else {
-      dispatch(setReduceItem({ ...item }));
-    }
-    // Later you can add decrease/remove actions
-  };
 
   const formatPrice = (price) =>
     new Intl.NumberFormat("en-US", {
@@ -125,40 +114,7 @@ const Cart = () => {
 
                       {/* Quantity controls */}
                       <div className="flex items-center gap-3 mt-2">
-                        <div className="flex items-center bg-white/20 rounded-lg border border-white/30">
-                          {item.currentQuantity > 1 ? (
-                            <ActionIcon
-                              onClick={() => updateQuantity(item, "decrease")}
-                              color="dark"
-                              variant="subtle"
-                              size="md"
-                            >
-                              <FiMinus size={14} />
-                            </ActionIcon>
-                          ) : (
-                            <ActionIcon
-                              onClick={() => updateQuantity(item, "remove")}
-                              color="dark"
-                              variant="subtle"
-                              size="md"
-                            >
-                              <FiTrash2 size={14} />
-                            </ActionIcon>
-                          )}
-                          <div className="px-3 py-1 min-w-10 text-center">
-                            <Text fw={600} className="text-dark">
-                              {item.currentQuantity}
-                            </Text>
-                          </div>
-                          <ActionIcon
-                            onClick={() => updateQuantity(item, "increase")}
-                            color="dark"
-                            variant="subtle"
-                            size="sm"
-                          >
-                            <FiPlus size={14} />
-                          </ActionIcon>
-                        </div>
+                        <ItemQuantityButton item={item} />
                       </div>
                     </div>
 

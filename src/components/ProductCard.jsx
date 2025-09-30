@@ -1,9 +1,11 @@
 import { Button } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { setCartItem } from "../features/cart/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ item }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formatPrice = (price) =>
     new Intl.NumberFormat("en-US", {
@@ -50,7 +52,10 @@ const ProductCard = ({ item }) => {
       </button>
 
       {/* Image */}
-      <div className="h-48 rounded-t-2xl overflow-hidden flex-shrink-0">
+      <div
+        onClick={() => navigate(`/Product/${item?.id}`)}
+        className="h-48 rounded-t-2xl cursor-pointer  overflow-hidden flex-shrink-0"
+      >
         <img
           src={item.images?.[0] || item.image}
           alt={item.title || item.name}
