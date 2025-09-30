@@ -2,6 +2,7 @@ import { Button } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { setCartItem } from "../features/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const ProductCard = ({ item }) => {
   const dispatch = useDispatch();
@@ -15,17 +16,21 @@ const ProductCard = ({ item }) => {
     }).format(price);
 
   function HandleAddTOCart() {
-    console.log(item);
-    dispatch(
-      setCartItem({
-        category: item.category,
-        id: item.id,
-        images: item.images,
-        price: item.price,
-        title: item.title,
-        description: item.description,
-      })
-    );
+    try {
+      dispatch(
+        setCartItem({
+          category: item.category,
+          id: item.id,
+          images: item.images,
+          price: item.price,
+          title: item.title,
+          description: item.description,
+        })
+      );
+      toast.success("Item Added");
+    } catch {
+      toast.error("Error");
+    }
   }
 
   const safeTitle = item.title?.toString().slice(0, 100) || "Untitled Product";

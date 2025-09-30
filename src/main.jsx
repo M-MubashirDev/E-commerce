@@ -8,6 +8,7 @@ import "@mantine/core/styles.css";
 import { createTheme, MantineProvider } from "@mantine/core";
 import { Provider } from "react-redux";
 import { store } from "./store.js";
+import { Toaster } from "react-hot-toast";
 
 const theme = createTheme({
   colors: {
@@ -49,6 +50,7 @@ createRoot(document.getElementById("root")).render(
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       <Provider store={store}>
         <App />
+        <Toaster position="top-right" reverseOrder={false} />
       </Provider>
     </MantineProvider>
   </StrictMode>

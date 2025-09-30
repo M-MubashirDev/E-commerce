@@ -5,6 +5,7 @@ import { ProductDetailCarousel } from "../ui/ProductDetailCarasoul";
 import { Button } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import { setCartItem } from "../features/cart/cartSlice";
+import toast from "react-hot-toast";
 
 function Product() {
   const dispatch = useDispatch();
@@ -14,16 +15,21 @@ function Product() {
   const { images, price, title, description, category } = product || {};
 
   function HandleAddTOCart() {
-    dispatch(
-      setCartItem({
-        category: category,
-        id: id,
-        images: images,
-        price: price,
-        title: title,
-        description: description,
-      })
-    );
+    try {
+      dispatch(
+        setCartItem({
+          category: category,
+          id: id,
+          images: images,
+          price: price,
+          title: title,
+          description: description,
+        })
+      );
+      toast.success("Item Added");
+    } catch {
+      toast.error("Something went wrong.");
+    }
   }
 
   useEffect(() => {
