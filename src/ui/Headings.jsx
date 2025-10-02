@@ -5,7 +5,7 @@ export function HeadingSubtitle({ children, maxWidth = "max-w-2xl" }) {
     <Text
       data-aos="fade-up"
       my="md"
-      className="!text-gray-100"
+      className="!text-gray-100 font-secondary"
       classNames={{
         root: `!${maxWidth}  text-light lg:!text-[1.4rem]  md:!text-[1.2rem] !text-[1rem] !tracking-wide !text-center md:!text-start !leading-relaxed`,
       }}
@@ -25,7 +25,7 @@ export function HeadingTitle({
       data-aos="fade-up"
       className={color}
       classNames={{
-        root: `lg:!text-[3rem]   sm:!text-[2rem] md:!text-[2.5rem] !text-[1.7rem] !font-bold !text-center md:!text-start  !tracking-wide !leading-tight !break-words !${maxWidth} !mx-auto`,
+        root: `lg:!text-[3rem]    sm:!text-[2rem] md:!text-[2.5rem] !text-[1.7rem] !font-bold !text-center md:!text-start  !tracking-wide !leading-tight !break-words !${maxWidth} !mx-auto`,
       }}
     >
       {children}

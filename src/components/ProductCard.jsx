@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core";
+import { Button, Tooltip } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { setCartItem } from "../features/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
@@ -38,7 +38,7 @@ const ProductCard = ({ item }) => {
     item.description?.toString().slice(0, 150) || "No description available";
 
   return (
-    <div className="bg-white max-w-[16rem] min-w-[14rem] mx-auto backdrop-blur-sm rounded-2xl relative group hover:shadow-xl transition-shadow shadow-md h-88 flex flex-col">
+    <div className="bg-white max-w-[16rem] font-secondary min-w-[14rem] mx-auto backdrop-blur-sm rounded-2xl relative group hover:shadow-xl transition-shadow shadow-md h-88 flex flex-col">
       {/* Wishlist heart */}
       <button className="absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors">
         <svg
@@ -75,9 +75,22 @@ const ProductCard = ({ item }) => {
           <h3 className="font-semibold text-dark text-base leading-tight truncate transition-colors">
             {safeTitle}
           </h3>
-          <p className="text-sm text-dark-gray line-clamp-2 leading-relaxed">
-            {safeDescription}
-          </p>
+          <Tooltip
+            label={item.description}
+            position="bottom-start"
+            multiline
+            w={270}
+            withArrow
+            color="white"
+            c={"dark"}
+            className="border-1 border-medium-gray"
+            transitionProps={{ duration: 150 }}
+          >
+            <p className="text-sm text-dark-gray line-clamp-2 leading-relaxed ">
+              {safeDescription}
+            </p>
+          </Tooltip>
+
           <div className="flex items-center gap-3">
             <span className="font-bold text-dark text-lg">
               {formatPrice(item.price)}

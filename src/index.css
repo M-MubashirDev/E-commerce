@@ -42,7 +42,7 @@
 
 @layer utilities {
   .content-spacing {
-    @apply mx-auto container px-10;
+    @apply mx-auto container px-11;
   }
   .layout-spacing {
     @apply px-4 sm:px-6 lg:px-8 xl:px-12;

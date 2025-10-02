@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { Burger, Drawer, Box, ScrollArea } from "@mantine/core";
-import AvatarButton from "./AvaterButton"; // Note: Typo in "AvaterButton"; should be "AvatarButton"
+import AvatarButton from "./AvaterButton";
 import { FaHome } from "react-icons/fa";
 import { AiFillProduct } from "react-icons/ai";
 import { FaCartShopping } from "react-icons/fa6";
@@ -30,7 +30,7 @@ export default function HeaderNav() {
   return (
     <header
       className={`sticky  h-fit px-6 z-50 ${
-        scrolled ? "bg-transparent top-3" : "bg-light-gray top-0"
+        scrolled ? "bg-transparent top-3" : "bg-light top-0"
       }`}
     >
       <div

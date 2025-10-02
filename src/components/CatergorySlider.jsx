@@ -49,15 +49,15 @@ export default function ExploreCategories() {
               {/* All Categories button */}
               <Button
                 onClick={() => dispatch(setCategory("All"))}
-                // leftSection={
-                //   <Avatar
-                //     classNames={{
-                //       root: "!rounded-full !border !border-medium-gray !border-medium-gray !w-11 !h-11",
-                //     }}
-                //     variant="outline"
-                //     // size="lg"
-                //   />
-                // }
+                leftSection={
+                  <Avatar
+                    classNames={{
+                      root: "!rounded-full !border !border-medium-gray !border-medium-gray !w-11 !h-11",
+                    }}
+                    variant="outline"
+                    // size="lg"
+                  />
+                }
                 classNames={{
                   root: `transition-hover !cursor-pointer !min-w-fit !min-h-fit !h-12 !font-normal ${
                     selectedCategory === "All"
@@ -75,18 +75,18 @@ export default function ExploreCategories() {
                 <div className="flex flex-col items-center gap-3" key={cat.id}>
                   <Button
                     radius="xl"
-                    // leftSection={
-                    //   <Avatar
-                    //     src={cat.image || fallbackImage}
-                    //     alt={cat.name}
-                    //     classNames={{
-                    //       root: "!rounded-full border border-medium-gray !w-11 !h-11",
-                    //     }}
-                    //     onError={(e) => {
-                    //       e.target.src = fallbackImage; // Set fallback on error
-                    //     }}
-                    //   />
-                    // }
+                    leftSection={
+                      <Avatar
+                        src={cat.image || fallbackImage}
+                        alt={cat.name}
+                        classNames={{
+                          root: "!rounded-full border border-medium-gray !w-11 !h-11",
+                        }}
+                        onError={(e) => {
+                          e.target.src = fallbackImage; // Set fallback on error
+                        }}
+                      />
+                    }
                     onClick={() =>
                       dispatch(
                         setCategory(

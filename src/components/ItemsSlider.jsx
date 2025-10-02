@@ -61,7 +61,7 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
 
   return (
     <section className="relative content-spacing    ">
-      <div className="flex items-center   justify-between gap-2 mb-6">
+      <div className="flex items-center flex-col-reverse gap-5 sm:flex-row   justify-between sm:gap-2 mb-6">
         <HeaderButton
           title={`Best in ${title}`}
           handleFunction={() => navigate(`/products?category=${title}`)}
