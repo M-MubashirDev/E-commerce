@@ -2,16 +2,10 @@ import { Menu, Avatar, Button, Divider } from "@mantine/core";
 import { FaChevronDown, FaSignOutAlt } from "react-icons/fa";
 
 export default function AvatarButton({ user, onLogout, onLogin }) {
-  // 🔹 If no user → just show a Sign In button
   if (!user) {
-    return (
-      <Button variant="filled" color="dark" radius="md" onClick={onLogin}>
-        Sign In
-      </Button>
-    );
+    return <Button onClick={onLogin}>Sign In</Button>;
   }
 
-  // 🔹 If user exists → show dropdown menu with Avatar + Logout
   return (
     <Menu
       transitionProps={{ transition: "pop" }}

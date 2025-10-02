@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProduct } from "../features/products/productsThunks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ProductDetailCarousel } from "../ui/ProductDetailCarasoul";
 import { Button } from "@mantine/core";
 import { useParams } from "react-router-dom";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 function Product() {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const { loading, error, product } = useSelector((state) => state.products);
   const { images, price, title, description, category } = product || {};
@@ -18,12 +19,12 @@ function Product() {
     try {
       dispatch(
         setCartItem({
-          category: category,
-          id: id,
-          images: images,
-          price: price,
-          title: title,
-          description: description,
+          category,
+          id,
+          images,
+          price,
+          title,
+          description,
         })
       );
       toast.success("Item Added");
@@ -48,38 +49,44 @@ function Product() {
       }}
       className="bg-light-gray py-8 lg:py-12"
     >
-      {/* Responsive flex layout */}
       <div className="flex flex-col lg:flex-row gap-8 content-spacing">
         {/* Left side (carousel + thumbnails) */}
         <div className="w-full lg:w-1/2 flex flex-col">
-          <div className="flex-1">
-            <ProductDetailCarousel images={images} />
+          <div className="flex justify-center">
+            <ProductDetailCarousel
+              images={images}
+              activeIndex={activeIndex}
+              setActiveIndex={setActiveIndex}
+            />
           </div>
-          <div className="flex gap-4 justify-center lg:justify-evenly items-center h-[70px] mt-4">
+          {/* Thumbnails */}
+          <div className="flex gap-4 justify-center items-center h-[70px] mt-4">
             {images?.map((image, ind) => (
               <img
                 key={ind}
                 src={image}
-                alt={`product-${ind}`}
-                className="h-full rounded-md w-auto object-contain cursor-pointer"
+                alt={`product-thumb-${ind}`}
+                className={`h-full rounded-md w-auto object-contain cursor-pointer transition ${
+                  activeIndex === ind
+                    ? "ring-1 ring-primary scale-105"
+                    : "opacity-70 hover:opacity-100"
+                }`}
+                onClick={() => setActiveIndex(ind)}
               />
             ))}
           </div>
         </div>
 
         {/* Right side (details) */}
-        <div className="w-full lg:w-1/2 p-6 flex flex-col gap-6 ">
-          {/* Category */}
+        <div className="w-full lg:w-1/2 p-6 flex flex-col space-y-1">
           <span className="text-xs sm:text-sm text-gray-500 uppercase tracking-wide">
             {category?.name}
           </span>
 
-          {/* Title */}
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-dark-gray">
             {title}
           </h1>
 
-          {/* Price */}
           <div className="flex items-baseline gap-3">
             <span className="text-2xl sm:text-3xl font-semibold text-primary">
               ${price}
@@ -89,25 +96,18 @@ function Product() {
             </span>
           </div>
 
-          {/* Description with lines */}
-          <div className="flex flex-col gap-3">
-            {/* <div className="h-px bg-dark-gray w-[80%] mx-auto" /> */}
-
-            <div className="h-px bg-dark-gray w-[80%] mx-auto" />
+          <div className="flex flex-col gap-3 py-4 my-2 md:px-4 md:border border-medium-gray rounded-md md:shadow-sm">
             <div>
               <h2 className="font-semibold mb-1">Description:</h2>
-              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-md leading-relaxed">
                 {description}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="py-3">
             <Button fullWidth onClick={HandleAddTOCart}>
               Add To Cart
-            </Button>
-            <Button fullWidth variant="outline">
-              Checkout Now
             </Button>
           </div>
         </div>

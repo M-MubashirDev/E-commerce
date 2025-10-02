@@ -23,6 +23,15 @@ function ProductFilterSideBar({
   sortBy,
   setSortBy,
 }) {
+  const isFilterCLoseShow =
+    sortBy !== "name" ||
+    priceRange[0] !== 0 ||
+    priceRange[1] !== maxPrice ||
+    searchQuery ||
+    (selectedCategory && selectedCategory !== "all")
+      ? true
+      : false;
+
   return (
     <div
       className={`${
@@ -42,6 +51,7 @@ function ProductFilterSideBar({
             size="xs"
             color="gray"
             onClick={clearFilters}
+            className={isFilterCLoseShow ? "!flex" : "!hidden"}
             leftSection={<FiX size={14} />}
           >
             Clear All
@@ -87,7 +97,7 @@ function ProductFilterSideBar({
               onChange={setPriceRange}
               min={0}
               max={maxPrice}
-              step={10}
+              step={1}
               color="dark"
               size="md"
             />

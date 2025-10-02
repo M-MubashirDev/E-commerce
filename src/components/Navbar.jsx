@@ -36,23 +36,23 @@ export default function HeaderNav() {
       <div
         className={`${
           scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)]"
-        } !bg-light-gray/60 container mx-auto px-4 rounded-lg  backdrop-blur-lg py-6`}
+        } white container mx-auto px-4 rounded-lg  backdrop-blur-lg py-6`}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center  justify-between">
           {/* Logo */}
-          <img src="mainLogo.png" className="w-40 " alt="neo cart" />
+          <img src="/mainLogo.png" className="w-40" alt="neo cart" />
 
           {/* Desktop Navigation (hidden on < lg) */}
           <div className="hidden lg:flex">
-            <div className="flex gap-8 items-center">
+            <div className="flex gap-1 items-center ">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
                   className={({ isActive }) =>
-                    `font-semibold flex items-center gap-2 ${
+                    `font-semibold flex items-center p-2  gap-2 ${
                       isActive
-                        ? "!text-[#3c4046]" // active link
+                        ? "!text-[#3c4046] shadow-lg border-medium-gray/90 border-[0.3px]  rounded-md  " // active link
                         : "text-dark hover:underline"
                     }`
                   }

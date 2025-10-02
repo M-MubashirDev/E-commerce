@@ -30,7 +30,6 @@ function ProductHeaderToolbar({
 
         {/* Toggle button only for small screens */}
         <Button
-          variant="outline"
           color="dark"
           leftSection={<FiSliders size={16} />}
           onClick={() => setShowFilters(!showFilters)}

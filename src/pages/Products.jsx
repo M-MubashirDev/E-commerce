@@ -44,23 +44,19 @@ const Products = () => {
       dispatch(fetchCategories());
     }
   }, [dispatch, products, categories]);
-  console.log("sad");
 
-  // Calculate price range from products
   const maxPrice = useMemo(() => {
     if (products.length === 0) return 1000;
     return Math.ceil(Math.max(...products.map((p) => p.price || 0)));
   }, [products]);
 
-  // Update price range when products load
   const priceRangeEffect = useCallback(() => {
     if (maxPrice > 0 && priceRange[1] === 1000) {
       setPriceRange([0, maxPrice]);
     }
   }, [maxPrice, priceRange]);
   useEffect(priceRangeEffect, [priceRangeEffect]);
-
-  // Filter and sort products
+  console.log(priceRange, maxPrice);
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 

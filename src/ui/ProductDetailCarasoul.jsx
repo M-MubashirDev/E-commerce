@@ -1,23 +1,32 @@
 import { Carousel } from "@mantine/carousel";
+import { useEffect, useState } from "react";
 
-export function ProductDetailCarousel({ images }) {
+export function ProductDetailCarousel({ images, activeIndex }) {
+  const [embla, setEmbla] = useState(null);
+
+  useEffect(() => {
+    if (embla && activeIndex !== null) {
+      embla.scrollTo(activeIndex);
+    }
+  }, [activeIndex, embla]);
+
   return (
     <Carousel
       withIndicators
+      getEmblaApi={setEmbla} // expose embla API
       emblaOptions={{ dragFree: true, align: "start" }}
       slideGap="md"
-      height={"50vh"}
-      className="w-full rounded-lg overflow-hidden"
+      className="!rounded-lg xl:max-w-[70vh] overflow-hidden"
     >
       {images?.map((image, ind) => (
         <Carousel.Slide
           key={ind}
-          className="flex justify-center items-center bg-white"
+          className="bg-light-gray !rounded-lg flex justify-center"
         >
           <img
             src={image}
             alt={`product-${ind}`}
-            className="h-fit w-auto object-contain"
+            className="max-h-[60vh] w-auto object-contain !rounded-lg"
           />
         </Carousel.Slide>
       ))}

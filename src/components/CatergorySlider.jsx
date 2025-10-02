@@ -80,7 +80,7 @@ export default function ExploreCategories() {
                         src={cat.image || fallbackImage}
                         alt={cat.name}
                         classNames={{
-                          root: "!rounded-full border border-medium-gray !w-11 !h-11",
+                          root: "!rounded-full  !w-11 !h-11",
                         }}
                         onError={(e) => {
                           e.target.src = fallbackImage; // Set fallback on error
@@ -98,7 +98,7 @@ export default function ExploreCategories() {
                       root: `transition-hover !cursor-pointer !h-12 !min-w-fit !min-h-fit !font-normal ${
                         selectedCategory === cat.name
                           ? "!bg-dark !text-white border-2 border-blue-500"
-                          : "!text-[#4a5565] !bg-light-gray border border-medium-gray hover:!border-dark hover:!bg-transparent"
+                          : "!text-[#4a5565] !bg-light-gray shadow-sm hover:!text-white hover:!shadow-lg hover:!bg-black"
                       }`,
                     }}
                     // size="md"
