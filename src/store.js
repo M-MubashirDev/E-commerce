@@ -1,47 +1,36 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage"; // defaults to localStorage
 import authReducer from "./features/auth/authSlice";
 import categoriesReducer from "./features/categories/categoriesSlice";
 import productReducer from "./features/products/productSlice";
 import cartReducer from "./features/cart/cartSlice";
-import {
-  saveAuthData,
-  clearAuthData,
-  loadAuthData,
-} from "./utilities/LocalStorage";
 
-// Load everything (tokens + user) at startup
-const { accessToken, refreshToken, user } = loadAuthData();
+// Config for auth
+const authPersistConfig = {
+  key: "auth",
+  storage,
+  whitelist: ["accessToken", "refreshToken", "user"], // only persist these
+};
 
-const preloadedState = {
-  auth: {
-    accessToken,
-    refreshToken,
-    user,
-    loading: false,
-    error: null,
-  },
+// Config for cart
+const cartPersistConfig = {
+  key: "cart",
+  storage,
+  whitelist: ["cart"], // persist entire cart object
 };
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    auth: persistReducer(authPersistConfig, authReducer),
     categories: categoriesReducer,
     products: productReducer,
-    cart: cartReducer,
+    cart: persistReducer(cartPersistConfig, cartReducer),
   },
-  preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
-// Subscribe to store changes
-store.subscribe(() => {
-  const state = store.getState();
-  if (state.auth.accessToken && state.auth.refreshToken) {
-    saveAuthData({
-      accessToken: state.auth.accessToken,
-      refreshToken: state.auth.refreshToken,
-      user: state.auth.user,
-    });
-  } else {
-    clearAuthData();
-  }
-});
+export const persistor = persistStore(store);

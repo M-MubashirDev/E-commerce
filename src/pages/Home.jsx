@@ -6,9 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import SmallHero from "../components/SmallHero";
 import ProductCard from "../components/ProductCard";
 import HeaderButton from "../ui/HeaderButton";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { products, loading, error } = useSelector((state) => state.products);
   const category = useSelector((state) => state.categories.selectedCategory);
@@ -30,13 +32,7 @@ function Home() {
     content = topCategories.map((catName) => {
       const catProducts = products.filter((p) => p.category?.name === catName);
 
-      return (
-        <ItemSlider
-          key={catName}
-          items={catProducts}
-          title={`Best in ${catName}`}
-        />
-      );
+      return <ItemSlider key={catName} items={catProducts} title={catName} />;
     });
   } else {
     // Show only selected category slider
@@ -46,7 +42,12 @@ function Home() {
 
     content = (
       <div className="content-spacing ">
-        <HeaderButton title={`Best in ${filteredProducts[0]?.category.name}`} />
+        <HeaderButton
+          title={`Best in ${filteredProducts[0]?.category.name}`}
+          handleFunction={() =>
+            navigate(`/products?category=${filteredProducts[0]?.category.name}`)
+          }
+        />
         <div className="grid max-h-[70vh] h-[70vh]  overflow-y-auto mt-6  [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:grid-cols-4   lg:grid-cols-3 md:grid-cols-2  gap-4 gap-y-6  justify-items-center mx-auto w-full">
           {filteredProducts?.map((product) => (
             <div key={product.id} className="w-fit">

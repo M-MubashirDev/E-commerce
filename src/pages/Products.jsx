@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
@@ -36,7 +36,6 @@ const Products = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
-
   useEffect(() => {
     if (products.length === 0) {
       dispatch(fetchProducts());
@@ -44,7 +43,8 @@ const Products = () => {
     if (categories.length === 0) {
       dispatch(fetchCategories());
     }
-  }, [dispatch, products.length, categories.length]);
+  }, [dispatch, products, categories]);
+  console.log("sad");
 
   // Calculate price range from products
   const maxPrice = useMemo(() => {
@@ -53,11 +53,12 @@ const Products = () => {
   }, [products]);
 
   // Update price range when products load
-  useEffect(() => {
+  const priceRangeEffect = useCallback(() => {
     if (maxPrice > 0 && priceRange[1] === 1000) {
       setPriceRange([0, maxPrice]);
     }
   }, [maxPrice, priceRange]);
+  useEffect(priceRangeEffect, [priceRangeEffect]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -133,8 +134,6 @@ const Products = () => {
 
     return [{ value: "all", label: "All Categories" }, ...cleaned];
   }, [categories]);
-
-  console.log(categories);
 
   if (productsLoading || categoriesLoading) {
     return (

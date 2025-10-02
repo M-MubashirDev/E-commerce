@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { Burger, Drawer, Box, ScrollArea } from "@mantine/core";
-import AvatarButton from "./AvaterButton";
+import AvatarButton from "./AvaterButton"; // Note: Typo in "AvaterButton"; should be "AvatarButton"
 import { FaHome } from "react-icons/fa";
 import { AiFillProduct } from "react-icons/ai";
 import { FaCartShopping } from "react-icons/fa6";
@@ -11,7 +11,6 @@ import { FaInfoCircle } from "react-icons/fa";
 export default function HeaderNav() {
   const { user } = useSelector((state) => state.auth);
   const [opened, setOpened] = useState(false);
-
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -20,41 +19,38 @@ export default function HeaderNav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Navigation links with icon and name
   const navLinks = [
-    { label: <FaHome size={28} />, to: "/" },
-    { label: <AiFillProduct size={28} />, to: "/products" },
-    { label: <FaCartShopping size={28} />, to: "/cart" },
-    { label: <FaInfoCircle size={28} />, to: "/about" },
+    { label: <FaHome size={28} />, name: "Home", to: "/" },
+    { label: <AiFillProduct size={28} />, name: "Products", to: "/products" },
+    { label: <FaCartShopping size={28} />, name: "Cart", to: "/cart" },
+    { label: <FaInfoCircle size={28} />, name: "About", to: "/about" },
   ];
 
   return (
     <header
-      //
-      className={`sticky top-0 h-fit   z-50 ${
+      className={`sticky top-0 h-fit z-50 ${
         scrolled ? "bg-transparent" : "bg-light-gray"
       }`}
     >
       <div
         className={`${
           scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)]"
-        }   !bg-light-gray/60 container mx-auto px-4   backdrop-blur-lg py-6`}
+        } !bg-light-gray/60 container mx-auto px-4 backdrop-blur-lg py-6`}
       >
-        <div className="flex   items-center justify-between">
+        <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="text-2xl font-bold text-main">NeoCart</div>
 
-          {/* <div>
-            <img src="logo.png" alt="logo" className="max-w-[40px]" />
-          </div> */}
-          {/* Desktop Navigation (hidden on < md) */}
-          <div className="hidden md:flex">
+          {/* Desktop Navigation (hidden on < lg) */}
+          <div className="hidden lg:flex">
             <div className="flex gap-8 items-center">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
                   className={({ isActive }) =>
-                    `font-semibold ${
+                    `font-semibold flex items-center gap-2 ${
                       isActive
                         ? "!text-[#3c4046]" // active link
                         : "text-dark hover:underline"
@@ -62,21 +58,22 @@ export default function HeaderNav() {
                   }
                 >
                   {link.label}
+                  <span>{link.name}</span>
                 </NavLink>
               ))}
             </div>
           </div>
-          <div className="hidden md:flex">
+          <div className="hidden lg:flex">
             <AvatarButton
               user={user}
               onLogout={() => console.log("Logging out...")}
             />
           </div>
-          {/* Burger for mobile */}
+          {/* Burger for mobile (visible on < lg) */}
           <Burger
             opened={opened}
             onClick={() => setOpened((o) => !o)}
-            className="md:hidden"
+            className="lg:hidden"
             size="sm"
             color="Black"
           />
@@ -89,8 +86,8 @@ export default function HeaderNav() {
           padding="md"
           size="sm"
           classNames={{
-            content: "!bg-glass !backdrop-blur-lg !border !border-gray-700", // glassy
-            header: "!bg-transparent !border-0", // remove white header background
+            content: "!bg-glass !backdrop-blur-lg !border !border-gray-700",
+            header: "!bg-transparent !border-0",
             close: "!text-gray-300 hover:!bg-dark-secondary rounded-md",
           }}
           overlayProps={{ backgroundOpacity: 0.4, blur: 6 }}
@@ -101,10 +98,11 @@ export default function HeaderNav() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="text-lg font-medium text-gray-light hover:underline"
+                  className="text-lg font-medium text-gray-light hover:underline flex items-center gap-3"
                   onClick={() => setOpened(false)}
                 >
                   {link.label}
+                  <span>{link.name}</span>
                 </Link>
               ))}
               <AvatarButton

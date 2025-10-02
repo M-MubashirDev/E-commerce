@@ -7,8 +7,13 @@ import "@mantine/core/styles.css";
 
 import { createTheme, MantineProvider } from "@mantine/core";
 import { Provider } from "react-redux";
-import { store } from "./store.js";
+import { persistor, store } from "./store.js";
 import { Toaster } from "react-hot-toast";
+import { PersistGate } from "redux-persist/integration/react";
+
+// Inter, Roboto, Work Sans, Lato, Montserrat, and Open Sans
+
+//application font - DM Sans
 
 const theme = createTheme({
   colors: {
@@ -44,12 +49,13 @@ const theme = createTheme({
     },
   },
 });
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       <Provider store={store}>
-        <App />
+        <PersistGate loading={null} persistor={persistor}>
+          <App />
+        </PersistGate>
         <Toaster position="top-right" reverseOrder={false} />
       </Provider>
     </MantineProvider>

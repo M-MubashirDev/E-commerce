@@ -3,11 +3,14 @@ import { useState, useRef, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import { Button } from "@mantine/core";
 import HeaderButton from "../ui/HeaderButton";
+import { useNavigate } from "react-router-dom";
 
 const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
   const carouselRef = useRef(null);
+
+  const navigate = useNavigate();
 
   // Update items per view based on screen size
   useEffect(() => {
@@ -59,7 +62,10 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   return (
     <section className="relative content-spacing    ">
       <div className="flex items-center   justify-between gap-2 mb-6">
-        <HeaderButton title={title} />
+        <HeaderButton
+          title={`Best in ${title}`}
+          handleFunction={() => navigate(`/products?category=${title}`)}
+        />
 
         {/* Navigation arrows */}
         <div className="flex w-full sm:w-fit justify-center sm:justify-end   gap-2">
