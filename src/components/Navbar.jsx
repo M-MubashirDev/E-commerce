@@ -29,18 +29,18 @@ export default function HeaderNav() {
 
   return (
     <header
-      className={`sticky top-0 h-fit z-50 ${
-        scrolled ? "bg-transparent" : "bg-light-gray"
+      className={`sticky  h-fit px-6 z-50 ${
+        scrolled ? "bg-transparent top-3" : "bg-light-gray top-0"
       }`}
     >
       <div
         className={`${
           scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)]"
-        } !bg-light-gray/60 container mx-auto px-4 backdrop-blur-lg py-6`}
+        } !bg-light-gray/60 container mx-auto px-4 rounded-lg  backdrop-blur-lg py-6`}
       >
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="text-2xl font-bold text-main">NeoCart</div>
+          <img src="mainLogo.png" className="w-40 " alt="neo cart" />
 
           {/* Desktop Navigation (hidden on < lg) */}
           <div className="hidden lg:flex">

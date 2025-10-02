@@ -38,7 +38,7 @@ const ProductCard = ({ item }) => {
     item.description?.toString().slice(0, 150) || "No description available";
 
   return (
-    <div className="bg-white max-w-[16rem] min-w-[16rem] mx-auto backdrop-blur-sm rounded-2xl relative group hover:shadow-xl transition-shadow shadow-md h-88 flex flex-col">
+    <div className="bg-white max-w-[16rem] min-w-[14rem] mx-auto backdrop-blur-sm rounded-2xl relative group hover:shadow-xl transition-shadow shadow-md h-88 flex flex-col">
       {/* Wishlist heart */}
       <button className="absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors">
         <svg
@@ -89,7 +89,7 @@ const ProductCard = ({ item }) => {
             )}
           </div>
         </div>
-        <div className="absolute -bottom-4 left-[50%]">
+        <div className="absolute -bottom-3 left-[40%]">
           <Button onClick={HandleAddTOCart}>Add to Cart</Button>
         </div>
       </div>

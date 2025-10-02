@@ -24,8 +24,10 @@ const theme = createTheme({
   },
   primaryColor: "gray",
   primaryShade: 0,
-  fontFamily: "Inter, sans-serif",
-
+  fontFamily: "DM Sans, sans-serif",
+  headings: {
+    fontFamily: "Inter, sans-serif",
+  },
   // 👇 This is where you set defaults
   components: {
     Button: {

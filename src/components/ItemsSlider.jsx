@@ -18,18 +18,18 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
       const width = window.innerWidth;
       if (width < 640) {
         setItemsPerView(1);
-      } else if (width < 768) {
+      } else if (width < 802) {
         setItemsPerView(2);
-      } else if (width < 1024) {
-        setItemsPerView(2);
-      } else if (width < 1400) {
+      } else if (width < 1280) {
         setItemsPerView(3);
-      } else if (width < 2200) {
+      } else if (width < 1350) {
         setItemsPerView(4);
+      } else if (width < 2000) {
+        setItemsPerView(5);
       } else if (width < 2800) {
-        setItemsPerView(4);
+        setItemsPerView(5);
       } else {
-        setItemsPerView(4);
+        setItemsPerView(5);
       }
     };
 

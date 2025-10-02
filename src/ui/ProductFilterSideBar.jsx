@@ -29,7 +29,7 @@ function ProductFilterSideBar({
         showFilters ? "w-full md:w-80 md:block" : "hidden"
       }  transition-all  min-h-full duration-300 `}
     >
-      <div className="p-6 !rounded-xl md:h-[70%] shadow-lg !bg-light backdrop-blur-lg">
+      <div className="p-6 !rounded-xl  shadow-lg !bg-light backdrop-blur-lg">
         <Group justify="space-between" mb="lg">
           <Group>
             <FiFilter size={20} className="text-gray-900" />
