@@ -1,5 +1,5 @@
 import { useForm, FormProvider } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import {
   PasswordInputField,
@@ -13,7 +13,8 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading } = useSelector((state) => state.auth);
-
+  const location = useLocation();
+  const fromCheckout = location.state;
   const methods = useForm({
     defaultValues: { email: "", password: "", remember: false },
   });
@@ -24,7 +25,7 @@ export default function Login() {
         loginUser({ email: data.email, password: data.password })
       ).unwrap();
 
-      navigate("/");
+      fromCheckout ? navigate("/cart") : navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -35,7 +36,7 @@ export default function Login() {
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
-          className="space-y-4 w-full"
+          className="space-y-4 w-full "
         >
           <h1 className="text-2xl font-bold text-center text-light">Login</h1>
           <TextInputField

@@ -6,6 +6,7 @@ import { Button } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import { setCartItem } from "../features/cart/cartSlice";
 import toast from "react-hot-toast";
+import ItemQuantityButton from "../components/ItemQuantityButton";
 
 function Product() {
   const dispatch = useDispatch();
@@ -13,7 +14,11 @@ function Product() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { loading, error, product } = useSelector((state) => state.products);
+  const { cart } = useSelector((state) => state.cart);
+
   const { images, price, title, description, category } = product || {};
+
+  const cartItem = cart.items.find((item) => item.id === id);
 
   function HandleAddTOCart() {
     try {
@@ -27,7 +32,7 @@ function Product() {
           description,
         })
       );
-      toast.success("Item Added");
+      toast.success(`${title} added to the cart`);
     } catch {
       toast.error("Something went wrong.");
     }
@@ -106,9 +111,13 @@ function Product() {
           </div>
 
           <div className="py-3">
-            <Button fullWidth onClick={HandleAddTOCart}>
-              Add To Cart
-            </Button>
+            {cartItem ? (
+              <ItemQuantityButton item={cartItem} />
+            ) : (
+              <Button fullWidth onClick={HandleAddTOCart}>
+                Add To Cart
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link, NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Burger, Drawer, Box, ScrollArea } from "@mantine/core";
 import AvatarButton from "./AvaterButton";
 import { FaHome } from "react-icons/fa";
 import { AiFillProduct } from "react-icons/ai";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaInfoCircle } from "react-icons/fa";
+import { logout } from "../features/auth/authSlice";
 
 export default function HeaderNav() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
   const [opened, setOpened] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -23,52 +27,70 @@ export default function HeaderNav() {
   const navLinks = [
     { label: <FaHome size={28} />, name: "Home", to: "/" },
     { label: <AiFillProduct size={28} />, name: "Products", to: "/products" },
-    { label: <FaCartShopping size={28} />, name: "Cart", to: "/cart" },
+    {
+      label: <FaCartShopping size={28} />,
+      name: "Cart",
+      to: "/cart",
+      showCart: true,
+    }, // ✅ mark cart
     { label: <FaInfoCircle size={28} />, name: "About", to: "/about" },
   ];
 
   return (
     <header
-      className={`sticky  h-fit px-6 z-50 ${
+      className={`sticky h-fit px-6 z-50 ${
         scrolled ? "bg-transparent top-3" : "bg-light top-0"
       }`}
     >
       <div
         className={`${
           scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)]"
-        } white container mx-auto px-4 rounded-lg  backdrop-blur-lg py-6`}
+        } container mx-auto px-4 rounded-lg backdrop-blur-lg py-6`}
       >
-        <div className="flex items-center  justify-between">
+        <div className="flex items-center justify-between">
           {/* Logo */}
           <img src="/mainLogo.png" className="w-40" alt="neo cart" />
 
           {/* Desktop Navigation (hidden on < lg) */}
           <div className="hidden lg:flex">
-            <div className="flex gap-1 items-center ">
+            <div className="flex gap-1 items-center">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
                   className={({ isActive }) =>
-                    `font-semibold flex items-center p-2  gap-2 ${
+                    `font-semibold flex items-center p-2 gap-2 relative ${
                       isActive
-                        ? "!text-[#3c4046] shadow-lg border-medium-gray/90 border-[0.3px]  rounded-md  " // active link
+                        ? "!text-[#3c4046] shadow-lg border-medium-gray/90 border-[0.3px] rounded-md"
                         : "text-dark hover:underline"
                     }`
                   }
                 >
-                  {link.label}
+                  {/* Show badge on cart */}
+                  <div className="relative">
+                    {link.label}
+                    {link.showCart && cart.itemCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-md">
+                        {cart.itemCount}
+                      </span>
+                    )}
+                  </div>
                   <span>{link.name}</span>
                 </NavLink>
               ))}
             </div>
           </div>
+
           <div className="hidden lg:flex">
             <AvatarButton
               user={user}
-              onLogout={() => console.log("Logging out...")}
+              onLogin={() => {
+                navigate("/login");
+              }}
+              onLogout={() => dispatch(logout())}
             />
           </div>
+
           {/* Burger for mobile (visible on < lg) */}
           <Burger
             opened={opened}
@@ -98,17 +120,26 @@ export default function HeaderNav() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="text-lg font-medium text-gray-light hover:underline flex items-center gap-3"
+                  className="text-lg font-medium text-gray-light hover:underline flex items-center gap-3 relative"
                   onClick={() => setOpened(false)}
                 >
-                  {link.label}
+                  <div className="relative">
+                    {link.label}
+                    {link.showCart && cart.itemCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-md">
+                        {cart.itemCount}
+                      </span>
+                    )}
+                  </div>
                   <span>{link.name}</span>
                 </Link>
               ))}
               <AvatarButton
                 user={user}
+                onLogin={() => {
+                  navigate("/login");
+                }}
                 onLogout={() => {
-                  console.log("Logging out...");
                   setOpened(false);
                 }}
               />

@@ -27,7 +27,7 @@ const ProductCard = ({ item }) => {
           description: item.description,
         })
       );
-      toast.success("Item Added");
+      toast.success(`${item.title} added to the cart`);
     } catch {
       toast.error("Error");
     }

@@ -16,20 +16,32 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import ItemQuantityButton from "../components/ItemQuantityButton";
 import { ProductDetailCarousel } from "../ui/ProductDetailCarasoul";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const { cart } = useSelector((state) => state.cart);
-  const cartItems = cart.items;
-
-  const [opened, setOpened] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [opened, setOpened] = useState(false);
+
+  const navigate = useNavigate();
+
+  const { cart } = useSelector((state) => state.cart);
+  const { user, accessToken, refreshToken } = useSelector(
+    (state) => state.auth
+  );
+  const cartItems = cart.items;
 
   const formatPrice = (price) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
     }).format(price);
+
+  function handleProceedCheckOut() {
+    if (!user || !accessToken || !refreshToken)
+      navigate("/login", { state: true });
+    else navigate("/ordersummery");
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -199,13 +211,7 @@ const Cart = () => {
                       </Text>
                     </Group>
 
-                    <Button
-                      size="lg"
-                      radius="xl"
-                      fullWidth
-                      color="dark"
-                      className="bg-dark hover:bg-gray-800 text-white font-semibold mt-4"
-                    >
+                    <Button onClick={handleProceedCheckOut}>
                       Proceed to Checkout
                     </Button>
                   </Stack>
