@@ -15,8 +15,10 @@ import SmallHero from "../components/SmallHero";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import ItemQuantityButton from "../components/ItemQuantityButton";
+import { ProductDetailCarousel } from "../ui/ProductDetailCarasoul";
 
 const Cart = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
   const { cart } = useSelector((state) => state.cart);
   const cartItems = cart.items;
 
@@ -131,6 +133,7 @@ const Cart = () => {
                         radius="md"
                         onClick={() => {
                           setSelectedItem(item);
+                          setActiveIndex(0); // reset carousel to first image
                           setOpened(true);
                         }}
                       >
@@ -219,16 +222,36 @@ const Cart = () => {
         onClose={() => setOpened(false)}
         title={selectedItem?.title}
         centered
+        size="lg"
       >
         {selectedItem && (
-          <div>
-            <Image
-              src={selectedItem.images[0]}
-              alt={selectedItem.title}
-              radius="md"
-              mb="md"
+          <div className="flex flex-col items-center gap-4">
+            {/* Carousel */}
+            <ProductDetailCarousel
+              images={selectedItem.images}
+              activeIndex={activeIndex}
+              setActiveIndex={setActiveIndex}
             />
-            <Text size="sm" className="text-dark-gray">
+
+            {/* Thumbnails */}
+            <div className="flex gap-3 justify-center items-center h-[70px] mt-2">
+              {selectedItem.images?.map((image, ind) => (
+                <img
+                  key={ind}
+                  src={image}
+                  alt={`thumb-${ind}`}
+                  className={`h-full rounded-md w-auto object-contain cursor-pointer transition ${
+                    activeIndex === ind
+                      ? "ring-2 ring-primary scale-105"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                  onClick={() => setActiveIndex(ind)}
+                />
+              ))}
+            </div>
+
+            {/* Description */}
+            <Text size="sm" className="text-dark-gray mt-4">
               {selectedItem.description}
             </Text>
           </div>
