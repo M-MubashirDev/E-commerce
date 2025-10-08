@@ -47,14 +47,6 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
     setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
   };
 
-  // const formatPrice = (price) => {
-  //   return new Intl.NumberFormat("en-US", {
-  //     style: "currency",
-  //     currency: "USD",
-  //     minimumFractionDigits: 2,
-  //   }).format(price);
-  // };
-
   if (!items || items.length === 0) {
     return null;
   }
@@ -123,11 +115,6 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
           }}
         >
           {items.map((item, index) => {
-            // const safeTitle =
-            //   item.title?.toString().slice(0, 100) || "Untitled Product";
-            // const safeDescription =
-            //   item.description?.toString().slice(0, 150) ||
-            //   "No description available";
             return (
               <div
                 key={item.id || index}

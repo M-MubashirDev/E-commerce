@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
@@ -11,54 +11,63 @@ import {
 } from "@mantine/core";
 
 import { fetchProducts } from "../features/products/productsThunks";
-import { fetchCategories } from "../features/categories/categoriesThunks";
+import { setCategory } from "../features/categories/categoriesSlice";
 import ProductFilterSideBar from "../ui/ProductFilterSideBar";
 import ProductHeaderToolbar from "../ui/ProductHeaderToolbar";
 import ProductGrid from "../ui/ProductItemGrid";
 import ProductPagination from "../ui/Pagination";
 import SmallHero from "../components/SmallHero";
+import { fetchCategories } from "../features/categories/categoriesThunks";
 
 const Products = () => {
   const dispatch = useDispatch();
-  const { products, loading: productsLoading } = useSelector(
-    (state) => state.products
-  );
-  const { categories, loading: categoriesLoading } = useSelector(
+  const { items, total, loading } = useSelector((state) => state.products);
+  const { categories, selectedCategory } = useSelector(
     (state) => state.categories
   );
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [sortBy, setSortBy] = useState("name");
   const [showFilters, setShowFilters] = useState(true);
-
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
-  useEffect(() => {
-    if (products.length === 0) {
-      dispatch(fetchProducts());
-    }
-    if (categories.length === 0) {
-      dispatch(fetchCategories());
-    }
-  }, [dispatch, products, categories]);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false); // Track user interaction
+  const itemsPerPage = 14;
 
   const maxPrice = useMemo(() => {
-    if (products.length === 0) return 1000;
-    return Math.ceil(Math.max(...products.map((p) => p.price || 0)));
-  }, [products]);
+    if (items.length === 0) return 1000;
+    return Math.ceil(Math.max(...items.map((p) => p.price || 0)));
+  }, [items]);
 
-  const priceRangeEffect = useCallback(() => {
-    if (maxPrice > 0 && priceRange[1] === 1000) {
+  const handlePriceRangeChange = (newRange) => {
+    setPriceRange(newRange);
+    setHasUserInteracted(true); // Mark that the user has interacted
+  };
+  console.log("as");
+
+  useEffect(() => {
+    if (!hasUserInteracted && priceRange[1] !== maxPrice) {
       setPriceRange([0, maxPrice]);
     }
-  }, [maxPrice, priceRange]);
-  useEffect(priceRangeEffect, [priceRangeEffect]);
-  console.log(priceRange, maxPrice);
+  }, [maxPrice, priceRange, hasUserInteracted]);
+
+  useEffect(() => {
+    setHasUserInteracted(false);
+  }, [currentPage]);
+
+  useEffect(() => {
+    const offset = (currentPage - 1) * itemsPerPage;
+    dispatch(fetchProducts({ limit: itemsPerPage, offset }));
+  }, [dispatch, currentPage]);
+
+  // Fetch categories on mount
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
   const filteredProducts = useMemo(() => {
-    let filtered = [...products];
+    let filtered = [...items];
 
     if (searchQuery) {
       filtered = filtered.filter(
@@ -68,7 +77,7 @@ const Products = () => {
       );
     }
 
-    if (selectedCategory && selectedCategory !== "all") {
+    if (selectedCategory && selectedCategory !== "All") {
       filtered = filtered.filter(
         (product) => product.category?.name === selectedCategory
       );
@@ -93,45 +102,19 @@ const Products = () => {
     });
 
     return filtered;
-  }, [products, searchQuery, selectedCategory, priceRange, sortBy]);
+  }, [items, searchQuery, priceRange, sortBy, selectedCategory]);
 
-  // Pagination slice
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // Reset page when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedCategory, priceRange, sortBy]);
+  const totalPages = Math.ceil(total / itemsPerPage);
 
   const clearFilters = () => {
     setSearchQuery("");
-    setSelectedCategory("");
     setPriceRange([0, maxPrice]);
     setSortBy("name");
+    dispatch(setCategory("All"));
+    setHasUserInteracted(false); // Allow resetting priceRange on next maxPrice change
   };
 
-  const categoryOptions = useMemo(() => {
-    const seen = new Set();
-    const cleaned = categories
-      .filter((cat) => {
-        const valid = cat.name && cat.name.trim() !== "";
-        if (!valid || seen.has(cat.name.trim().toLowerCase())) return false;
-        seen.add(cat.name.trim().toLowerCase());
-        return true;
-      })
-      .map((cat) => ({
-        value: cat.name.trim(),
-        label: cat.name.trim(),
-      }));
-
-    return [{ value: "all", label: "All Categories" }, ...cleaned];
-  }, [categories]);
-
-  if (productsLoading || categoriesLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-100">
         <Container size="xl" className="content-spacing py-8">
@@ -149,20 +132,20 @@ const Products = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-gray ">
+    <div className="min-h-screen bg-light-gray">
       <SmallHero />
-      <div className="content-spacing h-full  py-6">
-        <div className="flex flex-col h-full  md:flex-row gap-8">
+      <div className="content-spacing h-full py-6">
+        <div className="flex flex-col h-full md:flex-row gap-8">
           <ProductFilterSideBar
             showFilters={showFilters}
             clearFilters={clearFilters}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            categoryOptions={categoryOptions}
+            setSelectedCategory={(category) => dispatch(setCategory(category))}
+            categoryOptions={["All", ...categories.map((c) => c.name)]}
             priceRange={priceRange}
-            setPriceRange={setPriceRange}
+            setPriceRange={handlePriceRangeChange} // Use custom handler
             maxPrice={maxPrice}
             sortBy={sortBy}
             setSortBy={setSortBy}
@@ -178,9 +161,10 @@ const Products = () => {
               showFilters={showFilters}
               setShowFilters={setShowFilters}
             />
-            {paginatedProducts.length === 0 ? (
+
+            {filteredProducts.length === 0 ? (
               <Paper
-                className="p-12 text-center  "
+                className="p-12 text-center"
                 style={{
                   background: "rgba(255, 255, 255, 0.85)",
                   backdropFilter: "blur(20px)",
@@ -199,22 +183,18 @@ const Products = () => {
                 </Button>
               </Paper>
             ) : (
-              <>
-                {/* Scrollable Grid */}
-                <ProductGrid
-                  paginatedProducts={paginatedProducts}
-                  showFilters={showFilters}
-                />
+              <ProductGrid
+                paginatedProducts={filteredProducts}
+                showFilters={showFilters}
+              />
+            )}
 
-                {/* Improved Pagination */}
-                {totalPages > 1 && (
-                  <ProductPagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    setCurrentPage={setCurrentPage}
-                  />
-                )}
-              </>
+            {totalPages > 1 && (
+              <ProductPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+              />
             )}
           </div>
         </div>

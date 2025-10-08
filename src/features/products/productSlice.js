@@ -2,40 +2,42 @@ import { createSlice } from "@reduxjs/toolkit";
 import { fetchProducts, fetchProduct } from "./productsThunks";
 
 const initialState = {
-  products: [],
+  items: [],
+  total: 0,
   loading: false,
   error: null,
-  product: null,
+  selectedProduct: null,
 };
 
-const productSlice = createSlice({
+const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Multiple products
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.items = action.payload.items;
+        state.total = action.payload.total;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
-    //single email
-    builder
+      // Single product
       .addCase(fetchProduct.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.product = action.payload;
+        state.selectedProduct = action.payload;
       })
       .addCase(fetchProduct.rejected, (state, action) => {
         state.loading = false;
@@ -44,4 +46,4 @@ const productSlice = createSlice({
   },
 });
 
-export default productSlice.reducer;
+export default productsSlice.reducer;

@@ -13,3 +13,12 @@ export const fetchProfileApi = async (accessToken) => {
   });
   return res.data;
 };
+export const createUser = async ({ name, email, password, avatar }) => {
+  const res = await axios.post(`${API_URL}/users/`, {
+    name,
+    email,
+    password,
+    avatar,
+  });
+  return res.data;
+};

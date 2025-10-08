@@ -44,7 +44,7 @@ export default function HeaderNav() {
     >
       <div
         className={`${
-          scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)]"
+          scrolled && "shadow-[0px_-1px_7px_4px_rgba(0,0,0,0.15)] bg-white/60"
         } container mx-auto px-4 rounded-lg backdrop-blur-lg py-6`}
       >
         <div className="flex items-center justify-between">

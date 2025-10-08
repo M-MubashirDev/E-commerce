@@ -1,42 +1,106 @@
 import { useForm, FormProvider } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import AuthLayout from "../components/AuthLayout";
 import {
   TextInputField,
   PasswordInputField,
   CheckboxField,
+  FileInputField,
   SubmitButton,
 } from "../components/Form";
+import {
+  signupUser,
+  uploadFile,
+  // checkEmailAvailability,
+} from "../features/auth/authThunks";
+import toast from "react-hot-toast";
 
 export default function Signup() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { loading, error } = useSelector((state) => state.auth);
+  const fromCheckout = location.state;
+
   const methods = useForm({
     defaultValues: {
       name: "",
       email: "",
       password: "",
-      // confirm: "",
+      confirmPassword: "",
+      avatar: null,
       terms: false,
     },
   });
 
-  const onSubmit = (data) => console.log("Signup data:", data);
+  const onSubmit = async (data) => {
+    try {
+      if (data.password !== data.confirmPassword) {
+        methods.setError("confirmPassword", {
+          message: "Passwords do not match",
+        });
+        return;
+      }
+
+      // const emailCheck = await dispatch(
+      //   checkEmailAvailability({ email: data.email })
+      // ).unwrap();
+      // console.log(emailCheck, "......");
+      // if (!emailCheck.isAvailable) {
+      //   methods.setError("email", { message: "Email already exists" });
+      //   return;
+      // }
+
+      let avatarUrl = data.avatar;
+      if (data.avatar instanceof File) {
+        const uploadedFile = await dispatch(uploadFile(data.avatar)).unwrap();
+        avatarUrl = uploadedFile.location;
+      }
+
+      await dispatch(
+        signupUser({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          avatar: avatarUrl,
+        })
+      ).unwrap();
+
+      toast.success("Account created successfully!");
+      navigate(fromCheckout ? "/ordersummary" : "/");
+    } catch (error) {
+      methods.setError("root", {
+        message: error || "Signup failed. Please try again.",
+      });
+      toast.error(error || "Signup failed. Please try again.");
+    }
+  };
 
   return (
     <AuthLayout>
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
-          className="space-y-4 w-full"
+          className="w-full space-y-2"
         >
-          <h1 className="text-2xl font-bold text-center text-dark">Sign Up</h1>
-
+          <h1 className="text-2xl font-bold text-center text-black mb-4">
+            Sign Up
+          </h1>
+          {(methods.formState.errors.root || error) && (
+            <p className="text-red-400 text-sm text-center mb-3">
+              {methods.formState.errors.root?.message || error}
+            </p>
+          )}
           <TextInputField
             name="name"
-            label="Full Name"
+            label="Name"
             placeholder="John Doe"
-            rules={{ required: "Name is required" }}
+            rules={{
+              required: "Name is required",
+              minLength: { value: 2, message: "At least 2 characters" },
+            }}
           />
-
           <TextInputField
             name="email"
             label="Email"
@@ -49,7 +113,6 @@ export default function Signup() {
               },
             }}
           />
-
           <PasswordInputField
             name="password"
             label="Password"
@@ -59,20 +122,41 @@ export default function Signup() {
               minLength: { value: 6, message: "At least 6 characters" },
             }}
           />
-
+          <PasswordInputField
+            name="confirmPassword"
+            label="Confirm Password"
+            placeholder="Confirm password"
+            rules={{
+              required: "Please confirm your password",
+              validate: (value, formValues) =>
+                value === formValues.password || "Passwords do not match",
+            }}
+          />
+          <FileInputField
+            name="avatar"
+            label="Avatar (Optional)"
+            placeholder="Upload an image"
+            rules={{
+              validate: (value) =>
+                value === null ||
+                value instanceof File ||
+                "Please upload a valid image file",
+            }}
+          />
           <CheckboxField
             name="terms"
             label="I accept the terms & conditions"
             rules={{ required: "You must accept the terms" }}
           />
-
-          <SubmitButton>Sign Up</SubmitButton>
-
-          <p className="text-center text-sm text-dark-secondary">
+          <SubmitButton loading={loading} disabled={loading}>
+            sign up
+          </SubmitButton>
+          <p className="text-center text-sm text-dark-secondary mt-3">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-white font-medium hover:underline"
+              state={fromCheckout}
+              className="text-black font-medium hover:underline"
             >
               Log in
             </Link>

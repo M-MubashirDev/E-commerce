@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { Button, Divider, Text, Title, Paper, Group } from "@mantine/core";
+import LocationMapModal from "../components/MapModel";
 
 export default function OrderSummary() {
   const { cart } = useSelector((state) => state.cart);
@@ -133,6 +134,7 @@ export default function OrderSummary() {
           </Button>
         </div>
       </Paper>
+      <LocationMapModal />
     </section>
   );
 }

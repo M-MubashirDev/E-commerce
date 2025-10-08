@@ -28,7 +28,7 @@ function ProductFilterSideBar({
     priceRange[0] !== 0 ||
     priceRange[1] !== maxPrice ||
     searchQuery ||
-    (selectedCategory && selectedCategory !== "all")
+    (selectedCategory && selectedCategory !== "All")
       ? true
       : false;
 
@@ -47,9 +47,8 @@ function ProductFilterSideBar({
             </Text>
           </Group>
           <Button
-            variant="subtle"
+            variant=""
             size="xs"
-            color="gray"
             onClick={clearFilters}
             className={isFilterCLoseShow ? "!flex" : "!hidden"}
             leftSection={<FiX size={14} />}

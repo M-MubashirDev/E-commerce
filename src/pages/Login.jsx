@@ -36,9 +36,9 @@ export default function Login() {
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
-          className="space-y-4 w-full "
+          className="space-y-2 w-full "
         >
-          <h1 className="text-2xl font-bold text-center text-light">Login</h1>
+          <h1 className="text-2xl font-bold text-center text-black">Login</h1>
           <TextInputField
             name="email"
             label="Email"
@@ -62,7 +62,7 @@ export default function Login() {
           <div className="flex items-center justify-between text-sm">
             <Link
               to="/forgot-password"
-              className="text-white hover:underline font-medium"
+              className="text-dark hover:underline font-medium"
             >
               Forgot password?
             </Link>
@@ -73,7 +73,7 @@ export default function Login() {
             Don’t have an account?
             <Link
               to="/signup"
-              className="text-white font-medium hover:underline"
+              className="text-dark ml-1 font-medium hover:underline"
             >
               Sign up
             </Link>

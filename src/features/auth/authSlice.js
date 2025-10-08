@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser } from "./authThunks";
+import {
+  loginUser,
+  signupUser,
+  uploadFile,
+  checkEmailAvailability,
+} from "./authThunks";
 
 const initialState = {
   user: null,
@@ -34,6 +39,40 @@ const authSlice = createSlice({
         state.refreshToken = action.payload.refreshToken;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(signupUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signupUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(signupUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(uploadFile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadFile.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(uploadFile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(checkEmailAvailability.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkEmailAvailability.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(checkEmailAvailability.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

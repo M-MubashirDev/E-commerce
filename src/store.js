@@ -10,7 +10,7 @@ import cartReducer from "./features/cart/cartSlice";
 const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["accessToken", "refreshToken", "user"], // only persist these
+  whitelist: ["accessToken", "refreshToken", "user"],
 };
 
 // Config for cart

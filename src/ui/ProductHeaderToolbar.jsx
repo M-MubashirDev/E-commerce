@@ -12,7 +12,7 @@ function ProductHeaderToolbar({
 }) {
   return (
     <div className="p-4 mb-4 backdrop-blur-lg shadow-md rounded-lg bg-white/60 ">
-      <div className="flex justify-end lg:justify-between items-center">
+      <div className="flex justify-start md:justify-end lg:justify-between items-center">
         {/* Products count (hidden in your code but can be re-enabled if needed) */}
         <div className="hidden lg:block">
           <Text fw={600} size="lg" className="text-gray-900">

@@ -13,10 +13,12 @@ function Product() {
   const { id } = useParams();
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const { loading, error, product } = useSelector((state) => state.products);
+  const { loading, error, selectedProduct } = useSelector(
+    (state) => state.products
+  );
   const { cart } = useSelector((state) => state.cart);
-
-  const { images, price, title, description, category } = product || {};
+  console.log(selectedProduct);
+  const { images, price, title, description, category } = selectedProduct || {};
 
   const cartItem = cart.items.find((item) => item.id === id);
 

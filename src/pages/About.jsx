@@ -4,24 +4,22 @@ import { FaUsers, FaShippingFast, FaHandshake, FaAward } from "react-icons/fa";
 
 export default function AboutPage() {
   return (
-    <div className="font-secondary">
+    <div className="font-[DM_Sans,sans-serif]">
       {/* Hero Section */}
       <section
         style={{ backgroundImage: "url('/shirt.jpg')" }}
         className="relative flex flex-col items-center justify-center 
                    bg-no-repeat bg-center bg-cover 
-                   py-20 md:py-24 overflow-hidden"
+                   py-16 md:py-20 overflow-hidden"
       >
         <div className="absolute inset-0 bg-black/60"></div>
-
-        <div className="relative content-spacing text-center z-10 max-w-4xl mx-auto">
-          <p className="text-sm text-light mb-4">#About NeoCart</p>
-          <HeadingTitle>
-            Redefining Online Shopping <br /> With Style & Trust
+        <div className="relative content-spacing z-10 max-w-4xl mx-auto">
+          <p className="text-sm text-light mb-4 font-medium">#About NeoCart</p>
+          <HeadingTitle className="!text-white">
+            Discover Style, Shop with Confidence
           </HeadingTitle>
-          <HeadingSubtitle>
-            We're here to make your shopping experience effortless, inspiring,
-            and unforgettable
+          <HeadingSubtitle className="!text-light-gray">
+            Your one-stop destination for curated fashion and seamless shopping
           </HeadingSubtitle>
         </div>
       </section>
@@ -30,22 +28,31 @@ export default function AboutPage() {
       <section className="bg-light py-16 md:py-20">
         <div className="content-spacing grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="order-2 md:order-1">
-            <p className="text-sm text-dark-gray mb-2">#Our Mission</p>
+            <p className="text-sm text-dark font-medium mb-2">#Our Mission</p>
             <HeadingTitle color="!text-dark">
-              Shopping Should Be Effortless & Inspiring
+              Curated Style, Delivered Simply
             </HeadingTitle>
-            <p>
-              At NeoCart, we believe in bringing you products that fit your
-              lifestyle with ease. From trending fashion to timeless classics,
-              every item is carefully curated to match your style.
+            <p className="text-dark text-base leading-relaxed mt-2">
+              At NeoCart, we make shopping effortless by curating products that
+              match your unique style, from trendy fashion to timeless
+              essentials.
             </p>
-            <Button className="mt-6">Explore Products</Button>
+            <Button
+              className="mt-6"
+              size="lg"
+              onClick={() => (window.location.href = "/products")}
+            >
+              Explore Products
+            </Button>
           </div>
           <div className="order-1 md:order-2">
             <img
               src="/modern-shopping-experience.png"
               alt="Our mission"
               className="rounded-2xl shadow-xl w-full h-[300px] md:h-[400px] object-cover"
+              onError={(e) => {
+                e.target.src = "logo.png";
+              }}
             />
           </div>
         </div>
@@ -54,12 +61,12 @@ export default function AboutPage() {
       {/* Values Section */}
       <section className="bg-light-gray py-16 md:py-20">
         <div className="content-spacing text-center">
-          <p className="text-sm text-dark-gray mb-2">#What Drives Us</p>
+          <p className="text-sm text-dark font-medium mb-2">#What Drives Us</p>
           <HeadingTitle color="!text-dark">
-            More Than Products — <br /> We Deliver Excellence
+            Excellence in Every Detail
           </HeadingTitle>
           <HeadingSubtitle>
-            Trust, speed, and style are at the heart of everything we do
+            Quality, trust, and style define our commitment to you
           </HeadingSubtitle>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
@@ -70,9 +77,9 @@ export default function AboutPage() {
               <h3 className="text-lg font-bold text-dark mb-3">
                 Customer First
               </h3>
-              <p className="text-dark-gray text-sm leading-relaxed">
-                Every decision revolves around making your experience smooth and
-                delightful
+              <p className="text-dark text-base leading-relaxed">
+                Your satisfaction is our priority, with seamless shopping and
+                dedicated support.
               </p>
             </div>
 
@@ -83,9 +90,8 @@ export default function AboutPage() {
               <h3 className="text-lg font-bold text-dark mb-3">
                 Fast Delivery
               </h3>
-              <p className="text-dark-gray text-sm leading-relaxed">
-                Quick shipping with real-time tracking and safe packaging
-                guaranteed
+              <p className="text-dark text-base leading-relaxed">
+                Swift shipping with real-time tracking and secure packaging.
               </p>
             </div>
 
@@ -96,9 +102,8 @@ export default function AboutPage() {
               <h3 className="text-lg font-bold text-dark mb-3">
                 Trusted Service
               </h3>
-              <p className="text-dark-gray text-sm leading-relaxed">
-                Secure payments and easy returns make shopping with us
-                worry-free
+              <p className="text-dark text-base leading-relaxed">
+                Shop worry-free with secure payments and hassle-free returns.
               </p>
             </div>
 
@@ -109,8 +114,9 @@ export default function AboutPage() {
               <h3 className="text-lg font-bold text-dark mb-3">
                 Quality Promise
               </h3>
-              <p className="text-dark-gray text-sm leading-relaxed">
-                Every product is carefully selected to meet our high standards
+              <p className="text-dark text-base leading-relaxed">
+                Every product meets our rigorous standards for quality and
+                style.
               </p>
             </div>
           </div>
@@ -125,31 +131,32 @@ export default function AboutPage() {
               src="/team-collaboration-workspace.png"
               alt="Our story"
               className="rounded-2xl shadow-xl w-full h-[300px] md:h-[400px] object-cover"
+              onError={(e) => {
+                e.target.src = "logo.png";
+              }}
             />
           </div>
           <div>
-            <p className="text-sm text-dark-gray mb-2">#Our Story</p>
+            <p className="text-sm text-dark font-medium mb-2">#Our Story</p>
             <HeadingTitle color="!text-dark">
-              Built By Shoppers, <br /> For Shoppers
+              Crafted for Shoppers, by Shoppers
             </HeadingTitle>
             <HeadingSubtitle>
-              NeoCart started with a simple idea: online shopping should be as
-              enjoyable as walking through your favorite store. We've built a
-              platform that combines the convenience of e-commerce with the
-              personal touch of boutique shopping.
+              NeoCart blends the ease of online shopping with the charm of a
+              boutique experience, offering curated style for everyone.
             </HeadingSubtitle>
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-6 mt-6 justify-center md:justify-start">
               <div className="text-center">
                 <p className="text-3xl font-bold text-dark">50K+</p>
-                <p className="text-sm text-dark-gray mt-1">Happy Customers</p>
+                <p className="text-sm text-dark mt-1">Happy Customers</p>
               </div>
               <div className="text-center">
                 <p className="text-3xl font-bold text-dark">10K+</p>
-                <p className="text-sm text-dark-gray mt-1">Products</p>
+                <p className="text-sm text-dark mt-1">Products</p>
               </div>
               <div className="text-center">
                 <p className="text-3xl font-bold text-dark">99%</p>
-                <p className="text-sm text-dark-gray mt-1">Satisfaction</p>
+                <p className="text-sm text-dark mt-1">Satisfaction</p>
               </div>
             </div>
           </div>
@@ -159,12 +166,12 @@ export default function AboutPage() {
       {/* Team Section */}
       <section className="bg-light-gray py-16 md:py-20">
         <div className="content-spacing text-center">
-          <p className="text-sm text-dark-gray mb-2">#Meet The Team</p>
+          <p className="text-sm text-dark font-medium mb-2">#Our Team</p>
           <HeadingTitle color="!text-dark">
-            The People Behind <br /> Your Shopping Experience
+            Meet the Faces Behind NeoCart
           </HeadingTitle>
           <HeadingSubtitle>
-            A passionate team dedicated to bringing you the best
+            A dedicated team passionate about your shopping experience
           </HeadingSubtitle>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 max-w-5xl mx-auto">
@@ -193,12 +200,15 @@ export default function AboutPage() {
                   src={`/.jpg?height=300&width=300&query=${member.img}`}
                   alt={member.name}
                   className="w-full h-64 object-cover"
+                  onError={(e) => {
+                    e.target.src = "logo.png";
+                  }}
                 />
                 <div className="p-6">
                   <h3 className="text-lg font-bold text-dark mb-1">
                     {member.name}
                   </h3>
-                  <p className="text-sm text-dark-gray">{member.role}</p>
+                  <p className="text-base text-dark">{member.role}</p>
                 </div>
               </div>
             ))}
@@ -209,16 +219,20 @@ export default function AboutPage() {
       {/* Call To Action */}
       <section className="bg-light py-16 md:py-20">
         <div className="content-spacing text-center max-w-3xl mx-auto">
-          <p className="text-sm text-dark-gray mb-2">#Join Us</p>
+          <p className="text-sm text-dark font-medium mb-2">#Join Us</p>
           <HeadingTitle color="!text-dark">
-            Ready to Experience <br /> The NeoCart Difference?
+            Experience Shopping Redefined
           </HeadingTitle>
           <HeadingSubtitle>
-            Join thousands of happy customers who trust us for their shopping
-            needs
+            Join our community of style enthusiasts and shop with confidence
           </HeadingSubtitle>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <Button size="lg">Start Shopping</Button>
+            <Button
+              size="lg"
+              onClick={() => (window.location.href = "/products")}
+            >
+              Start Shopping
+            </Button>
             <Button
               size="lg"
               variant="outline"

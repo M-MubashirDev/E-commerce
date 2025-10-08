@@ -5,7 +5,7 @@ export default function AvatarButton({ user, onLogout, onLogin }) {
   if (!user) {
     return <Button onClick={onLogin}>Sign In</Button>;
   }
-
+  console.log(user.avatar);
   return (
     <Menu
       transitionProps={{ transition: "pop" }}

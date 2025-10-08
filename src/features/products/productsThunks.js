@@ -1,27 +1,26 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getProduct, getProducts } from "./apiProduct";
+import { getProducts, getProduct } from "./apiProduct";
 
+// Fetch paginated products
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
-  async (_, { rejectWithValue }) => {
+  async ({ limit = 14, offset = 0 }, { rejectWithValue }) => {
     try {
-      const data = await getProducts();
-      return data;
+      return await getProducts({ limit, offset });
     } catch (error) {
-      const backendMessage = error.response?.data?.message;
-      return rejectWithValue(backendMessage || error.message);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
+// Fetch single product
 export const fetchProduct = createAsyncThunk(
   "products/fetchProduct",
   async (id, { rejectWithValue }) => {
     try {
-      const data = await getProduct(id);
-      return data;
+      return await getProduct(id);
     } catch (error) {
-      const backendMessage = error.response?.data?.message;
-      return rejectWithValue(backendMessage || error.message);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
