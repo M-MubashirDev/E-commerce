@@ -1,9 +1,19 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider, Text, Title, Paper, Group } from "@mantine/core";
 import LocationMapModal from "../components/MapModel";
+import { setDetails, setLocation } from "../features/location/locationSlice";
 
 export default function OrderSummary() {
   const { cart } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+
+  function handleLocationSave(data, close) {
+    if (!close) {
+      dispatch(setLocation(data));
+    } else {
+      dispatch(setDetails(data));
+    }
+  }
 
   const formatPrice = (price) =>
     new Intl.NumberFormat("en-US", {
@@ -134,7 +144,7 @@ export default function OrderSummary() {
           </Button>
         </div>
       </Paper>
-      <LocationMapModal />
+      <LocationMapModal onSave={handleLocationSave} />
     </section>
   );
 }

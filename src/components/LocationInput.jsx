@@ -1,36 +1,37 @@
-import { Autocomplete } from "@mantine/core";
-import { usePlaceAutocomplete } from "../hooks/usePlaceAutocomplete";
+import { useState, useRef } from "react";
+import { Autocomplete } from "@react-google-maps/api";
+import { TextInput } from "@mantine/core";
 
 const LocationInput = ({ value, onChange, onPlaceSelect }) => {
-  const suggestions = usePlaceAutocomplete(value);
-  console.log(suggestions);
-  const handleOptionSubmit = (val) => {
-    const selectedSuggestion = suggestions.find((s) => s.value === val);
-    if (selectedSuggestion) {
-      const placeService = new window.google.maps.places.PlacesService(
-        document.createElement("div")
-      );
-      placeService.getDetails(
-        { placeId: selectedSuggestion.placeId },
-        (place, status) => {
-          if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            onPlaceSelect(place);
-          }
-        }
-      );
+  const [autocomplete, setAutocomplete] = useState(null);
+  const inputRef = useRef(null);
+
+  const handleLoad = (autocompleteInstance) => {
+    setAutocomplete(autocompleteInstance);
+  };
+
+  const handlePlaceChanged = () => {
+    if (!autocomplete) return;
+
+    const place = autocomplete.getPlace();
+    if (place.geometry) {
+      onChange(place.formatted_address || "");
+      onPlaceSelect(place);
     }
   };
 
   return (
-    <Autocomplete
-      label="Search Address"
-      value={value}
-      onChange={onChange}
-      onOptionSubmit={handleOptionSubmit}
-      placeholder="Enter your address"
-      data={suggestions.map((s) => s.value)}
-      nothingFound="No addresses found"
-    />
+    <div className="mb-3">
+      <Autocomplete onLoad={handleLoad} onPlaceChanged={handlePlaceChanged}>
+        <TextInput
+          ref={inputRef}
+          label="Search Address"
+          placeholder="Enter your address"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </Autocomplete>
+    </div>
   );
 };
 

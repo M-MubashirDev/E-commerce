@@ -5,7 +5,8 @@ import MapComponent from "./MapComp";
 import LocationInput from "./LocationInput";
 import LocationDetails from "./LocationDetail";
 import { useGeolocation } from "../hooks/useGeolocation";
-
+// import setAddressUtil from "../utilities/setAddress";
+const libraries = ["places"];
 const LocationMapModal = ({ opened = true, onSave, onClose }) => {
   const [address, setAddress] = useState("");
   const [lat, setLat] = useState(0);
@@ -17,6 +18,13 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
     if (position.lat && position.lng && !lat && !lng) {
       setLat(position.lat);
       setLng(position.lng);
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode(
+        { location: { lat: position.lat, lng: position.lng } },
+        (results) => {
+          if (results[0]) setAddress(results[0].formatted_address);
+        }
+      );
     }
   }, [position, lat, lng]);
 
@@ -36,7 +44,6 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
     });
   };
 
-  // we are setting the data after selection
   const handlePlaceSelect = (place) => {
     if (place.geometry) {
       const newLat = place.geometry.location.lat();
@@ -48,15 +55,9 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
     }
   };
 
-  const handleSave = () => {
-    if (address && lat && lng) {
-      onSave({ address, lat, lng });
-    }
-  };
-
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
+    libraries,
   });
 
   return (
@@ -84,7 +85,12 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
             onMapLoad={onMapLoad}
             onMarkerDragEnd={onMarkerDragEnd}
           />
-          <LocationDetails lat={lat} lng={lng} onSave={handleSave} />
+          <LocationDetails
+            address={address}
+            lat={lat}
+            lng={lng}
+            onSave={onSave}
+          />
         </>
       ) : (
         <div className="h-96 flex items-center justify-center bg-gray-100 rounded-lg">
