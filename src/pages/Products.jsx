@@ -30,7 +30,7 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [sortBy, setSortBy] = useState("name");
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasUserInteracted, setHasUserInteracted] = useState(false); // Track user interaction
   const itemsPerPage = 14;

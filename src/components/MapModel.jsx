@@ -5,43 +5,78 @@ import MapComponent from "./MapComp";
 import LocationInput from "./LocationInput";
 import LocationDetails from "./LocationDetail";
 import { useGeolocation } from "../hooks/useGeolocation";
-// import setAddressUtil from "../utilities/setAddress";
+import { useSelector } from "react-redux";
+
 const libraries = ["places"];
+
 const LocationMapModal = ({ opened = true, onSave, onClose }) => {
+  const { location } = useSelector((state) => state.location);
+
   const [address, setAddress] = useState("");
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
   const [map, setMap] = useState(null);
   const { position } = useGeolocation();
 
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
+
+  // ✅ Utility function using new API
+  const getAddressFromCoords = async (lat, lng) => {
+    const { Geocoder } = await window.google.maps.importLibrary("geocoding");
+    const geocoder = new Geocoder();
+
+    return new Promise((resolve, reject) => {
+      geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+        if (status === "OK" && results[0])
+          resolve(results[0].formatted_address);
+        else reject(status);
+      });
+    });
+  };
+
   useEffect(() => {
-    if (position.lat && position.lng && !lat && !lng) {
-      setLat(position.lat);
-      setLng(position.lng);
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode(
-        { location: { lat: position.lat, lng: position.lng } },
-        (results) => {
-          if (results[0]) setAddress(results[0].formatted_address);
+    if (
+      isLoaded &&
+      ((location.lat && location.lng) || (position.lat && position.lng)) &&
+      !lat &&
+      !lng
+    ) {
+      const currentLat = position.lat || location.lat;
+      const currentLng = position.lng || location.lng;
+
+      (async () => {
+        try {
+          setLat(currentLat);
+          setLng(currentLng);
+          const addr = await getAddressFromCoords(currentLat, currentLng);
+          setAddress(addr);
+        } catch (err) {
+          console.error("Geocoding failed:", err);
         }
-      );
+      })();
     }
-  }, [position, lat, lng]);
+  }, [isLoaded, position, lat, lng, location]);
 
   const onMapLoad = (mapInstance) => {
     setMap(mapInstance);
     if (lat && lng) mapInstance.panTo({ lat, lng });
   };
 
-  const onMarkerDragEnd = (event) => {
+  const onMarkerDragEnd = async (event) => {
     const newLat = event.latLng.lat();
     const newLng = event.latLng.lng();
     setLat(newLat);
     setLng(newLng);
-    const geocoder = new window.google.maps.Geocoder();
-    geocoder.geocode({ location: { lat: newLat, lng: newLng } }, (results) => {
-      if (results[0]) setAddress(results[0].formatted_address);
-    });
+
+    try {
+      const addr = await getAddressFromCoords(newLat, newLng);
+      setAddress(addr);
+    } catch (err) {
+      console.error("Failed to update address:", err);
+    }
   };
 
   const handlePlaceSelect = (place) => {
@@ -55,11 +90,6 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
     }
   };
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
   return (
     <Modal
       opened={opened}
@@ -70,6 +100,7 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
       centered
       overlayProps={{ blur: 2 }}
       closeOnClickOutside={false}
+      withCloseButton={false}
       closeOnEscape={false}
     >
       {isLoaded ? (

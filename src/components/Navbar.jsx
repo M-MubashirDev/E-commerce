@@ -38,7 +38,7 @@ export default function HeaderNav() {
 
   return (
     <header
-      className={`sticky h-fit px-6 z-50 ${
+      className={`sticky h-fit px-3 z-50 ${
         scrolled ? "bg-transparent top-3" : "bg-light top-0"
       }`}
     >

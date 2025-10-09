@@ -8,6 +8,7 @@ import {
 } from "../components/Form";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authThunks";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -24,10 +25,10 @@ export default function Login() {
       await dispatch(
         loginUser({ email: data.email, password: data.password })
       ).unwrap();
-
       fromCheckout ? navigate("/cart") : navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
+      toast.error(error);
     }
   };
 

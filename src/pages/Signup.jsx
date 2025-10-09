@@ -9,18 +9,14 @@ import {
   FileInputField,
   SubmitButton,
 } from "../components/Form";
-import {
-  signupUser,
-  uploadFile,
-  // checkEmailAvailability,
-} from "../features/auth/authThunks";
+import { signupUser, uploadFile } from "../features/auth/authThunks";
 import toast from "react-hot-toast";
 
 export default function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
   const fromCheckout = location.state;
 
   const methods = useForm({
@@ -70,10 +66,7 @@ export default function Signup() {
       toast.success("Account created successfully!");
       navigate(fromCheckout ? "/ordersummary" : "/");
     } catch (error) {
-      methods.setError("root", {
-        message: error || "Signup failed. Please try again.",
-      });
-      toast.error(error || "Signup failed. Please try again.");
+      toast.error(error);
     }
   };
 
@@ -87,11 +80,11 @@ export default function Signup() {
           <h1 className="text-2xl font-bold text-center text-black mb-4">
             Sign Up
           </h1>
-          {(methods.formState.errors.root || error) && (
+          {/* {(methods.formState.errors.root || error) && (
             <p className="text-red-400 text-sm text-center mb-3">
               {methods.formState.errors.root?.message || error}
             </p>
-          )}
+          )} */}
           <TextInputField
             name="name"
             label="Name"
@@ -120,8 +113,13 @@ export default function Signup() {
             rules={{
               required: "Password is required",
               minLength: { value: 6, message: "At least 6 characters" },
+              pattern: {
+                value: /^[A-Za-z0-9]{6,}$/,
+                message: "Password can only contain letters and numbers",
+              },
             }}
           />
+
           <PasswordInputField
             name="confirmPassword"
             label="Confirm Password"
@@ -134,7 +132,7 @@ export default function Signup() {
           />
           <FileInputField
             name="avatar"
-            label="Avatar (Optional)"
+            label="Avatar"
             placeholder="Upload an image"
             rules={{
               validate: (value) =>
@@ -143,11 +141,7 @@ export default function Signup() {
                 "Please upload a valid image file",
             }}
           />
-          <CheckboxField
-            name="terms"
-            label="I accept the terms & conditions"
-            rules={{ required: "You must accept the terms" }}
-          />
+          <CheckboxField name="terms" label="remember me" />
           <SubmitButton loading={loading} disabled={loading}>
             sign up
           </SubmitButton>

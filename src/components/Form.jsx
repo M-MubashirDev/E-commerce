@@ -6,6 +6,7 @@ import {
   Button,
   FileInput,
 } from "@mantine/core";
+import { IoIosCloudUpload } from "react-icons/io";
 
 // Text Input Field with validation
 export function TextInputField({ name, label, placeholder, rules = {} }) {
@@ -76,6 +77,7 @@ export function FileInputField({ name, label, placeholder, rules = {} }) {
   return (
     <>
       <FileInput
+        leftSection={<IoIosCloudUpload />}
         label={label}
         placeholder={placeholder}
         radius="md"

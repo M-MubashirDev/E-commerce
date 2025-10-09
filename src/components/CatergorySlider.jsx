@@ -19,7 +19,7 @@ export default function ExploreCategories() {
   return (
     <section
       id="exploreCategories"
-      className="relative   max-w-[calc(100vw-48px)]  content-spacing   mx-auto bg-light  "
+      className="relative   px-6  mx-auto  bg-lights "
     >
       {loading && (
         <div className="text-center text-gray-300 rounded-md font-medium text-lg py-4 bg-gray-800 border-l-4 border-blue-500 shadow-md">

@@ -52,7 +52,7 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   }
 
   return (
-    <section className="relative content-spacing    ">
+    <section className="relative content-spacing  bg-red-200   ">
       <div className="flex items-center flex-col-reverse gap-5 sm:flex-row   justify-between sm:gap-2 mb-6">
         <HeaderButton
           title={`Best in ${title}`}

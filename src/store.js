@@ -7,18 +7,22 @@ import productReducer from "./features/products/productSlice";
 import locationReducer from "./features/location/locationSlice";
 import cartReducer from "./features/cart/cartSlice";
 
-// Config for auth
 const authPersistConfig = {
   key: "auth",
   storage,
   whitelist: ["accessToken", "refreshToken", "user"],
 };
 
-// Config for cart
 const cartPersistConfig = {
   key: "cart",
   storage,
-  whitelist: ["cart"], // persist entire cart object
+  whitelist: ["cart"],
+};
+
+const loactionPersistConfig = {
+  key: "location",
+  storage,
+  whitelist: ["location", "details"],
 };
 
 export const store = configureStore({
@@ -26,7 +30,7 @@ export const store = configureStore({
     auth: persistReducer(authPersistConfig, authReducer),
     categories: categoriesReducer,
     products: productReducer,
-    location: locationReducer,
+    location: persistReducer(loactionPersistConfig, locationReducer),
     cart: persistReducer(cartPersistConfig, cartReducer),
   },
   middleware: (getDefaultMiddleware) =>

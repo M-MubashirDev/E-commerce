@@ -45,6 +45,7 @@ function ProductPagination({ currentPage, totalPages, setCurrentPage }) {
           color={currentPage === value ? "dark" : "gray"}
           onClick={() => setCurrentPage(value)} // FIXED
           radius="md"
+          className="sm:flex !hidden"
         >
           {value}
         </Button>

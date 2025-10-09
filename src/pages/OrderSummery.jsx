@@ -1,17 +1,42 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Divider, Text, Title, Paper, Group } from "@mantine/core";
+import { Button, Divider, Text, Title, Group, Card } from "@mantine/core";
 import LocationMapModal from "../components/MapModel";
 import { setDetails, setLocation } from "../features/location/locationSlice";
+import { useEffect, useState } from "react";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 export default function OrderSummary() {
+  const [opened, setOpened] = useState(false);
   const { cart } = useSelector((state) => state.cart);
+  const { details, location } = useSelector((state) => state.location);
   const dispatch = useDispatch();
 
-  function handleLocationSave(data, close) {
-    if (!close) {
-      dispatch(setLocation(data));
-    } else {
+  // 🧠 Keep modal open if location/details are incomplete
+  useEffect(() => {
+    if (
+      !location.address ||
+      !details.houseNumber ||
+      !details.streetDetails ||
+      !details.landmark
+    ) {
+      setOpened(true);
+    }
+  }, [location, details]);
+
+  // 🧭 Handle saving data from the modal
+  function handleLocationSave(data, address) {
+    const isValid =
+      address &&
+      data.houseNumber.trim() &&
+      data.streetDetails.trim() &&
+      data.landmark.trim();
+
+    if (isValid) {
       dispatch(setDetails(data));
+      dispatch(setLocation(address));
+      setOpened(false);
+    } else {
+      alert("Please fill all fields and select a location before saving.");
     }
   }
 
@@ -22,13 +47,8 @@ export default function OrderSummary() {
     }).format(price);
 
   return (
-    <section className="section-spacing content-spacing bg-light-gray flex items-center justify-center min-h-screen">
-      <Paper
-        shadow="lg"
-        radius="lg"
-        className="w-full max-w-4xl bg-light transition-hover hover:shadow-xl"
-        withBorder
-      >
+    <section className="section-spacing  bg-light-gray flex items-center justify-center min-h-screen">
+      <div className="w-full !max-w-4xl rounded-lg shadow-md bg-light content-spacing transition-hover hover:shadow-xl">
         {/* Page Title */}
         <div className="text-center pt-6 sm:pt-8 md:pt-10 px-4 sm:px-6 md:px-8">
           <Group justify="center" align="center" mb="sm">
@@ -44,7 +64,7 @@ export default function OrderSummary() {
           </Text>
         </div>
 
-        {/* Items */}
+        {/* Cart Items */}
         <div className="px-4 sm:px-6 md:px-8 py-6 space-y-4 sm:space-y-6">
           {cart.items.length === 0 ? (
             <Text c="textGray" size="md" ta="center" my="lg">
@@ -88,6 +108,62 @@ export default function OrderSummary() {
               </div>
             ))
           )}
+        </div>
+
+        {/* Location & Details */}
+        <div className="px-4 sm:px-6 md:px-8 pb-6 sm:pb-8">
+          <Divider my="md" color="gray.0" />
+          <Card
+            withBorder
+            radius="md"
+            shadow="sm"
+            className="bg-light-gray/40 p-4 sm:p-5"
+          >
+            <Group justify="space-between" align="flex-start">
+              <div>
+                <Group spacing="xs" align="center" mb={4}>
+                  <FaMapMarkerAlt className="text-blue-600" size={18} />
+                  <Text fw={600} size="sm" c="dark" className="sm:text-base">
+                    Delivery Information
+                  </Text>
+                </Group>
+
+                {location?.address ? (
+                  <div className="space-y-1">
+                    <Text size="sm" c="dark">
+                      <strong>Address:</strong> {location.address}
+                    </Text>
+                    <Text size="sm" c="dark">
+                      <strong>House No:</strong> {details.houseNumber}
+                    </Text>
+                    <Text size="sm" c="dark">
+                      <strong>Street:</strong> {details.streetDetails}
+                    </Text>
+                    <Text size="sm" c="dark">
+                      <strong>Landmark:</strong> {details.landmark}
+                    </Text>
+                    <Text size="xs" c="textGray">
+                      Lat: {location.lat?.toFixed(4)} | Lng:{" "}
+                      {location.lng?.toFixed(4)}
+                    </Text>
+                  </div>
+                ) : (
+                  <Text size="sm" c="textGray">
+                    No delivery location or details added
+                  </Text>
+                )}
+              </div>
+
+              <Button
+                size="xs"
+                variant="light"
+                radius="md"
+                onClick={() => setOpened(true)}
+              >
+                {location?.address ? "Change" : "Add"} Details
+              </Button>
+            </Group>
+          </Card>
         </div>
 
         {/* Totals */}
@@ -137,14 +213,22 @@ export default function OrderSummary() {
             radius="md"
             fullWidth
             className="transition-hover hover:bg-dark-gray sm:size-lg"
-            disabled={cart.items.length === 0}
+            disabled={
+              cart.items.length === 0 ||
+              !location.address ||
+              !details.houseNumber ||
+              !details.streetDetails ||
+              !details.landmark
+            }
             aria-label="Confirm your order"
           >
             Confirm Order
           </Button>
         </div>
-      </Paper>
-      <LocationMapModal onSave={handleLocationSave} />
+      </div>
+
+      {/* Location Modal */}
+      <LocationMapModal opened={opened} onSave={handleLocationSave} />
     </section>
   );
 }

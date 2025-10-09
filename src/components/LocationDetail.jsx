@@ -4,19 +4,15 @@ import { useForm, FormProvider } from "react-hook-form";
 import { TextInputField } from "./Form";
 
 const LocationDetails = ({ lat, lng, address, onSave }) => {
-  const { location, details } = useSelector((state) => state.location);
+  const { details } = useSelector((state) => state.location);
   const isShow = lat && lng && address;
   const methods = useForm({
     defaultValues: {
-      houseNumber: "",
-      streetDetails: "",
-      landmark: "",
-      lat,
-      lng,
-      address,
+      houseNumber: details.houseNumber || "",
+      streetDetails: details.streetDetails || "",
+      landmark: details.landmark || "",
     },
   });
-
   const handleSubmit = (data) => {
     onSave(data, {
       lat,

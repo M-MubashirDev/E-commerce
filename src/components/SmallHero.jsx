@@ -6,7 +6,7 @@ export default function SmallHero() {
       style={{ backgroundImage: "url('/shirt.jpg')" }}
       className="relative flex flex-col md:flex-row items-center justify-between 
                  bg-no-repeat bg-center bg-cover 
-                 py-10 md:h-[250px] container mx-auto  overflow-hidden 
+                 py-10 md:h-[250px]   overflow-hidden 
                           "
     >
       {/* Overlay layer */}
