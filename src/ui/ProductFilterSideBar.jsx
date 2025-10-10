@@ -7,7 +7,7 @@ import {
   Text,
   Stack,
 } from "@mantine/core";
-import { FiFilter, FiX, FiSearch } from "react-icons/fi";
+import { FiFilter, FiX, FiSearch, FiSliders } from "react-icons/fi";
 
 function ProductFilterSideBar({
   showFilters,
@@ -22,6 +22,7 @@ function ProductFilterSideBar({
   maxPrice,
   sortBy,
   setSortBy,
+  setShowFilters,
 }) {
   const isFilterCLoseShow =
     sortBy !== "name" ||
@@ -33,34 +34,36 @@ function ProductFilterSideBar({
       : false;
 
   return (
-    <div
-      className={`${
-        showFilters ? "w-full md:w-80 md:block" : "hidden"
-      }  transition-all  min-h-full duration-300 `}
-    >
+    <div className={`transition-all  min-h-full duration-300 `}>
       <div className="p-6 !rounded-xl  shadow-lg !bg-light backdrop-blur-lg">
-        <Group justify="space-between" mb="lg">
+        <Group justify="space-between" className="!min-w-[20rem]">
           <Group>
             <FiFilter size={20} className="text-gray-900" />
             <Text fw={600} size="lg" className="text-gray-900">
               Filters
             </Text>
           </Group>
+
           <Button
-            variant=""
-            size="xs"
-            onClick={clearFilters}
-            className={isFilterCLoseShow ? "!flex" : "!hidden"}
-            leftSection={<FiX size={14} />}
+            color="dark"
+            leftSection={<FiSliders size={16} />}
+            onClick={() => setShowFilters(!showFilters)}
+            radius="md"
+            className="md:hidden"
           >
-            Clear All
+            {showFilters ? "Hide" : "Show"} Filters
           </Button>
         </Group>
 
-        <Stack gap="xl">
+        <Stack
+          gap="md"
+          className={`${
+            showFilters ? "!w-full md:!w-80 md:!flex " : "!hidden"
+          } !mt-5 `}
+        >
           {/* Search */}
           <div>
-            <Text size="sm" fw={500} mb="xs" className="text-gray-900">
+            <Text size="sm" fw={500} className="text-gray-900">
               Search Products
             </Text>
             <TextInput
@@ -74,7 +77,7 @@ function ProductFilterSideBar({
 
           {/* Category Filter */}
           <div>
-            <Text size="sm" fw={500} mb="xs" className="text-gray-900">
+            <Text size="sm" fw={500} className="text-gray-900">
               Category
             </Text>
             <Select
@@ -88,7 +91,7 @@ function ProductFilterSideBar({
 
           {/* Price Range */}
           <div>
-            <Text size="sm" fw={500} mb="xs" className="text-gray-900">
+            <Text size="sm" fw={500} className="text-gray-900">
               Price Range: ${priceRange[0]} - ${priceRange[1]}
             </Text>
             <RangeSlider
@@ -104,7 +107,7 @@ function ProductFilterSideBar({
 
           {/* Sort By */}
           <div>
-            <Text size="sm" fw={500} mb="xs" className="text-gray-900">
+            <Text size="sm" fw={500} className="text-gray-900">
               Sort By
             </Text>
             <Select
@@ -117,6 +120,15 @@ function ProductFilterSideBar({
               ]}
               radius="md"
             />
+            <Button
+              variant=""
+              size="xs"
+              onClick={clearFilters}
+              className={isFilterCLoseShow ? "!flex !mt-4" : "!hidden"}
+              leftSection={<FiX size={14} />}
+            >
+              Clear All
+            </Button>
           </div>
         </Stack>
       </div>

@@ -7,6 +7,7 @@ const initialState = {
   loading: false,
   error: null,
   selectedProduct: null,
+  maxPrice: 5,
 };
 
 const productsSlice = createSlice({
@@ -24,6 +25,7 @@ const productsSlice = createSlice({
         state.loading = false;
         state.items = action.payload.items;
         state.total = action.payload.total;
+        state.maxPrice = action.payload.maxPrice;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;

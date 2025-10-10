@@ -2,17 +2,18 @@ import axios from "axios";
 
 const BASE_URL = "https://api.escuelajs.co/api/v1/products";
 
-// Fetch paginated products
-export const getProducts = async ({ limit = 14, offset = 0 }) => {
-  const { data, headers } = await axios.get(BASE_URL, {
-    params: { limit, offset },
-  });
+export const getProducts = async (params = {}) => {
+  const { data, headers } = await axios.get(BASE_URL, { params });
 
-  // The API doesn’t always return total count, so we fallback to length
   const totalHeader = headers["x-total-count"] || headers["X-Total-Count"];
-  const total = totalHeader ? parseInt(totalHeader, 10) : 200; // approximate
+  const total = totalHeader ? parseInt(totalHeader, 10) : 200;
 
-  return { items: data, total };
+  const maxPrice =
+    data.length > 0
+      ? Math.ceil(Math.max(...data.map((p) => p.price || 0)))
+      : 1000;
+  console.log(maxPrice, "maxPrice from api product");
+  return { items: data, total, maxPrice };
 };
 
 // Fetch single product
