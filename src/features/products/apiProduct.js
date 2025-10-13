@@ -7,12 +7,12 @@ export const getProducts = async (params = {}) => {
 
   const totalHeader = headers["x-total-count"] || headers["X-Total-Count"];
   const total = totalHeader ? parseInt(totalHeader, 10) : 200;
-
+  // const totalData = params;
+  console.log(params);
   const maxPrice =
     data.length > 0
       ? Math.ceil(Math.max(...data.map((p) => p.price || 0)))
       : 1000;
-  console.log(maxPrice, "maxPrice from api product");
   return { items: data, total, maxPrice };
 };
 

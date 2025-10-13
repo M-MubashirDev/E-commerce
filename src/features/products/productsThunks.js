@@ -20,18 +20,32 @@ export const fetchProducts = createAsyncThunk(
       const params = {
         limit,
         offset,
-        ...(searchQuery && { title: searchQuery }), // Filter by title
-        ...(priceMin !== 0 && { price_min: priceMin }), // Filter by price min
-        ...(priceMax !== Infinity && { price_max: priceMax }), // Filter by price max
-        ...(categoryId && { categoryId }), // Filter by category ID
+        ...(searchQuery && { title: searchQuery }),
+        ...(priceMin > 0 && { price_min: priceMin }),
+        ...(priceMax !== Infinity && { price_max: priceMax }),
+        ...(categoryId && { categoryId }),
       };
 
-      // Handle sorting
-      if (sortBy === "price-low") params.sort = "price";
-      else if (sortBy === "price-high") params.sort = "-price";
-
+      // Get products from API
       const response = await getProducts(params);
-      return response;
+
+      // Sort products client-side since API doesn't support sorting
+      let sortedItems = [...response.items];
+
+      if (sortBy === "price-low") {
+        sortedItems.sort((a, b) => (a.price || 0) - (b.price || 0));
+      } else if (sortBy === "price-high") {
+        sortedItems.sort((a, b) => (b.price || 0) - (a.price || 0));
+      } else if (sortBy === "name") {
+        sortedItems.sort((a, b) =>
+          (a.title || "").localeCompare(b.title || "")
+        );
+      }
+
+      return {
+        ...response,
+        items: sortedItems,
+      };
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }

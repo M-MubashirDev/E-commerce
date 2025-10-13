@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import {
   Button,
   Paper,
@@ -21,6 +22,8 @@ import { fetchCategories } from "../features/categories/categoriesThunks";
 
 const Products = () => {
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { items, total, loading, maxPrice } = useSelector(
     (state) => state.products
   );
@@ -30,24 +33,81 @@ const Products = () => {
     loading: catLoading,
   } = useSelector((state) => state.categories);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState([0, maxPrice || 1000]);
-  const [sortBy, setSortBy] = useState("name");
-  const [showFilters, setShowFilters] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 14;
+
+  // Initialize state from URL params
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || ""
+  );
+  const [priceRange, setPriceRange] = useState([
+    parseInt(searchParams.get("minPrice")) || 0,
+    parseInt(searchParams.get("maxPrice")) || maxPrice || 1000,
+  ]);
+  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "name");
+  const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get("page")) || 1
+  );
+
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
   const [debouncedPriceRange] = useDebouncedValue(priceRange, 500);
 
+  // Fetch categories only once on mount
   useEffect(() => {
-    if (maxPrice) {
-      setPriceRange((prev) => [prev[0], maxPrice]);
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  // Initialize category from URL after categories are loaded
+  useEffect(() => {
+    if (!catLoading && categories.length > 0 && !isInitialized) {
+      const categoryParam = searchParams.get("category");
+      if (categoryParam) {
+        dispatch(setCategory(categoryParam));
+      }
+      setIsInitialized(true);
     }
-  }, [maxPrice]);
-  console.log(priceRange[1], maxPrice);
+  }, [catLoading, categories, searchParams, dispatch, isInitialized]);
+
+  // Update price range when maxPrice changes
   useEffect(() => {
-    if (catLoading) return;
+    if (maxPrice && maxPrice > 0) {
+      setPriceRange((prev) => [
+        prev[0],
+        parseInt(searchParams.get("maxPrice")) || maxPrice,
+      ]);
+    }
+  }, [maxPrice, searchParams]);
+
+  // Update URL params whenever filters change
+  const updateURLParams = useCallback(() => {
+    const params = {};
+
+    if (debouncedSearchQuery) params.search = debouncedSearchQuery;
+    if (debouncedPriceRange[0] > 0) params.minPrice = debouncedPriceRange[0];
+    if (debouncedPriceRange[1] < (maxPrice || 1000))
+      params.maxPrice = debouncedPriceRange[1];
+    if (sortBy !== "name") params.sort = sortBy;
+    if (selectedCategory && selectedCategory !== "All")
+      params.category = selectedCategory;
+    if (currentPage > 1) params.page = currentPage;
+
+    setSearchParams(params, { replace: true });
+  }, [
+    debouncedSearchQuery,
+    debouncedPriceRange,
+    sortBy,
+    selectedCategory,
+    currentPage,
+    maxPrice,
+    setSearchParams,
+  ]);
+
+  // Fetch products with proper dependencies
+  useEffect(() => {
+    if (!isInitialized || catLoading) return;
+
     const offset = (currentPage - 1) * itemsPerPage;
     dispatch(
       fetchProducts({
@@ -63,6 +123,9 @@ const Products = () => {
         sortBy,
       })
     );
+
+    // Update URL params after fetch
+    updateURLParams();
   }, [
     dispatch,
     currentPage,
@@ -70,22 +133,23 @@ const Products = () => {
     debouncedPriceRange,
     selectedCategory,
     sortBy,
+    isInitialized,
     catLoading,
     categories,
+    updateURLParams,
   ]);
-
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
 
   const clearFilters = () => {
     setSearchQuery("");
     setPriceRange([0, maxPrice || 1000]);
     setSortBy("name");
     dispatch(setCategory("All"));
+    setCurrentPage(1);
+    setSearchParams({}, { replace: true });
   };
 
-  if (loading && catLoading) {
+  // Show loader only during initial load
+  if (!isInitialized || (loading && items.length === 0)) {
     return (
       <div className="min-h-screen bg-gray-100">
         <Container size="xl" className="content-spacing py-8">
@@ -101,7 +165,6 @@ const Products = () => {
       </div>
     );
   }
-  console.log(maxPrice, "maxPrice");
 
   return (
     <div className="min-h-screen bg-light-gray">
@@ -114,18 +177,34 @@ const Products = () => {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             selectedCategory={selectedCategory}
-            setSelectedCategory={(category) => dispatch(setCategory(category))}
+            setSelectedCategory={(category) => {
+              dispatch(setCategory(category));
+              setCurrentPage(1); // Reset page when category changes
+            }}
             categoryOptions={["All", ...categories.map((c) => c.name)]}
             priceRange={priceRange}
-            setPriceRange={setPriceRange}
-            maxPrice={maxPrice || 1000} // Pass maxPrice from Redux
+            setPriceRange={(range) => {
+              setPriceRange(range);
+              setCurrentPage(1); // Reset page when price changes
+            }}
+            maxPrice={maxPrice || 1000}
             sortBy={sortBy}
-            setSortBy={setSortBy}
+            setSortBy={(sort) => {
+              setSortBy(sort);
+              setCurrentPage(1); // Reset page when sort changes
+            }}
             setShowFilters={setShowFilters}
           />
 
-          <div className="flex-1">
-            {items.length === 0 ? (
+          <div className="flex-1 relative">
+            {/* Overlay loader for subsequent loads */}
+            {loading && items.length > 0 && (
+              <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl">
+                <Loader size="lg" color="dark" />
+              </div>
+            )}
+
+            {items.length === 0 && !loading ? (
               <Paper
                 className="p-12 text-center"
                 style={{

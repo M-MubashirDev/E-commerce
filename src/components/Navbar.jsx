@@ -108,41 +108,49 @@ export default function HeaderNav() {
           padding="md"
           size="sm"
           classNames={{
-            content: "!bg-glass !backdrop-blur-lg !border !border-gray-700",
+            content: "!bg-glass !backdrop-blur-lg",
             header: "!bg-transparent !border-0",
-            close: "!text-gray-300 hover:!bg-dark-secondary rounded-md",
+            close: "hover:!bg-dark-secondary rounded-md",
           }}
           overlayProps={{ backgroundOpacity: 0.4, blur: 6 }}
         >
           <ScrollArea style={{ height: "100%" }}>
-            <Box className="flex flex-col gap-6 py-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className="text-lg font-medium text-gray-light hover:underline flex items-center gap-3 relative"
-                  onClick={() => setOpened(false)}
-                >
-                  <div className="relative">
-                    {link.label}
-                    {link.showCart && cart.itemCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-md">
-                        {cart.itemCount}
-                      </span>
-                    )}
-                  </div>
-                  <span>{link.name}</span>
-                </Link>
-              ))}
-              <AvatarButton
-                user={user}
-                onLogin={() => {
-                  navigate("/login");
-                }}
-                onLogout={() => {
-                  setOpened(false);
-                }}
-              />
+            <Box className="flex flex-col h-full">
+              {/* Logo at top left */}
+              <div className="p-4">
+                <img src="/mainLogo.png" alt="logo" className="w-34" />
+              </div>
+
+              {/* Navigation links and avatar button */}
+              <Box className="flex flex-col gap-6 py-6 px-4">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="text-lg font-medium text-gray-light hover:underline flex items-center gap-3 relative"
+                    onClick={() => setOpened(false)}
+                  >
+                    <div className="relative">
+                      {link.label}
+                      {link.showCart && cart.itemCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-md">
+                          {cart.itemCount}
+                        </span>
+                      )}
+                    </div>
+                    <span>{link.name}</span>
+                  </Link>
+                ))}
+                <AvatarButton
+                  user={user}
+                  onLogin={() => {
+                    navigate("/login");
+                  }}
+                  onLogout={() => {
+                    setOpened(false);
+                  }}
+                />
+              </Box>
             </Box>
           </ScrollArea>
         </Drawer>

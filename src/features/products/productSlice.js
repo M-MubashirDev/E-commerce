@@ -7,7 +7,7 @@ const initialState = {
   loading: false,
   error: null,
   selectedProduct: null,
-  maxPrice: 5,
+  maxPrice: 1000,
 };
 
 const productsSlice = createSlice({
