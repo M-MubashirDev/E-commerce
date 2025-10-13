@@ -26,9 +26,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const { cart } = useSelector((state) => state.cart);
-  const { user, accessToken, refreshToken } = useSelector(
-    (state) => state.auth
-  );
+  const { user } = useSelector((state) => state.auth);
   const cartItems = cart.items;
 
   const formatPrice = (price) =>
@@ -36,10 +34,9 @@ const Cart = () => {
       style: "currency",
       currency: "USD",
     }).format(price);
-
+  // console.log(accessToken, refreshToken);
   function handleProceedCheckOut() {
-    if (!user || !accessToken || !refreshToken)
-      navigate("/login", { state: true });
+    if (!user) navigate("/login", { state: true });
     else navigate("/ordersummery");
   }
 
@@ -86,7 +83,7 @@ const Cart = () => {
         <div className="flex flex-col lg:flex-row gap-8 py-12">
           {/* Cart Items Section */}
           <div className="flex-1 lg:w-2/3">
-            <div className="p-3 border border-medium-gray rounded-[28px]">
+            <div className="p-3 sm:border sm:border-medium-gray rounded-[28px]">
               <div className="flex sm:flex-row flex-col gap-2 justify-between items-center rounded-[12px] border-medium-gray shadow-sm bg-white p-4">
                 <div>
                   <Text fw={700} size="xl" className="!text-dark">
@@ -103,7 +100,7 @@ const Cart = () => {
             </div>
 
             {/* Items */}
-            <div className="mt-4 p-3 border border-medium-gray rounded-[28px] bg-gray-light space-y-4 lg:max-h-[70vh] lg:overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="mt-4 p-3 sm:border sm:border-medium-gray rounded-[28px] bg-gray-light space-y-4 lg:max-h-[70vh] lg:overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {cartItems.map((item) => (
                 <div
                   key={item.id}
@@ -127,7 +124,7 @@ const Cart = () => {
                       </Text>
 
                       {/* Quantity controls */}
-                      <div className="flex items-center gap-3 mt-2">
+                      <div className="flex items-center justify-center sm:justify-start gap-3 mt-2 ">
                         <ItemQuantityButton item={item} />
                       </div>
                     </div>

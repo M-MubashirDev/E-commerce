@@ -30,7 +30,7 @@ export function ProductDetailCarousel({ images, activeIndex, setActiveIndex }) {
     <Carousel
       withIndicators
       getEmblaApi={setEmbla}
-      emblaOptions={{ align: "start" }}
+      emblaOptions={{ align: "start", loop: true, dragFree: false }}
       slideGap="md"
       className="!rounded-lg xl:max-w-[70vh] overflow-hidden"
     >

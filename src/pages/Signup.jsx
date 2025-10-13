@@ -64,7 +64,7 @@ export default function Signup() {
       ).unwrap();
 
       toast.success("Account created successfully!");
-      navigate(fromCheckout ? "/ordersummary" : "/");
+      navigate(fromCheckout ? "/cart" : "/");
     } catch (error) {
       toast.error(error);
     }

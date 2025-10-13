@@ -74,6 +74,7 @@ export default function Login() {
             Don’t have an account?
             <Link
               to="/signup"
+              state={fromCheckout}
               className="text-dark ml-1 font-medium hover:underline"
             >
               Sign up

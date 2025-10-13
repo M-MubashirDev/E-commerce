@@ -59,7 +59,7 @@ function Product() {
       <div className="flex flex-col lg:flex-row gap-8 content-spacing">
         {/* Left side (carousel + thumbnails) */}
         <div className="w-full lg:w-1/2 flex flex-col">
-          <div className="flex justify-center">
+          <div className="flex justify-center ">
             <ProductDetailCarousel
               images={images}
               activeIndex={activeIndex}
