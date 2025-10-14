@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  clearCartReducer,
   getSingleCartItem,
   setCartItemReducer,
   setDescreaseCartItemReducer,
@@ -17,8 +18,9 @@ const cartSlice = createSlice({
     setCartItem: setCartItemReducer,
     setReduceItem: setDescreaseCartItemReducer,
     getSingleCartItem: getSingleCartItem,
+    clearCart: clearCartReducer,
   },
 });
 
-export const { setCartItem, setReduceItem } = cartSlice.actions;
+export const { setCartItem, setReduceItem, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

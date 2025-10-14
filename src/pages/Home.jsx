@@ -12,7 +12,6 @@ function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ✅ FIX: use items instead of products
   const {
     items: products,
     loading,
@@ -23,15 +22,14 @@ function Home() {
   const categories = useSelector((state) => state.categories.categories);
 
   useEffect(() => {
-    dispatch(fetchProducts({ limit: 50, offset: 0 })); // fetch some products for home
+    dispatch(fetchProducts({ limit: 50, offset: 0 }));
   }, [dispatch]);
 
   const topCategories = [
     ...new Set(categories.slice(0, 4)?.map((c) => c.name)),
   ];
-
+  console.log(topCategories);
   let content;
-
   if (category === "All") {
     content = topCategories.map((catName) => {
       const catProducts = products.filter((p) => p.category?.name === catName);

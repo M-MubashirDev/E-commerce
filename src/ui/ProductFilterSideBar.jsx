@@ -3,7 +3,6 @@ import {
   Select,
   RangeSlider,
   Button,
-  Group,
   Text,
   Stack,
 } from "@mantine/core";
@@ -36,13 +35,13 @@ function ProductFilterSideBar({
   return (
     <div className={`transition-all  min-h-full duration-300 `}>
       <div className="p-6 !rounded-xl  shadow-lg !bg-light backdrop-blur-lg">
-        <Group justify="space-between" className="!min-w-[20rem]">
-          <Group>
+        <div className="sm:!min-w-[20rem] gap-2 flex flex-col sm:flex-row  sm:justify-between">
+          <div className="flex items-center gap-1 max-w-fit">
             <FiFilter size={20} className="text-gray-900" />
             <Text fw={600} size="lg" className="text-gray-900">
               Filters
             </Text>
-          </Group>
+          </div>
 
           <Button
             color="dark"
@@ -53,7 +52,7 @@ function ProductFilterSideBar({
           >
             {showFilters ? "Hide" : "Show"} Filters
           </Button>
-        </Group>
+        </div>
 
         <Stack
           gap="md"

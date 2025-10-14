@@ -61,13 +61,6 @@ const Cart = () => {
               <Text className="text-gray-600 mb-6">
                 Add some products to get started with your shopping
               </Text>
-              <Button
-                size="lg"
-                radius="xl"
-                className="bg-dark hover:bg-gray-800 text-white"
-              >
-                Continue Shopping
-              </Button>
             </div>
           </Paper>
         </Container>

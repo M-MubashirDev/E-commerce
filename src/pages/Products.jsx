@@ -220,7 +220,11 @@ const Products = () => {
                 <Text className="text-gray-600 mb-6">
                   Try adjusting your filters or search terms
                 </Text>
-                <Button onClick={clearFilters} variant="outline" color="gray">
+                <Button
+                  onClick={clearFilters}
+                  variant="filled"
+                  className="mt-3"
+                >
                   Clear All Filters
                 </Button>
               </Paper>

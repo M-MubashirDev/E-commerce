@@ -95,7 +95,7 @@ export function FileInputField({ name, label, placeholder, rules = {} }) {
 // Checkbox Field
 export function CheckboxField({ name, label, rules = {} }) {
   const { register } = useFormContext();
-  return <Checkbox label={label} {...register(name, rules)} />;
+  return <Checkbox color="dark" label={label} {...register(name, rules)} />;
 }
 
 // Submit Button

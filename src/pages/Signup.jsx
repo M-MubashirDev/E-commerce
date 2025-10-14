@@ -11,6 +11,7 @@ import {
 } from "../components/Form";
 import { signupUser, uploadFile } from "../features/auth/authThunks";
 import toast from "react-hot-toast";
+import { clearCart } from "../features/cart/cartSlice";
 
 export default function Signup() {
   const dispatch = useDispatch();
@@ -62,7 +63,7 @@ export default function Signup() {
           avatar: avatarUrl,
         })
       ).unwrap();
-
+      dispatch(clearCart());
       toast.success("Account created successfully!");
       navigate(fromCheckout ? "/cart" : "/");
     } catch (error) {

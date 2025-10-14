@@ -11,8 +11,7 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   const carouselRef = useRef(null);
 
   const navigate = useNavigate();
-
-  // Update items per view based on screen size
+  console.log(items);
   useEffect(() => {
     const updateItemsPerView = () => {
       const width = window.innerWidth;

@@ -38,3 +38,15 @@ export function getSingleCartItem(state, action) {
     state.singleCart = existingItem;
   }
 }
+
+export function clearCartReducer(state) {
+  state.cart = {
+    items: [],
+    total: 0,
+    quantity: 0,
+    itemCount: 0,
+    shipping: 0,
+    tax: 0,
+  };
+  state.singleCart = null;
+}

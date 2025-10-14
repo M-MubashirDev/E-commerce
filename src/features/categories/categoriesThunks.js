@@ -6,9 +6,15 @@ export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await getCategories();
+      const allFetchedCategories = await getCategories();
 
-      return Array.from(new Map(data.map((c) => [c.name, c])).values());
+      const uniqueCategories = Array.from(
+        new Map(allFetchedCategories.map((c) => [c.name, c])).values()
+      );
+
+      const limitedCategories = uniqueCategories.slice(0, 12);
+
+      return limitedCategories;
     } catch (error) {
       const backendMessage = error.response?.data?.message;
       return rejectWithValue(backendMessage || error.message);
