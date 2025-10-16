@@ -51,3 +51,19 @@
     font-family: "Inter", sans-serif;
   }
 }
+.textImage {
+  background-image: url("batman.jpg");
+  background-size: cover;
+  background-position: center;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.textImageBlack {
+  background-image: url("batman_2.png");
+  background-size: cover;
+  background-position: center;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
