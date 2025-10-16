@@ -4,68 +4,69 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
-// import { useRef } from "react";
+import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger, TextPlugin, SplitText);
 
 function AboutFeatures() {
+  const container = useRef(null);
+
   const features = [
     {
       image: "deliveryBox.png",
       title: "Fast Delivery",
       description:
         "Same-day delivery in metros. Get your products within 24-48 hours nationwide.",
+      classNamed: "fast",
     },
     {
       image: "pay.png",
       title: "Secure Payments",
       description:
         "Bank-level encryption. Multiple payment options for your convenience.",
+      classNamed: "secure",
     },
     {
       image: "quality.png",
       title: "Premium Quality",
       description:
         "Handpicked products. Every item verified for authenticity and quality.",
+      classNamed: "premium",
     },
   ];
   useGSAP(
     () => {
-      gsap.from(".redefine-text", {
-        y: -100,
-        autoAlpha: 0,
-        ease: "power2.in",
-        duration: 1,
+      gsap.from(".features-text", {
+        y: 100,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".features-text",
+          start: "top 80%",
+          end: "top 50%",
+          scrub: 1,
+        },
       });
-      gsap.from(".style-text", {
-        x: -100,
-        autoAlpha: 0,
-        ease: "power2.in",
-        duration: 1,
-      });
-      gsap.from(".cart-img", {
-        x: "100vw",
-
-        ease: "bounce.out",
-        duration: 2,
-      });
-      document.fonts.ready.then(() => {
-        let split = SplitText.create(".text", {
-          type: "chars, words",
-        });
-        gsap.from(split.chars, {
-          y: 100,
-          autoAlpha: 0,
-          stagger: { amount: 0.5, from: "random", repeat: 0, yoyo: true },
-        });
+      gsap.from(".feature", {
+        x: -50,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".feature",
+          start: "top 80%",
+          end: "top 50%",
+          scrub: 1,
+        },
       });
     },
     { scope: container }
   );
   return (
-    <div className="content-spacing">
+    <div ref={container} className="content-spacing top-div">
       <h1
-        className="font-black text-white    text-center   leading-none tracking-tight mb-4 sm:mb-6 md:mb-8
+        className="font-black features-text text-white text-center leading-none tracking-tight mb-4 sm:mb-6 md:mb-8
                 text-5xl
                 sm:text-6xl 
                 md:text-7xl 
@@ -75,7 +76,7 @@ function AboutFeatures() {
       >
         <span className="textImageBlack">Features</span> That <br /> Matter
       </h1>
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center ">
         <p
           className="font-medium w-[70%] text-white  text-center leading-relaxed
                 text-base
@@ -94,7 +95,10 @@ function AboutFeatures() {
       <div className="flex gap-2 justify-around  mt-20">
         {features.map(({ title, description, image }, ind) => {
           return (
-            <div key={ind} className="flex flex-col  space-y-2 max-w-md">
+            <div
+              key={ind}
+              className={`flex flex-col  space-y-2 max-w-md feature`}
+            >
               <img src={image} alt="" className="w-70 h-40" />
               <h1
                 className="font-semibold my-4 text-white  
