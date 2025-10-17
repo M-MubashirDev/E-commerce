@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import AboutFeatures from "../components/AboutFeatures";
+import TestimonialAbout from "../components/TestimonialAbout";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -78,9 +79,7 @@ function About() {
         <AboutFeatures />
       </section>
       <section className="thirdSection relative z-30 bg-light-gray h-screen rounded-t-[40px]">
-        <div className="p-20">
-          <h2 className="text-6xl font-bold">Third Section</h2>
-        </div>
+        <TestimonialAbout />
       </section>
     </div>
   );
