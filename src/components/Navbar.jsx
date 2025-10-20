@@ -33,7 +33,7 @@ export default function HeaderNav() {
       to: "/cart",
       showCart: true,
     }, // ✅ mark cart
-    { label: <FaInfoCircle size={28} />, name: "About", to: "/about" },
+    { label: <FaInfoCircle size={28} />, name: "neoCart", to: "/about" },
   ];
 
   return (

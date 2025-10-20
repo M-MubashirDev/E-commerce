@@ -44,10 +44,10 @@ function HeroAbout() {
     { scope: container }
   );
   return (
-    <section ref={container} className="min-h-screen bg-light-gray">
-      <div className="grid grid-cols-1 content-spacing md:grid-cols-[1.5fr_1fr] h-[calc(100vh-98px)]">
+    <section ref={container} className="bg-light-gray">
+      <div className="grid grid-cols-1 content-spacing md:grid-cols-[1.5fr_1fr] h-[calc(100vh-98px)] place-content-center">
         <div className="flex items-center justify-center p-6 sm:p-8 md:p-12 lg:p-16 xl:p-20">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl ">
             <h1
               className="font-black   leading-none tracking-tight mb-4 sm:mb-6 md:mb-8
                 text-5xl

@@ -69,8 +69,7 @@ function About() {
   );
 
   return (
-    <div ref={container} style={{ minHeight: "300vh" }}>
-      {" "}
+    <div ref={container}>
       {/* Ensure enough scrollable area */}
       <section className="heroSection relative z-10 h-screen">
         <HeroAbout />
@@ -78,7 +77,8 @@ function About() {
       <section className="secondSection  min-h-screen relative z-20 bg-black h-fit py-12  rounded-t-[40px]">
         <AboutFeatures />
       </section>
-      <section className="thirdSection relative z-30 bg-light-gray h-screen rounded-t-[40px]">
+
+      <section className="thirdSection relative z-30 bg-light-gray py-12 rounded-t-[40px]">
         <TestimonialAbout />
       </section>
     </div>

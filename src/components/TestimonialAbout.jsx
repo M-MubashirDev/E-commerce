@@ -42,15 +42,43 @@ function TestimonialAbout() {
   ];
   useGSAP(
     () => {
-      const cards = gsap.utils.toArray(".testimoninalCard");
+      gsap.matchMedia().add("(min-width: 600px)", () => {
+        const cards = gsap.utils.toArray(".testimoninalCard");
 
-      cards.forEach((card, i) => {
-        const isEven = i % 2 === 0;
-        const yOffset = isEven ? 40 : 0;
-        gsap.to(card, {
-          y: yOffset,
-          duration: 0.8,
-          ease: "power3.out",
+        cards.forEach((card, i) => {
+          const enterX = gsap.utils.random(-200, 200);
+          const enterY = gsap.utils.random(-100, 100);
+
+          // Animation timeline for scroll
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: card,
+              start: "top 80%",
+              end: "bottom 20%",
+              toggleActions: "play reverse play reverse",
+            },
+          });
+
+          // Animate in from random position
+          tl.fromTo(
+            card,
+            {
+              x: enterX,
+              y: enterY,
+              rotation: gsap.utils.random(-10, 10),
+              scale: gsap.utils.random(0.7, 1.2),
+              opacity: 0,
+            },
+            {
+              x: 0,
+              y: i % 2 === 0 ? 40 : 0,
+              rotation: 0,
+              scale: 1,
+              opacity: 1,
+              duration: 1.2,
+              ease: "power3.out",
+            }
+          );
         });
       });
     },
@@ -60,11 +88,11 @@ function TestimonialAbout() {
   return (
     <div
       ref={container}
-      className="flex item flex-col  gap-4 justify-center py-12 content-spacing "
+      className="flex item flex-col  overflow-x-hidden gap-4 justify-center py-12 content-spacing "
     >
-      <div className="flex items-center  w-full justify-evenly">
+      <div className="flex items-center flex-wrap gap-y-12  w-full justify-evenly">
         {testimonials.map(({ name, role, message, image }, ind) => (
-          <div key={name} className="  testimoninalCard">
+          <div key={name} className="testimoninalCard">
             <TestimonialCard
               message={message}
               role={role}

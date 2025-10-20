@@ -78,7 +78,7 @@ function AboutFeatures() {
       </h1>
       <div className="w-full flex justify-center ">
         <p
-          className="font-medium w-[70%] text-white  text-center leading-relaxed
+          className="font-medium sm:w-[70%] text-white  text-center leading-relaxed
                 text-base
                 sm:text-lg
                 md:text-xl
@@ -92,7 +92,7 @@ function AboutFeatures() {
           quality products - all backed by 24/7 support.
         </p>
       </div>
-      <div className="flex gap-2 justify-around  mt-20">
+      <div className="flex gap-2 justify-around flex-col md:flex-row  mt-20">
         {features.map(({ title, description, image }, ind) => {
           return (
             <div
