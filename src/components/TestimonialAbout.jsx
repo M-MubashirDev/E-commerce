@@ -81,6 +81,39 @@ function TestimonialAbout() {
           );
         });
       });
+      gsap.matchMedia().add("(max-width: 599px)", () => {
+        const cards = gsap.utils.toArray(".testimoninalCard");
+
+        cards.forEach((card, i) => {
+          const enterX = gsap.utils.random(-100, 100);
+          const enterY = gsap.utils.random(-50, 50);
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              end: "bottom 15%",
+              toggleActions: "play reverse play reverse",
+            },
+          });
+
+          tl.fromTo(
+            card,
+            {
+              x: enterX,
+              y: enterY,
+              opacity: 0,
+            },
+            {
+              x: 0,
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: "power2.out",
+            }
+          );
+        });
+      });
     },
     { scope: container }
   );
