@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = "https://api.escuelajs.co/api/v1/categories";
+const BASE_URL = "http://localhost:3002/api/product/category/view/";
 
 export const getCategories = async () => {
-  const response = await axios.get(BASE_URL);
-  return response.data;
+  const response = await axios.post(BASE_URL);
+  console.log(response.data);
+  return response.data.result;
 };

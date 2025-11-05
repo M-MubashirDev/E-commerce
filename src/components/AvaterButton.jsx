@@ -1,11 +1,14 @@
 import { Menu, Avatar, Button, Divider } from "@mantine/core";
-import { FaChevronDown, FaSignOutAlt } from "react-icons/fa";
+import { FaChevronDown, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function AvatarButton({ user, onLogout, onLogin }) {
+  const navigate = useNavigate();
+
   if (!user) {
     return <Button onClick={onLogin}>Sign In</Button>;
   }
-  console.log(user.avatar);
+
   return (
     <Menu
       transitionProps={{ transition: "pop" }}
@@ -40,8 +43,11 @@ export default function AvatarButton({ user, onLogout, onLogin }) {
       </Menu.Target>
 
       <Menu.Dropdown>
-        {/* User Info */}
-        <div className="p-3 flex items-center gap-3">
+        {/* User Info - Clickable */}
+        <div
+          className="p-3 flex items-center gap-3 cursor-pointer hover:bg-dark-secondary rounded-md transition-colors"
+          onClick={() => navigate("/profile")}
+        >
           <Avatar src={user?.avatar} radius="xl" size={48} color="white" />
           <div>
             <p className="text-sm font-semibold text-black">{user?.name}</p>
@@ -50,6 +56,14 @@ export default function AvatarButton({ user, onLogout, onLogin }) {
         </div>
 
         <Divider className="border-gray-700" />
+
+        {/* Profile Link */}
+        <Menu.Item
+          leftSection={<FaUser size={14} />}
+          onClick={() => navigate("/profile")}
+        >
+          View Profile
+        </Menu.Item>
 
         {/* Logout */}
         <Menu.Item

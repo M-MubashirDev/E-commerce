@@ -84,7 +84,7 @@ function TestimonialAbout() {
       gsap.matchMedia().add("(max-width: 599px)", () => {
         const cards = gsap.utils.toArray(".testimoninalCard");
 
-        cards.forEach((card, i) => {
+        cards.forEach((card) => {
           const enterX = gsap.utils.random(-100, 100);
           const enterY = gsap.utils.random(-50, 50);
 

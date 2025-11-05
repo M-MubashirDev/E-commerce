@@ -2,7 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import { fetchCategories } from "./categoriesThunks";
 
 const initialState = {
-  categories: [],
+  categories: {
+    count: 0,
+    rows: [],
+  },
   selectedCategory: "All",
   loading: false,
   error: null,

@@ -11,7 +11,7 @@ export default function ExploreCategories() {
   const { categories, loading, error, selectedCategory } = useSelector(
     (state) => state.categories
   );
-
+  console.log(categories, "categories");
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
@@ -33,7 +33,7 @@ export default function ExploreCategories() {
         </div>
       )}
 
-      {!loading && !error && categories.length > 0 && (
+      {!loading && !error && categories.rows.length > 0 && (
         <Box className="py-4  flex justify-center">
           <ScrollArea
             offsetScrollbars
@@ -71,14 +71,14 @@ export default function ExploreCategories() {
                 All
               </Button>
 
-              {categories.map((cat) => (
+              {categories.rows.map((cat) => (
                 <div className="flex flex-col items-center gap-3" key={cat.id}>
                   <Button
                     radius="xl"
                     leftSection={
                       <Avatar
-                        src={cat.image || fallbackImage}
-                        alt={cat.name}
+                        src={cat.icon || fallbackImage}
+                        alt={cat.title}
                         classNames={{
                           root: "!rounded-full  !w-11 !h-11",
                         }}
@@ -90,20 +90,20 @@ export default function ExploreCategories() {
                     onClick={() =>
                       dispatch(
                         setCategory(
-                          selectedCategory === cat.name ? "All" : cat.name
+                          selectedCategory === cat.title ? "All" : cat.title
                         )
                       )
                     }
                     classNames={{
                       root: `transition-hover !cursor-pointer !h-12 !min-w-fit !min-h-fit !font-normal ${
-                        selectedCategory === cat.name
+                        selectedCategory === cat.title
                           ? "!bg-dark !text-white border-2 border-blue-500"
                           : "!text-[#4a5565] !bg-light-gray shadow-sm hover:!text-white hover:!shadow-lg hover:!bg-black"
                       }`,
                     }}
                     // size="md"
                   >
-                    {cat?.name}
+                    {cat?.title}
                   </Button>
                 </div>
               ))}

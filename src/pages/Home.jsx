@@ -26,9 +26,8 @@ function Home() {
   }, [dispatch]);
 
   const topCategories = [
-    ...new Set(categories.slice(0, 4)?.map((c) => c.name)),
+    ...new Set(categories.rows.slice(0, 4)?.map((c) => c.title)),
   ];
-  console.log(topCategories);
   let content;
   if (category === "All") {
     content = topCategories.map((catName) => {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://api.escuelajs.co/api/v1/auth";
+const API_URL = "http://localhost:3002/api/user";
 
 export const loginApi = async (email, password) => {
   const res = await axios.post(`${API_URL}/login`, { email, password });
@@ -13,12 +13,11 @@ export const fetchProfileApi = async (accessToken) => {
   });
   return res.data;
 };
-export const createUser = async ({ name, email, password, avatar }) => {
-  const res = await axios.post(`${API_URL}/users/`, {
+export const createUser = async ({ name, email, password }) => {
+  const res = await axios.post(`${API_URL}/signup`, {
     name,
     email,
     password,
-    avatar,
   });
   return res.data;
 };

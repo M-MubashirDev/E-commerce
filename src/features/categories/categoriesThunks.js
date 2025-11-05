@@ -8,13 +8,13 @@ export const fetchCategories = createAsyncThunk(
     try {
       const allFetchedCategories = await getCategories();
 
-      const uniqueCategories = Array.from(
-        new Map(allFetchedCategories.map((c) => [c.name, c])).values()
-      );
+      // const uniqueCategories = Array.from(
+      //   new Map(allFetchedCategories.map((c) => [c.name, c])).values()
+      // );
 
-      const limitedCategories = uniqueCategories.slice(0, 12);
-
-      return limitedCategories;
+      // const limitedCategories = uniqueCategories.slice(0, 12);
+      console.log(allFetchedCategories, "////////");
+      return allFetchedCategories;
     } catch (error) {
       const backendMessage = error.response?.data?.message;
       return rejectWithValue(backendMessage || error.message);
