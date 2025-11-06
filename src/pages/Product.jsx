@@ -17,7 +17,7 @@ function Product() {
     (state) => state.products
   );
   const { cart } = useSelector((state) => state.cart);
-  console.log(selectedProduct);
+
   const { images, price, title, description, category } = selectedProduct || {};
 
   const cartItem = cart.items.find((item) => item.id === id);

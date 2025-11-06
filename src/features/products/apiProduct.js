@@ -1,23 +1,50 @@
+// src/api/apiProduct.js
 import axios from "axios";
 
-const BASE_URL = "https://api.escuelajs.co/api/v1/products";
+// ✅ Your backend base URL
+const BASE_URL = "http://localhost:3002/api/product";
 
-export const getProducts = async (params = {}) => {
-  const { data, headers } = await axios.get(BASE_URL, { params });
+// ✅ Fetch all products (with filters, pagination, etc.)
+export const getProducts = async (filters = {}) => {
+  const payload = {
+    page: filters.page || 0,
+    limit: filters.limit || 12,
+    title: filters.title || "",
+    category_id: filters.categoryId || "",
+    discount: filters.discount ?? 0,
+    price: {
+      lowerLimit: filters.price?.lowerLimit || 0,
+      upperLimit: filters.price?.upperLimit || 0,
+    },
+  };
+  const { data } = await axios.post(`${BASE_URL}/view`, payload);
+  const result = data.result;
+  let sortedArray = [...result.rows];
 
-  const totalHeader = headers["x-total-count"] || headers["X-Total-Count"];
-  const total = totalHeader ? parseInt(totalHeader, 10) : 200;
-  // const totalData = params;
-  console.log(params);
-  const maxPrice =
-    data.length > 0
-      ? Math.ceil(Math.max(...data.map((p) => p.price || 0)))
-      : 1000;
-  return { items: data, total, maxPrice };
+  switch (filters.sortBy) {
+    case "name":
+      sortedArray.sort((a, b) => a.title.localeCompare(b.title));
+      break;
+    case "price-low":
+      sortedArray.sort((a, b) => a.price - b.price);
+      break;
+    case "price-high":
+      sortedArray.sort((a, b) => b.price - a.price);
+      break;
+    default:
+      break;
+  }
+
+  return {
+    items: sortedArray || [],
+    total: result.count || 0,
+    minPrice: result.minPrice || 0,
+    maxPrice: result.maxPrice || 0,
+  };
 };
 
-// Fetch single product
+// ✅ Fetch single product by ID
 export const getProduct = async (id) => {
-  const { data } = await axios.get(`${BASE_URL}/${id}`);
-  return data;
+  const { data } = await axios.get(`${BASE_URL}/view/${id}`);
+  return data.result;
 };

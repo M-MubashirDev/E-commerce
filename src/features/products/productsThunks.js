@@ -1,63 +1,27 @@
+// src/redux/thunks/productThunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getProducts, getProduct } from "./apiProduct";
+import { getProducts, getProduct } from "../products/apiProduct";
 
-// Fetch paginated products with filters
+// ✅ Get all products
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
-  async (
-    {
-      limit = 14,
-      offset = 0,
-      searchQuery = "",
-      priceMin = 0,
-      priceMax = Infinity,
-      categoryId = null,
-      sortBy = "name",
-    },
-    { rejectWithValue }
-  ) => {
+  async (filters, { rejectWithValue }) => {
     try {
-      const params = {
-        limit,
-        offset,
-        ...(searchQuery && { title: searchQuery }),
-        ...(priceMin > 0 && { price_min: priceMin }),
-        ...(priceMax !== Infinity && { price_max: priceMax }),
-        ...(categoryId && { categoryId }),
-      };
-
-      // Get products from API
-      const response = await getProducts(params);
-
-      // Sort products client-side since API doesn't support sorting
-      let sortedItems = [...response.items];
-
-      if (sortBy === "price-low") {
-        sortedItems.sort((a, b) => (a.price || 0) - (b.price || 0));
-      } else if (sortBy === "price-high") {
-        sortedItems.sort((a, b) => (b.price || 0) - (a.price || 0));
-      } else if (sortBy === "name") {
-        sortedItems.sort((a, b) =>
-          (a.title || "").localeCompare(b.title || "")
-        );
-      }
-
-      return {
-        ...response,
-        items: sortedItems,
-      };
+      const response = await getProducts(filters);
+      return response;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
-// Fetch single product
-export const fetchProduct = createAsyncThunk(
-  "products/fetchProduct",
+// ✅ Get single product by ID
+export const fetchProductById = createAsyncThunk(
+  "products/fetchProductById",
   async (id, { rejectWithValue }) => {
     try {
-      return await getProduct(id);
+      const response = await getProduct(id);
+      return response;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }

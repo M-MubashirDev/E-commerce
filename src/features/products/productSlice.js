@@ -1,51 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchProducts, fetchProduct } from "./productsThunks";
+import { fetchProducts, fetchProductById } from "../products/productsThunks";
 
 const initialState = {
   items: [],
   total: 0,
+  maxPrice: 2000,
+  minPrice: 0,
+  selectedProduct: null,
   loading: false,
   error: null,
-  selectedProduct: null,
-  maxPrice: 1000,
 };
 
-const productsSlice = createSlice({
+const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Multiple products
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload.items;
-        state.total = action.payload.total;
         state.maxPrice = action.payload.maxPrice;
+        state.minPrice = action.payload.minPrice;
+        state.total = action.payload.total;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-
-      // Single product
-      .addCase(fetchProduct.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchProduct.fulfilled, (state, action) => {
-        state.loading = false;
+      .addCase(fetchProductById.fulfilled, (state, action) => {
         state.selectedProduct = action.payload;
-      })
-      .addCase(fetchProduct.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
   },
 });
 
-export default productsSlice.reducer;
+export default productSlice.reducer;

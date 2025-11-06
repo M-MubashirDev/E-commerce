@@ -21,32 +21,31 @@ function Home() {
   const category = useSelector((state) => state.categories.selectedCategory);
   const categories = useSelector((state) => state.categories.categories);
 
+  //......fecthing products
   useEffect(() => {
-    dispatch(fetchProducts({ limit: 50, offset: 0 }));
+    dispatch(fetchProducts({ limit: 50 }));
   }, [dispatch]);
 
-  const topCategories = [
-    ...new Set(categories.rows.slice(0, 4)?.map((c) => c.title)),
-  ];
+  console.log(".............", category, products, ".......products");
+
+  //..........showing content accoring to current categories
   let content;
   if (category === "All") {
-    content = topCategories.map((catName) => {
-      const catProducts = products.filter((p) => p.category?.name === catName);
+    content = categories.rows.map((cat) => {
+      const catProducts = products.filter((p) => p.categoryId === cat.id);
 
-      return <ItemSlider key={catName} items={catProducts} title={catName} />;
+      return <ItemSlider key={cat.id} items={catProducts} title={cat.title} />;
     });
   } else {
     const filteredProducts = products
-      .filter((p) => p.category?.name === category)
+      .filter((p) => p.categoryId === category.id)
       ?.slice(0, 12);
 
     content = (
       <div className="content-spacing ">
         <HeaderButton
-          title={`Best in ${filteredProducts[0]?.category.name}`}
-          handleFunction={() =>
-            navigate(`/products?category=${filteredProducts[0]?.category.name}`)
-          }
+          title={`Best in ${category.title}`}
+          handleFunction={() => navigate(`/products?category=${category.id}`)}
         />
         <div className="grid max-h-[70vh] h-[70vh] overflow-x-hidden overflow-y-auto mt-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-4 gap-y-6 justify-items-center mx-auto w-full">
           {filteredProducts?.map((product) => (

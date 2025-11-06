@@ -10,6 +10,8 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
   const [itemsPerView, setItemsPerView] = useState(4);
   const carouselRef = useRef(null);
 
+  console.log(".............", items, ".......products");
+
   const navigate = useNavigate();
   console.log(items);
   useEffect(() => {

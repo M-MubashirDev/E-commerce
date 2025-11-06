@@ -11,7 +11,7 @@ import About from "./pages/About";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
-import Product from "./pages/Product";
+// import Product from "./pages/Product";
 import OrderSummery from "./pages/OrderSummery";
 
 function App() {
@@ -31,7 +31,7 @@ function App() {
           <Route element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="products" element={<Products />} />
-            <Route path="Product/:id" element={<Product />} />
+            {/* <Route path="Product/:id" element={<Product />} /> */}
             <Route path="about" element={<About />} />
             <Route path="cart" element={<Cart />} />
             <Route path="ordersummery" element={<OrderSummery />} />

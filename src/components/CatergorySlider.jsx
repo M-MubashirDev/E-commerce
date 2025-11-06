@@ -90,13 +90,13 @@ export default function ExploreCategories() {
                     onClick={() =>
                       dispatch(
                         setCategory(
-                          selectedCategory === cat.title ? "All" : cat.title
+                          selectedCategory === cat.title ? "All" : cat
                         )
                       )
                     }
                     classNames={{
                       root: `transition-hover !cursor-pointer !h-12 !min-w-fit !min-h-fit !font-normal ${
-                        selectedCategory === cat.title
+                        selectedCategory.title === cat.title
                           ? "!bg-dark !text-white border-2 border-blue-500"
                           : "!text-[#4a5565] !bg-light-gray shadow-sm hover:!text-white hover:!shadow-lg hover:!bg-black"
                       }`,
