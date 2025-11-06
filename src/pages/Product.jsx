@@ -22,9 +22,9 @@ function Product() {
   console.log("Selected Product:", selectedProduct);
 
   // Extract product details
-  const { productImages, price, title, description, category, categoryId } =
+  const { productImages, price, title, description, categoryId, discount } =
     selectedProduct || {};
-
+  console.log(categoryId, "..........");
   // Check if item is in cart
   const cartItem = cart.items.find((item) => String(item.id) === String(id));
 
@@ -35,7 +35,7 @@ function Product() {
       dispatch(
         setCartItem({
           id: String(id),
-          category: category || { id: categoryId, name: "Uncategorized" },
+          category: { id: categoryId, name: "Uncategorized" },
           images: productImages?.map((img) => img.url) || [],
           price,
           title,
@@ -81,7 +81,7 @@ function Product() {
             {productImages?.map((image, index) => (
               <img
                 key={image.id}
-                src={image.url}
+                src={"/batman.jpg"}
                 alt={`product-thumb-${image.id}`}
                 className={`h-full rounded-md w-auto object-contain cursor-pointer transition ${
                   activeIndex === index
@@ -97,7 +97,7 @@ function Product() {
         {/* Right side (details) */}
         <div className="w-full lg:w-1/2 p-6 flex flex-col space-y-1">
           <span className="text-xs sm:text-sm text-gray-500 uppercase tracking-wide">
-            {category?.name || category?.title || "Uncategorized"}
+            {"Uncategorized"}
           </span>
 
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-dark-gray">
@@ -109,7 +109,7 @@ function Product() {
               ${price}
             </span>
             <span className="text-sm sm:text-base text-gray-400 line-through">
-              ${price + 10}
+              ${price + discount}
             </span>
           </div>
 
