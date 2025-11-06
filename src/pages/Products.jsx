@@ -6,6 +6,7 @@ import { fetchProducts } from "../features/products/productsThunks";
 import ProductFilterSideBar from "../ui/ProductFilterSideBar";
 import ProductGrid from "../ui/ProductItemGrid";
 import SmallHero from "../components/SmallHero";
+import { useSearchParams } from "react-router-dom";
 
 const initialStates = {
   page: 0,
@@ -51,6 +52,14 @@ function reducer(state, action) {
         ...state,
         sortBy: action.payload,
       };
+    case "params":
+      return {
+        ...state,
+        page: action.payload.page || state.page,
+        title: action.payload.title || state.title,
+        category_id: action.payload.category || state.category_id,
+        sortBy: action.payload.sortBy || state.sortBy,
+      };
     default:
       return state;
   }
@@ -58,7 +67,9 @@ function reducer(state, action) {
 
 const Products = () => {
   const dispatch = useDispatch();
+
   const [state, dispatchReducer] = useReducer(reducer, initialStates);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     items: products,
@@ -66,7 +77,22 @@ const Products = () => {
     loading,
     maxPrice,
   } = useSelector((state) => state.products);
+
+  const { page, sort, title, category } = Object.fromEntries(searchParams);
   const totalPages = Math.max(1, Math.ceil(total / state.limit));
+
+  useEffect(() => {
+    if (!page && !sort && !title && !category) return;
+    dispatchReducer({
+      type: "params",
+      payload: {
+        page,
+        title,
+        category,
+        sortBy: sort,
+      },
+    });
+  }, [page, category, title, sort]);
 
   useEffect(() => {
     dispatch(fetchProducts(state));
@@ -88,6 +114,7 @@ const Products = () => {
             dispatchReducer={dispatchReducer}
             state={state}
             maxPrice={maxPrice}
+            setSearchParams={setSearchParams}
           />
 
           <div className="flex-1 relative">
@@ -125,16 +152,18 @@ const Products = () => {
               <ProductGrid paginatedProducts={products} />
             )}
 
-            <Pagination
-              total={totalPages}
-              value={state.page + 1} // Mantine pages are 1-based
-              onChange={
-                (page) => dispatchReducer({ type: "page", payload: page - 1 }) // API expects 0-based
-              }
-              siblings={1}
-              boundaries={1}
-              className="mt-6 flex justify-center"
-            />
+            {loading || (
+              <Pagination
+                total={totalPages}
+                value={state.page + 1}
+                onChange={(page) =>
+                  dispatchReducer({ type: "page", payload: page - 1 })
+                }
+                siblings={1}
+                boundaries={1}
+                className="mt-6 flex justify-center"
+              />
+            )}
           </div>
         </div>
       </div>

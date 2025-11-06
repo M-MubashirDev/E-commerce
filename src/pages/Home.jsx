@@ -34,7 +34,14 @@ function Home() {
     content = categories.rows.map((cat) => {
       const catProducts = products.filter((p) => p.categoryId === cat.id);
 
-      return <ItemSlider key={cat.id} items={catProducts} title={cat.title} />;
+      return (
+        <ItemSlider
+          key={cat.id}
+          items={catProducts}
+          title={cat.title}
+          catId={cat.id}
+        />
+      );
     });
   } else {
     const filteredProducts = products
@@ -44,7 +51,7 @@ function Home() {
     content = (
       <div className="content-spacing ">
         <HeaderButton
-          title={`Best in ${category.title}`}
+          title={`Best in ${category.id}`}
           handleFunction={() => navigate(`/products?category=${category.id}`)}
         />
         <div className="grid max-h-[70vh] h-[70vh] overflow-x-hidden overflow-y-auto mt-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-4 gap-y-6 justify-items-center mx-auto w-full">

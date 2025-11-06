@@ -11,7 +11,12 @@ import { FiFilter, FiX, FiSearch, FiSliders } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../features/categories/categoriesThunks";
 
-function ProductFilterSideBar({ dispatchReducer, state, maxPrice }) {
+function ProductFilterSideBar({
+  dispatchReducer,
+  state,
+  maxPrice,
+  setSearchParams,
+}) {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.categories);
   const [isShowFilterTab, setShowFilterTab] = useState(true);
@@ -43,7 +48,7 @@ function ProductFilterSideBar({ dispatchReducer, state, maxPrice }) {
             onClick={() => setShowFilterTab((value) => !value)}
             className="md:hidden"
           >
-            {"Hide"} Filters
+            {isShowFilterTab ? "Hide" : "Show"} Filters
           </Button>
         </div>
         {isShowFilterTab && (
@@ -61,12 +66,16 @@ function ProductFilterSideBar({ dispatchReducer, state, maxPrice }) {
               <TextInput
                 placeholder="Search for products..."
                 value={state.title}
-                onChange={(e) =>
+                onChange={(e) => {
                   dispatchReducer({
                     type: "title",
                     payload: e.target.value,
-                  })
-                }
+                  });
+                  setSearchParams((prev) => ({
+                    ...Object.fromEntries(prev),
+                    title: e.target.value,
+                  }));
+                }}
                 leftSection={<FiSearch size={16} />}
                 radius="md"
               />
@@ -86,6 +95,10 @@ function ProductFilterSideBar({ dispatchReducer, state, maxPrice }) {
                     type: "category",
                     payload: value,
                   });
+                  setSearchParams((prev) => ({
+                    ...Object.fromEntries(prev),
+                    category: value,
+                  }));
                 }}
                 data={[
                   { value: "All", label: "All" },
@@ -126,12 +139,16 @@ function ProductFilterSideBar({ dispatchReducer, state, maxPrice }) {
               </Text>
               <Select
                 value={state.sortBy}
-                onChange={(value) =>
+                onChange={(value) => {
                   dispatchReducer({
                     type: "sort",
                     payload: value,
-                  })
-                }
+                  });
+                  setSearchParams((prev) => ({
+                    ...Object.fromEntries(prev),
+                    sortBy: value,
+                  }));
+                }}
                 data={[
                   { value: "name", label: "Name (A-Z)" },
                   { value: "price-low", label: "Price: Low to High" },
@@ -142,9 +159,13 @@ function ProductFilterSideBar({ dispatchReducer, state, maxPrice }) {
               <Button
                 variant=""
                 size="xs"
-                onClick={() =>
-                  dispatchReducer({ type: "clearFilters", payload: maxPrice })
-                }
+                onClick={() => {
+                  dispatchReducer({
+                    type: "clearFilters",
+                    payload: maxPrice,
+                  });
+                  setSearchParams({});
+                }}
                 className={isFilterCLoseShow ? "!flex !mt-4" : "!hidden"}
                 leftSection={<FiX size={14} />}
               >

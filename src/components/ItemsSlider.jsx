@@ -5,7 +5,11 @@ import { Button } from "@mantine/core";
 import HeaderButton from "../ui/HeaderButton";
 import { useNavigate } from "react-router-dom";
 
-const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
+const ProductCarousel = ({
+  items = [],
+  title = "Featured Products",
+  catId,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
   const carouselRef = useRef(null);
@@ -57,7 +61,7 @@ const ProductCarousel = ({ items = [], title = "Featured Products" }) => {
       <div className="flex items-center flex-col-reverse gap-5 sm:flex-row   justify-between sm:gap-2 mb-6">
         <HeaderButton
           title={`Best in ${title}`}
-          handleFunction={() => navigate(`/products?category=${title}`)}
+          handleFunction={() => navigate(`/products?category=${catId}`)}
         />
 
         {/* Navigation arrows */}

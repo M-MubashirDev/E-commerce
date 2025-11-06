@@ -6,7 +6,7 @@ export function ProductDetailCarousel({ images, activeIndex, setActiveIndex }) {
 
   // When parent changes activeIndex → move carousel
   useEffect(() => {
-    if (embla && activeIndex !== null) {
+    if (embla && activeIndex !== null && activeIndex !== undefined) {
       embla.scrollTo(activeIndex);
     }
   }, [activeIndex, embla]);
@@ -26,6 +26,15 @@ export function ProductDetailCarousel({ images, activeIndex, setActiveIndex }) {
     }
   }, [embla, setActiveIndex]);
 
+  // Handle case when images array is empty or undefined
+  if (!images || images.length === 0) {
+    return (
+      <div className="bg-light-gray rounded-lg flex justify-center items-center h-[60vh] xl:max-w-[70vh]">
+        <p className="text-gray-500">No images available</p>
+      </div>
+    );
+  }
+
   return (
     <Carousel
       withIndicators
@@ -34,14 +43,14 @@ export function ProductDetailCarousel({ images, activeIndex, setActiveIndex }) {
       slideGap="md"
       className="!rounded-lg xl:max-w-[70vh] overflow-hidden"
     >
-      {images?.map((image, ind) => (
+      {images.map((image, index) => (
         <Carousel.Slide
-          key={ind}
+          key={image.id || index}
           className="bg-light-gray !rounded-lg flex justify-center"
         >
           <img
-            src={image}
-            alt={`product-${ind}`}
+            src={image.url}
+            alt={`product-${image.id || index}`}
             className="max-h-[60vh] w-auto object-contain !rounded-lg"
           />
         </Carousel.Slide>
