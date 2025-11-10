@@ -53,7 +53,12 @@ const theme = createTheme({
 });
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
+    <MantineProvider
+      theme={theme}
+      withGlobalStyles
+      withNormalizeCSS
+      defaultColorScheme="light"
+    >
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <App />

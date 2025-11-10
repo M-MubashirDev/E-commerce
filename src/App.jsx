@@ -14,6 +14,9 @@ import Cart from "./pages/Cart";
 // import Product from "./pages/Product";
 import OrderSummery from "./pages/OrderSummery";
 import Product from "./pages/Product";
+import AdminLayout from "./components/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import Categories from "./pages/admin/Categories";
 
 function App() {
   return (
@@ -37,6 +40,12 @@ function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="ordersummery" element={<OrderSummery />} />
             <Route path="profile" element={<Profile />} />
+          </Route>
+
+          {/* admin */}
+          <Route element={<AdminLayout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="Categories" element={<Categories />} />
           </Route>
         </Routes>
       </BrowserRouter>
