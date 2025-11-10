@@ -1,16 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStats } from "../../features/stats/statsThunk";
-import {
-  Card,
-  Text,
-  Grid,
-  Loader,
-  Table,
-  Title,
-  Badge,
-  ScrollArea,
-} from "@mantine/core";
+import { Card, Text, Grid, Loader, Title } from "@mantine/core";
 import {
   LineChart,
   Line,
@@ -49,19 +40,6 @@ export default function Dashboard() {
     name: label,
     value: stats.orderStatus.data[i],
   }));
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "pending":
-        return "yellow";
-      case "completed":
-        return "green";
-      case "canceled":
-        return "red";
-      default:
-        return "gray";
-    }
-  };
 
   return (
     <div>
