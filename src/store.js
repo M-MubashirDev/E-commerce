@@ -7,6 +7,7 @@ import categoriesReducer from "./features/categories/categoriesSlice";
 import productReducer from "./features/products/productSlice";
 import locationReducer from "./features/location/locationSlice";
 import cartReducer from "./features/cart/cartSlice";
+import statsReducer from "./features/stats/statsSlice";
 import orderReducer from "./features/orders/orderSlice";
 
 const authPersistConfig = {
@@ -36,6 +37,7 @@ export const store = configureStore({
   reducer: {
     auth: persistReducer(authPersistConfig, authReducer),
     categories: categoriesReducer,
+    stats: statsReducer,
     products: productReducer,
     location: persistReducer(loactionPersistConfig, locationReducer),
     cart: persistReducer(cartPersistConfig, cartReducer),
