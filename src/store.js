@@ -2,15 +2,22 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage
 import authReducer from "./features/auth/authSlice";
+import authAdminReducer from "./features/adminAuth/authSlice";
 import categoriesReducer from "./features/categories/categoriesSlice";
 import productReducer from "./features/products/productSlice";
 import locationReducer from "./features/location/locationSlice";
 import cartReducer from "./features/cart/cartSlice";
+import orderReducer from "./features/orders/orderSlice";
 
 const authPersistConfig = {
   key: "auth",
   storage,
   whitelist: ["accessToken", "user"],
+};
+const authAdminPersistConfig = {
+  key: "adminAuth",
+  storage,
+  whitelist: ["accessToken", "userAdmin"],
 };
 
 const cartPersistConfig = {
@@ -32,6 +39,8 @@ export const store = configureStore({
     products: productReducer,
     location: persistReducer(loactionPersistConfig, locationReducer),
     cart: persistReducer(cartPersistConfig, cartReducer),
+    orders: orderReducer,
+    adminAuth: persistReducer(authAdminPersistConfig, authAdminReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

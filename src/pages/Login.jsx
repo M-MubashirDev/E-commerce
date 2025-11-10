@@ -1,5 +1,10 @@
 import { useForm, FormProvider } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import {
   PasswordInputField,
@@ -9,10 +14,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authThunks";
 import toast from "react-hot-toast";
+import { loginUserAdmin } from "../features/adminAuth/authThunks";
 
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const role = params.get("role");
   const { loading } = useSelector((state) => state.auth);
   const location = useLocation();
   const fromCheckout = location.state;
@@ -31,12 +39,25 @@ export default function Login() {
       toast.error(error);
     }
   };
+  const onSubmitAdmin = async (data) => {
+    try {
+      await dispatch(
+        loginUserAdmin({ email: data.email, password: data.password })
+      ).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+      toast.error(error);
+    }
+  };
 
   return (
     <AuthLayout>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={methods.handleSubmit(
+            role === "admin" ? onSubmitAdmin : onSubmit
+          )}
           className="space-y-2 w-full "
         >
           <h1 className="text-2xl font-bold text-center text-black">Login</h1>

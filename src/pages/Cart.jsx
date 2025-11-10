@@ -28,13 +28,12 @@ const Cart = () => {
   const { cart } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
   const cartItems = cart.items;
-
+  console.log(cartItems, user, ".........?/");
   const formatPrice = (price) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
     }).format(price);
-  // console.log(accessToken, refreshToken);
   function handleProceedCheckOut() {
     if (!user) navigate("/login", { state: true });
     else navigate("/ordersummery");
@@ -103,7 +102,7 @@ const Cart = () => {
                     {/* Image */}
                     <div className="w-20 h-20 rounded-xl overflow-hidden bg-white/20 border border-white/30 flex-shrink-0">
                       <Image
-                        src={item.images[0]}
+                        src={"/batman.jpg"}
                         alt={item.title}
                         className="w-full h-full object-cover"
                         fallbackSrc="https://via.placeholder.com/80x80"

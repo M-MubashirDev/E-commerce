@@ -23,7 +23,7 @@ const ProductCard = ({ item }) => {
   function HandleAddTOCart() {
     if (isInCart) return;
     try {
-      dispatch(setCartItem({ ...item, id: String(item.id) }));
+      dispatch(setCartItem({ ...item }));
       toast.success(`${item.title} added to the cart`);
     } catch {
       toast.error("Error adding to cart");

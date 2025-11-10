@@ -8,7 +8,6 @@ import {
 } from "@mantine/core";
 import { IoIosCloudUpload } from "react-icons/io";
 
-// Text Input Field with validation
 export function TextInputField({ name, label, placeholder, rules = {} }) {
   const {
     register,

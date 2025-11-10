@@ -1,42 +1,51 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider, Text, Title, Group, Card } from "@mantine/core";
 import LocationMapModal from "../components/MapModel";
-import { setDetails, setLocation } from "../features/location/locationSlice";
+// import { setLocation } from "../features/location/locationSlice";
 import { useEffect, useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { setLocation } from "../features/location/locationSlice";
+import { createOrder } from "../features/orders/orderThunks";
 
 export default function OrderSummary() {
   const [opened, setOpened] = useState(false);
-  const { cart } = useSelector((state) => state.cart);
-  const { details, location } = useSelector((state) => state.location);
   const dispatch = useDispatch();
-
-  // 🧠 Keep modal open if location/details are incomplete
+  const { cart } = useSelector((state) => state.cart);
+  const { location } = useSelector((state) => state.location);
+  const { address, city, phone } = location;
   useEffect(() => {
-    if (
-      !location.address ||
-      !details.houseNumber ||
-      !details.streetDetails ||
-      !details.landmark
-    ) {
+    if (!address || !city || !phone) {
       setOpened(true);
     }
-  }, [location, details]);
+  }, [address, city, phone]);
 
-  // 🧭 Handle saving data from the modal
-  function handleLocationSave(data, address) {
-    const isValid =
-      address &&
-      data.houseNumber.trim() &&
-      data.streetDetails.trim() &&
-      data.landmark.trim();
-
-    if (isValid) {
-      dispatch(setDetails(data));
-      dispatch(setLocation(address));
-      setOpened(false);
-    } else {
-      alert("Please fill all fields and select a location before saving.");
+  function handleLocationSave(data) {
+    console.log(data);
+    dispatch(setLocation(data));
+    setOpened(false);
+  }
+  function handleConfirmOrder() {
+    try {
+      cart?.items.map((val) => {
+        return {
+          productId: val.id,
+          quantity: val.quantity,
+        };
+      });
+      const orderObject = {
+        address,
+        city,
+        phone,
+        items: cart?.items.map((val) => {
+          return {
+            productId: val.id,
+            quantity: val.quantity,
+          };
+        }),
+      };
+      dispatch(createOrder(orderObject));
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -46,6 +55,7 @@ export default function OrderSummary() {
       currency: "USD",
     }).format(price);
 
+  console.log(cart);
   return (
     <section className="section-spacing  bg-light-gray flex items-center justify-center min-h-screen">
       <div className="w-full !max-w-4xl rounded-lg shadow-md bg-light content-spacing transition-hover hover:shadow-xl">
@@ -78,7 +88,7 @@ export default function OrderSummary() {
               >
                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0">
                   <img
-                    src={item.images[0] || "https://via.placeholder.com/80"}
+                    src={"/batman.jpg"}
                     alt={item.title}
                     className="w-full h-full object-cover"
                   />
@@ -128,19 +138,19 @@ export default function OrderSummary() {
                   </Text>
                 </Group>
 
-                {location?.address ? (
+                {address && city && phone ? (
                   <div className="space-y-1">
                     <Text size="sm" c="dark">
-                      <strong>Address:</strong> {location.address}
+                      <strong>Address:</strong> {address}
                     </Text>
                     <Text size="sm" c="dark">
-                      <strong>House No:</strong> {details.houseNumber}
+                      <strong>City Name:</strong> {city}
                     </Text>
                     <Text size="sm" c="dark">
-                      <strong>Street:</strong> {details.streetDetails}
+                      <strong>Phone:</strong> {phone}
                     </Text>
                     <Text size="sm" c="dark">
-                      <strong>Landmark:</strong> {details.landmark}
+                      <strong>Landmark:</strong>
                     </Text>
                     <Text size="xs" c="textGray">
                       Lat: {location.lat?.toFixed(4)} | Lng:{" "}
@@ -160,7 +170,7 @@ export default function OrderSummary() {
                 radius="md"
                 onClick={() => setOpened(true)}
               >
-                {location?.address ? "Change" : "Add"} Details
+                {address ? "Change" : "Add"} Details
               </Button>
             </Group>
           </Card>
@@ -211,15 +221,10 @@ export default function OrderSummary() {
           <Button
             size="md"
             radius="md"
+            onClick={handleConfirmOrder}
             fullWidth
             className="transition-hover hover:bg-dark-gray sm:size-lg"
-            disabled={
-              cart.items.length === 0 ||
-              !location.address ||
-              !details.houseNumber ||
-              !details.streetDetails ||
-              !details.landmark
-            }
+            disabled={cart.items.length === 0 || !address || !city || !phone}
             aria-label="Confirm your order"
           >
             Confirm Order

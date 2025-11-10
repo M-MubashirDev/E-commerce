@@ -1,12 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  location: { address: null, lng: 0, lat: 0 },
-  details: {
-    houseNumber: "",
-    streetDetails: "",
-    landmark: "",
-  },
+  location: { address: "", city: "", phone: "", lat: 0, lng: 0 },
 };
 
 const locationSlice = createSlice({
@@ -14,13 +9,13 @@ const locationSlice = createSlice({
   initialState,
   reducers: {
     setLocation: (state, action) => {
-      state.location = action.payload;
+      state.location = { ...state.location, ...action.payload };
     },
-    setDetails: (state, action) => {
-      state.details = action.payload;
+    clearLocation: (state) => {
+      state.location = initialState.location;
     },
   },
 });
 
-export const { setLocation, setDetails } = locationSlice.actions;
+export const { setLocation, clearLocation } = locationSlice.actions;
 export default locationSlice.reducer;

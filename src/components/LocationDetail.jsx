@@ -4,48 +4,54 @@ import { useForm, FormProvider } from "react-hook-form";
 import { TextInputField } from "./Form";
 
 const LocationDetails = ({ lat, lng, address, onSave }) => {
-  const { details } = useSelector((state) => state.location);
-  const isShow = lat && lng && address;
+  const { location } = useSelector((state) => state.location);
+
   const methods = useForm({
     defaultValues: {
-      houseNumber: details.houseNumber || "",
-      streetDetails: details.streetDetails || "",
-      landmark: details.landmark || "",
+      address: address || location.address || "",
+      city: location.city || "",
+      phone: location.phone || "",
     },
   });
-  const handleSubmit = (data) => {
-    onSave(data, {
-      lat,
-      lng,
-      address,
-    });
+
+  const { watch, handleSubmit } = methods;
+
+  const watchAddress = watch("address");
+  const watchCity = watch("city");
+  const watchPhone = watch("phone");
+
+  const allFilled =
+    watchAddress?.trim() && watchCity?.trim() && watchPhone?.trim();
+
+  const handleFormSubmit = (data) => {
+    const dataObject = { lat, lng, ...data };
+    onSave(dataObject);
   };
 
   return (
     <div className="mt-4 space-y-2">
       <FormProvider {...methods}>
-        <h1 className="!font-bold">{isShow ? address : "chose an address"}</h1>
-        <form
-          onSubmit={methods.handleSubmit(handleSubmit)}
-          className="space-y-3"
-        >
+        <h1 className="font-bold text-gray-800">
+          {address ? address : "Choose an address"}
+        </h1>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-3">
           <TextInputField
-            name="houseNumber"
-            placeholder="House / Flat / Apartment / Office Number *"
+            name="address"
+            placeholder="Address *"
             rules={{ required: "This field is required" }}
           />
           <TextInputField
-            name="streetDetails"
-            placeholder="Block / Sector / Street / Building / Floor Name or Number *"
+            name="city"
+            placeholder="City *"
             rules={{ required: "This field is required" }}
           />
           <TextInputField
-            name="landmark"
-            placeholder="Main Area / Town / Nearest Landmark *"
+            name="phone"
+            placeholder="Phone *"
             rules={{ required: "This field is required" }}
           />
 
-          <Button type="submit" disabled={!isShow}>
+          <Button type="submit" disabled={!allFilled} fullWidth>
             Confirm Details
           </Button>
         </form>

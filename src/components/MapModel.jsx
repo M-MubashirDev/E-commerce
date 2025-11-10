@@ -17,13 +17,12 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
   const [lng, setLng] = useState(0);
   const [map, setMap] = useState(null);
   const { position } = useGeolocation();
-
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     libraries,
   });
 
-  // ✅ Utility function using new API
+  // Utility function using new API
   const getAddressFromCoords = async (lat, lng) => {
     const { Geocoder } = await window.google.maps.importLibrary("geocoding");
     const geocoder = new Geocoder();
@@ -36,6 +35,8 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
       });
     });
   };
+
+  console.log(position, ".....");
 
   useEffect(() => {
     if (

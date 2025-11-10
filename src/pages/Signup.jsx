@@ -1,5 +1,10 @@
 import { useForm, FormProvider } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AuthLayout from "../components/AuthLayout";
 import {
@@ -10,10 +15,13 @@ import {
 import { signupUser } from "../features/auth/authThunks";
 import toast from "react-hot-toast";
 import { clearCart } from "../features/cart/cartSlice";
+import { signupAdmin } from "../features/adminAuth/authThunks";
 
 export default function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const role = params.get("role");
   const location = useLocation();
   const { loading } = useSelector((state) => state.auth);
   const fromCheckout = location.state;
@@ -51,12 +59,38 @@ export default function Signup() {
       toast.error(error);
     }
   };
+  const onSubmitAdmin = async (data) => {
+    console.log("admin");
+    try {
+      if (data.password !== data.confirmPassword) {
+        methods.setError("confirmPassword", {
+          message: "Passwords do not match",
+        });
+        return;
+      }
+
+      await dispatch(
+        signupAdmin({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        })
+      ).unwrap();
+
+      toast.success("Account created!");
+      navigate("/login?role=admin");
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
   return (
     <AuthLayout>
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={methods.handleSubmit(
+            role === "admin" ? onSubmitAdmin : onSubmit
+          )}
           className="w-full space-y-2"
         >
           <h1 className="text-2xl font-bold text-center text-black mb-4">

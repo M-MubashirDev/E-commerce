@@ -14,7 +14,8 @@ import {
   deleteUserAccount,
 } from "../features/auth/authThunks";
 import toast from "react-hot-toast";
-import { FaUser, FaLock, FaTrash, FaEdit } from "react-icons/fa";
+import { FaUser, FaLock, FaTrash, FaEdit, FaBox } from "react-icons/fa";
+import OrdersHistory from "../components/OrderHistory";
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -103,6 +104,9 @@ export default function Profile() {
 
         <Tabs defaultValue="profile" color="dark">
           <Tabs.List>
+            <Tabs.Tab value="orders" leftSection={<FaBox size={14} />}>
+              Orders History
+            </Tabs.Tab>
             <Tabs.Tab value="profile" leftSection={<FaUser size={14} />}>
               Profile
             </Tabs.Tab>
@@ -232,6 +236,9 @@ export default function Profile() {
                 Delete My Account
               </Button>
             </Card>
+          </Tabs.Panel>
+          <Tabs.Panel value="orders" pt="md">
+            <OrdersHistory />
           </Tabs.Panel>
         </Tabs>
       </Card>

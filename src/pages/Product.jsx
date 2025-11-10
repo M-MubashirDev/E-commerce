@@ -35,11 +35,12 @@ function Product() {
       dispatch(
         setCartItem({
           id: String(id),
-          category: { id: categoryId, name: "Uncategorized" },
+          categoryId: categoryId,
           images: productImages?.map((img) => img.url) || [],
           price,
           title,
           description,
+          discount,
         })
       );
       toast.success(`${title} added to the cart`);
