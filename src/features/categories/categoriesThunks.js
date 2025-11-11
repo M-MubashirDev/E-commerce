@@ -3,7 +3,7 @@ import axios from "axios";
 import { getCategories } from "./catApi";
 
 // ✅ Helper to get the Bearer token from localStorage
-const getAuthToken = () => {
+export const getAuthToken = () => {
   try {
     const authData = JSON.parse(localStorage.getItem("persist:adminAuth"));
     if (!authData) return null;
