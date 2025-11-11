@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   TextInput,
@@ -10,51 +8,74 @@ import {
   Modal,
   Text,
 } from "@mantine/core";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   addCategory,
   updateCategory,
   deleteCategory,
+  fetchCategories,
 } from "../../features/categories/categoriesThunks";
 
-export default function CategoriesAction() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+export default function CategoriesAction({ existingCategory = null, onClose }) {
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => state.categories);
 
-  const isEditMode = Boolean(id);
+  const isEditMode = Boolean(existingCategory);
 
-  const category = isEditMode
-    ? categories.rows.find((cat) => cat.id === Number(id))
-    : null;
-
-  const [title, setTitle] = useState(category?.title || "");
-  const [description, setDescription] = useState(category?.description || "");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [icon, setIcon] = useState(
-    category?.icon || "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"
+    "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"
   );
   const [open, setOpen] = useState(false);
 
-  const handleSave = async () => {
-    if (isEditMode) {
-      await dispatch(
-        updateCategory({ id, updates: { title, description, icon } })
-      ).unwrap();
+  // Populate fields when editing
+  useEffect(() => {
+    if (existingCategory) {
+      setTitle(existingCategory.title || "");
+      setDescription(existingCategory.description || "");
+      setIcon(
+        existingCategory.icon ||
+          "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"
+      );
     } else {
-      await dispatch(addCategory({ title, description, icon })).unwrap();
+      setTitle("");
+      setDescription("");
+      setIcon("https://cdn-icons-png.flaticon.com/512/1040/1040230.png");
     }
-    navigate("/categories");
+  }, [existingCategory]);
+
+  const handleSave = async () => {
+    try {
+      if (isEditMode) {
+        await dispatch(
+          updateCategory({
+            id: existingCategory.id,
+            updates: { title, description, icon },
+          })
+        ).unwrap();
+      } else {
+        await dispatch(addCategory({ title, description, icon })).unwrap();
+      }
+      dispatch(fetchCategories({ page: 0, title: "" }));
+      onClose?.();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleDelete = async () => {
-    await dispatch(deleteCategory(id)).unwrap();
-    navigate("/categories");
+    try {
+      if (!existingCategory) return;
+      await dispatch(deleteCategory(existingCategory.id)).unwrap();
+      dispatch(fetchCategories({ page: 0, title: "" }));
+      onClose?.();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  if (isEditMode && !category) {
+  if (isEditMode && !existingCategory) {
     return <Text align="center">Category not found</Text>;
   }
 
