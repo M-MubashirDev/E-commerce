@@ -4,9 +4,9 @@ import { getCategories } from "./catApi";
 // ✅ Fetch categories thunk
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
-  async (_, { rejectWithValue }) => {
+  async (filters, { rejectWithValue }) => {
     try {
-      const allFetchedCategories = await getCategories();
+      const allFetchedCategories = await getCategories(filters);
       return allFetchedCategories;
     } catch (error) {
       const backendMessage = error.response?.data?.message;
