@@ -2,7 +2,6 @@ import {
   Card,
   ScrollArea,
   Text,
-  Group,
   Tooltip,
   Image,
   Pagination,
@@ -11,6 +10,7 @@ import {
   Button,
   Drawer,
   ActionIcon,
+  Table,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { FiSearch, FiEdit2 } from "react-icons/fi";
@@ -69,134 +69,102 @@ export default function CategoriesTable({
         </div>
 
         {/* Table Header */}
-        <div
-          style={{
-            backgroundColor: "black",
-            padding: "12px 16px",
-            borderBottom: "1px solid #e5e7eb",
-          }}
-        >
-          <Group
-            justify="space-between"
-            style={{ color: "white", fontWeight: 600, fontSize: "0.875rem" }}
-          >
-            <Text className="!text-white" span style={{ flex: 1.5 }}>
-              ICON
-            </Text>
-            <Text className="!text-white" span style={{ flex: 2 }}>
-              TITLE
-            </Text>
-            <Text className="!text-white" span style={{ flex: 4 }}>
-              DESCRIPTION
-            </Text>
-            <Text className="!text-white" span style={{ flex: 2 }}>
-              CREATED AT
-            </Text>
-            <Text
-              className="!text-white"
-              span
-              style={{ flex: 1, textAlign: "center" }}
-            >
-              ACTION
-            </Text>
-          </Group>
-        </div>
-
-        {/* Table Content */}
         <ScrollArea h={400}>
-          <div style={{ minWidth: 800 }}>
-            {loading ? (
-              <div style={{ padding: "2rem", textAlign: "center" }}>
-                <Loader color="dark" size="lg" />
-              </div>
-            ) : categories?.length === 0 ? (
-              <div
+          {loading ? (
+            <div style={{ padding: "2rem", textAlign: "center" }}>
+              <Loader color="dark" size="lg" />
+            </div>
+          ) : (
+            <Table
+              highlightOnHover
+              verticalSpacing="sm"
+              horizontalSpacing="md"
+              withColumnBorders={false}
+              striped
+            >
+              <Table.Thead
                 style={{
-                  padding: "2rem",
-                  textAlign: "center",
-                  color: "#9ca3af",
-                  fontStyle: "italic",
+                  backgroundColor: "black",
+                  color: "white",
+                  fontWeight: 600,
+                  fontSize: "0.875rem",
                 }}
               >
-                No categories found
-              </div>
-            ) : (
-              categories.map((cat, index) => (
-                <div
-                  key={cat.id}
-                  style={{
-                    backgroundColor: index % 2 === 0 ? "#ffffff" : "#f9f9f9",
-                    borderBottom: "1px solid #e5e7eb",
-                    padding: "12px 16px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <div style={{ flex: 1.5 }}>
-                    <Image
-                      src={cat.icon}
-                      alt={cat.title}
-                      w={40}
-                      h={40}
-                      radius="md"
-                      fit="contain"
-                    />
-                  </div>
+                <Table.Tr>
+                  <Table.Th>ICON</Table.Th>
+                  <Table.Th>TITLE</Table.Th>
+                  <Table.Th>DESCRIPTION</Table.Th>
+                  <Table.Th>CREATED AT</Table.Th>
+                  <Table.Th style={{ textAlign: "center" }}>ACTION</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
 
-                  <div style={{ flex: 2 }}>
-                    <Text fw={600} size="sm" c="#111827">
-                      {cat.title}
-                    </Text>
-                  </div>
-
-                  <div style={{ flex: 4 }}>
-                    {cat.description ? (
-                      <Tooltip
-                        label={cat.description}
-                        position="top-start"
-                        withArrow
-                      >
-                        <Text
-                          size="sm"
-                          c="#374151"
-                          style={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          {cat.description}
-                        </Text>
-                      </Tooltip>
-                    ) : (
-                      <Text size="sm" c="#9ca3af" fs="italic">
-                        No description
+              <Table.Tbody>
+                {categories.length === 0 ? (
+                  <Table.Tr>
+                    <Table.Td colSpan={5} style={{ textAlign: "center" }}>
+                      <Text c="#9ca3af" fs="italic">
+                        No categories found
                       </Text>
-                    )}
-                  </div>
-
-                  <div style={{ flex: 2 }}>
-                    <Text size="sm" fw={500} c="#111827">
-                      {new Date(cat.createdAt).toLocaleDateString()}
-                    </Text>
-                  </div>
-
-                  <div style={{ flex: 1, textAlign: "center" }}>
-                    <ActionIcon
-                      color="dark"
-                      w={"60"}
-                      variant="light"
-                      radius="xl"
-                      onClick={() => handleEdit(cat)}
-                    >
-                      <FiEdit2 size={18} />
-                    </ActionIcon>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+                    </Table.Td>
+                  </Table.Tr>
+                ) : (
+                  categories.map((cat) => (
+                    <Table.Tr key={cat.id}>
+                      <Table.Td>
+                        <Image
+                          src={cat.icon}
+                          alt={cat.title}
+                          w={40}
+                          h={40}
+                          radius="md"
+                          fit="contain"
+                        />
+                      </Table.Td>
+                      <Table.Td>
+                        <Text fw={600} size="sm">
+                          {cat.title}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        {cat.description ? (
+                          <Tooltip label={cat.description} withArrow>
+                            <Text
+                              size="sm"
+                              style={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {cat.description}
+                            </Text>
+                          </Tooltip>
+                        ) : (
+                          <Text size="sm" c="#9ca3af" fs="italic">
+                            No description
+                          </Text>
+                        )}
+                      </Table.Td>
+                      <Table.Td>
+                        {new Date(cat.createdAt).toLocaleDateString()}
+                      </Table.Td>
+                      <Table.Td align="center">
+                        <ActionIcon
+                          color="dark"
+                          variant="light"
+                          radius="xl"
+                          onClick={() => handleEdit(cat)}
+                        >
+                          <FiEdit2 size={18} />
+                        </ActionIcon>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))
+                )}
+              </Table.Tbody>
+            </Table>
+          )}
         </ScrollArea>
 
         {/* Pagination */}

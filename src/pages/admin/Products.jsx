@@ -14,6 +14,7 @@ import {
   RangeSlider,
   Pagination,
   Title,
+  Table,
 } from "@mantine/core";
 import { useReducer, useEffect, useState } from "react";
 import { FiSearch, FiEdit2 } from "react-icons/fi";
@@ -129,7 +130,7 @@ export default function AdminProducts() {
             className="w-full md:w-1/4"
           />
 
-          <div className="flex w-full justify-end gap-3">
+          <div className="flex w-full justify-center sm:justify-end gap-3">
             <Select
               placeholder="Category"
               value={state.categoryId?.toString() || "All"}
@@ -142,7 +143,7 @@ export default function AdminProducts() {
                 })),
               ]}
               radius="md"
-              className="w-full md:w-1/5"
+              className="w-[120px] sm:w-[70%] md:w-1/5"
             />
 
             <Button size="sm" onClick={handleAdd}>
@@ -150,7 +151,7 @@ export default function AdminProducts() {
             </Button>
           </div>
         </div>
-        <div className="flex m-3 items-center  justify-between">
+        <div className="flex m-3 items-center gap-3  justify-between ">
           <RangeSlider
             value={[state.price.lowerLimit, state.price.upperLimit]}
             onChange={handlePriceChange}
@@ -175,84 +176,85 @@ export default function AdminProducts() {
           />
         </div>
 
-        {/* Table Header */}
-        <div className="bg-black text-white px-4 py-2 border-b flex">
-          <Text className="!text-white" style={{ flex: 1 }}>
-            IMAGE
-          </Text>
-          <Text className="!text-white" style={{ flex: 2 }}>
-            TITLE
-          </Text>
-          <Text className="!text-white" style={{ flex: 1 }}>
-            PRICE
-          </Text>
-          <Text className="!text-white" style={{ flex: 1 }}>
-            DISCOUNT
-          </Text>
-          <Text className="!text-white" style={{ flex: 1 }}>
-            QUANTITY
-          </Text>
-
-          {/* <Text className="!text-white" style={{ flex: 2 }}>
-            CREATED AT
-          </Text> */}
-          <Text
-            className="!text-white"
-            style={{ flex: 1, textAlign: "center" }}
-          >
-            ACTION
-          </Text>
-        </div>
-
-        {/* Table Content */}
         <ScrollArea h={400}>
           {loading ? (
-            <div className="p-4 text-center">
-              <Loader size="lg" />
+            <div style={{ padding: "2rem", textAlign: "center" }}>
+              <Loader color="dark" size="lg" />
             </div>
           ) : (
-            products.map((prod, idx) => (
-              <div
-                key={prod.id}
-                className={`flex px-4 py-2 border-b ${
-                  idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                }`}
+            <Table
+              highlightOnHover
+              striped
+              verticalSpacing="sm"
+              horizontalSpacing="md"
+            >
+              <Table.Thead
+                style={{
+                  backgroundColor: "black",
+                  color: "white",
+                  fontWeight: 600,
+                  fontSize: "0.875rem",
+                }}
               >
-                <div style={{ flex: 1 }}>
-                  {prod.productImages?.[0] ? (
-                    <Image
-                      src={prod.productImages[0].url}
-                      alt={prod.title}
-                      w={40}
-                      h={40}
-                      radius="sm"
-                      fit="cover"
-                    />
-                  ) : null}
-                </div>
-                <div style={{ flex: 2 }}>{prod.title}</div>
-                <div style={{ flex: 1 }}>{prod.price}</div>
-                <div style={{ flex: 1 }}>{prod.discount}</div>
-                <div style={{ flex: 1 }}>
-                  {prod.quantity} {prod.unitQuantity}
-                </div>
-                {/* <div style={{ flex: 2 }}>
-                  {new Date(prod.createdAt).toLocaleDateString()}
-                </div> */}
-                <div style={{ flex: 1, textAlign: "center" }}>
-                  <ActionIcon
-                    color="dark"
-                    variant="light"
-                    onClick={() => handleEdit(prod)}
-                  >
-                    <FiEdit2 size={18} />
-                  </ActionIcon>
-                </div>
-              </div>
-            ))
+                <Table.Tr>
+                  <Table.Th>IMAGE</Table.Th>
+                  <Table.Th>TITLE</Table.Th>
+                  <Table.Th>PRICE</Table.Th>
+                  <Table.Th>DISCOUNT</Table.Th>
+                  <Table.Th>QUANTITY / UNIT</Table.Th>
+                  <Table.Th style={{ textAlign: "center" }}>ACTION</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+
+              <Table.Tbody>
+                {products.length === 0 ? (
+                  <Table.Tr>
+                    <Table.Td colSpan={6} style={{ textAlign: "center" }}>
+                      <Text c="#9ca3af" fs="italic">
+                        No products found
+                      </Text>
+                    </Table.Td>
+                  </Table.Tr>
+                ) : (
+                  products.map((prod) => (
+                    <Table.Tr key={prod.id}>
+                      <Table.Td>
+                        {prod.productImages?.[0] && (
+                          <Image
+                            src={prod.productImages[0].url}
+                            alt={prod.title}
+                            w={40}
+                            h={40}
+                            radius="md"
+                            fit="contain"
+                          />
+                        )}
+                      </Table.Td>
+                      <Table.Td>{prod.title}</Table.Td>
+                      <Table.Td>${prod.price}</Table.Td>
+                      <Table.Td>
+                        {prod.discount ? `${prod.discount}%` : "-"}
+                      </Table.Td>
+                      <Table.Td>
+                        {prod.quantity} {prod.unitQuantity}
+                      </Table.Td>
+                      <Table.Td align="center">
+                        <ActionIcon
+                          color="dark"
+                          variant="light"
+                          radius="xl"
+                          onClick={() => handleEdit(prod)}
+                        >
+                          <FiEdit2 size={18} />
+                        </ActionIcon>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))
+                )}
+              </Table.Tbody>
+            </Table>
           )}
         </ScrollArea>
-
         {/* Pagination */}
         {!loading && (
           <div className="py-3 flex justify-center border-t border-gray-200">
