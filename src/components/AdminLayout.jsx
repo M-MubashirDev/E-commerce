@@ -21,7 +21,7 @@ export default function AdminLayout() {
     { label: "Dashboard", icon: FaHome, path: "/dashboard" },
     { label: "Orders", icon: FaShoppingCart, path: "/orders" },
     { label: "Categories", icon: TbCategoryFilled, path: "/categories" },
-    { label: "Products", icon: FaBox, path: "/products" },
+    { label: "Products", icon: FaBox, path: "/adminProducts" },
     { label: "Customers", icon: FaUsers, path: "/customers" },
     { label: "Settings", icon: FaCog, path: "/settings" },
   ];
