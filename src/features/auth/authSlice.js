@@ -12,6 +12,7 @@ import {
   updateUserProfile,
   changePassword,
   deleteUserAccount,
+  getAllUsers,
 } from "./authThunks";
 
 const initialState = {
@@ -207,6 +208,20 @@ const authSlice = createSlice({
         state.resetOTP = null;
       })
       .addCase(deleteUserAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //get all users
+      .addCase(getAllUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.usersList = action.payload.rows;
+        state.totalUsers = action.payload.count;
+      })
+      .addCase(getAllUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

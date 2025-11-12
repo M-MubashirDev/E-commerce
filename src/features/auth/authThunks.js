@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getAuthToken } from "../categories/categoriesThunks";
 
 const API_BASE_URL = "http://localhost:3002/api/client";
 
@@ -302,6 +303,35 @@ export const deleteUserAccount = createAsyncThunk(
       return rejectWithValue(
         error.response?.data?.message ||
           "Failed to delete account. Please try again."
+      );
+    }
+  }
+);
+
+//admin get all users and delete profile
+// http://localhost:3002/api/client/view
+// Get All Users (Admin)
+export const getAllUsers = createAsyncThunk(
+  "auth/getAllUsers",
+  async ({ page = 0, limit = 10 }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const response = await api.post(
+        "/view",
+        { page, limit },
+        {
+          headers: token,
+        }
+      );
+
+      if (response.data.statusCode === 200) {
+        return response.data.result;
+      }
+      return rejectWithValue(response.data.message || "Failed to fetch users");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Failed to fetch users. Please try again."
       );
     }
   }

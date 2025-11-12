@@ -19,6 +19,8 @@ import Dashboard from "./pages/admin/Dashboard";
 import Categories from "./pages/admin/Categories";
 import CategoriesAction from "./pages/admin/CategoriesAction";
 import AdminProducts from "./pages/admin/Products";
+import Customer from "./pages/admin/Customer";
+import Orders from "./pages/admin/Orders";
 
 function App() {
   return (
@@ -53,6 +55,8 @@ function App() {
               <Route path="add" element={<CategoriesAction />} />
             </Route>
             <Route path="adminProducts" element={<AdminProducts />} />
+            <Route path="customers" element={<Customer />} />
+            <Route path="Orders" element={<Orders />} />
           </Route>
         </Routes>
       </BrowserRouter>
