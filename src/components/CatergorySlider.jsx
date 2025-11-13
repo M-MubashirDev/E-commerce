@@ -1,8 +1,11 @@
 import { Avatar, Button, ScrollArea, Box } from "@mantine/core";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+
 import { setCategory } from "../features/categories/categoriesSlice";
 import { fetchCategories } from "../features/categories/categoriesThunks";
+import { Spinner } from "../ui/Spinners";
+import ErrorMessage from "../ui/ErrorMessage";
 
 export default function ExploreCategories() {
   const fallbackImage = "logo.png";
@@ -11,33 +14,19 @@ export default function ExploreCategories() {
   const { categories, loading, error, selectedCategory } = useSelector(
     (state) => state.categories
   );
-  console.log(categories, "categories");
+
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
+  if (loading) return <Spinner />;
+  if (error) return <ErrorMessage error={error} />;
   return (
-    <section
-      id="exploreCategories"
-      className="relative   px-6  mx-auto  bg-lights "
-    >
-      {loading && (
-        <div className="text-center text-gray-300 rounded-md font-medium text-lg py-4 bg-gray-800 border-l-4 border-blue-500 shadow-md">
-          Loading categories...
-        </div>
-      )}
-
-      {error && (
-        <div className="text-center text-red-400 rounded-md font-medium text-lg py-4 bg-red-900 bg-opacity-30 border-l-4 border-red-500 shadow-md">
-          {error}
-        </div>
-      )}
-
-      {!loading && !error && categories.rows.length > 0 && (
+    <section className="relative   px-6  mx-auto  bg-lights ">
+      {categories.rows.length > 0 && (
         <Box className="py-4  flex justify-center">
           <ScrollArea
             offsetScrollbars
-            // scrollbarSize={8}
             scrollbars="x"
             classNames={{
               root: " !min-h-[90px]",
@@ -46,7 +35,6 @@ export default function ExploreCategories() {
             }}
           >
             <div className="flex h-[90px] gap-6 items-center justify-evenly py-4">
-              {/* All Categories button */}
               <Button
                 onClick={() => dispatch(setCategory("All"))}
                 leftSection={
@@ -55,7 +43,6 @@ export default function ExploreCategories() {
                       root: "!rounded-full !border !border-medium-gray !border-medium-gray !w-11 !h-11",
                     }}
                     variant="outline"
-                    // size="lg"
                   />
                 }
                 classNames={{
@@ -83,7 +70,7 @@ export default function ExploreCategories() {
                           root: "!rounded-full  !w-11 !h-11",
                         }}
                         onError={(e) => {
-                          e.target.src = fallbackImage; // Set fallback on error
+                          e.target.src = fallbackImage;
                         }}
                       />
                     }
@@ -101,7 +88,6 @@ export default function ExploreCategories() {
                           : "!text-[#4a5565] !bg-light-gray shadow-sm hover:!text-white hover:!shadow-lg hover:!bg-black"
                       }`,
                     }}
-                    // size="md"
                   >
                     {cat?.title}
                   </Button>

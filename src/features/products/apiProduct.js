@@ -10,7 +10,7 @@ export const getProducts = async (filters = {}) => {
     page: filters.page || 0,
     limit: filters.limit || 12,
     title: filters.title || "",
-    category_id: filters.categoryId || "",
+    category_id: filters.category_id || "",
     discount: filters.discount ?? 0,
     price: {
       lowerLimit: filters.price?.lowerLimit || 0,

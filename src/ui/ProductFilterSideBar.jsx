@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { FiFilter, FiX, FiSearch, FiSliders } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
+
 import { fetchCategories } from "../features/categories/categoriesThunks";
 
 function ProductFilterSideBar({
@@ -30,6 +31,7 @@ function ProductFilterSideBar({
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
   return (
     <div className={`transition-all  min-h-full duration-300 `}>
       <div className="p-6 !rounded-xl  shadow-lg !bg-light backdrop-blur-lg">
@@ -58,7 +60,6 @@ function ProductFilterSideBar({
               isShowFilterTab ? "!w-full md:!w-80 md:!flex " : "!hidden"
             } !mt-5 `}
           >
-            {/* Search */}
             <div>
               <Text size="sm" fw={500} className="text-gray-900">
                 Search Product
@@ -67,10 +68,6 @@ function ProductFilterSideBar({
                 placeholder="Search for products..."
                 value={state.title}
                 onChange={(e) => {
-                  dispatchReducer({
-                    type: "title",
-                    payload: e.target.value,
-                  });
                   setSearchParams((prev) => ({
                     ...Object.fromEntries(prev),
                     title: e.target.value,
@@ -81,7 +78,6 @@ function ProductFilterSideBar({
               />
             </div>
 
-            {/* Category Filter */}
             <div>
               <Text size="sm" fw={500} className="text-gray-900">
                 Category
@@ -89,12 +85,8 @@ function ProductFilterSideBar({
               <Select
                 placeholder="Select category"
                 value={state?.category_id || "All"}
+                allowDeselect={false}
                 onChange={(value) => {
-                  if (value === null || value === state.category_id) return;
-                  dispatchReducer({
-                    type: "category",
-                    payload: value,
-                  });
                   setSearchParams((prev) => ({
                     ...Object.fromEntries(prev),
                     category: value,
@@ -111,7 +103,6 @@ function ProductFilterSideBar({
               />
             </div>
 
-            {/* Price Range */}
             <div>
               <Text size="sm" fw={500} className="text-gray-900">
                 Price Range: {state.price.lowerLimit} - {maxPrice}
@@ -132,7 +123,6 @@ function ProductFilterSideBar({
               />
             </div>
 
-            {/* Sort By */}
             <div>
               <Text size="sm" fw={500} className="text-gray-900">
                 Sort By
@@ -140,13 +130,9 @@ function ProductFilterSideBar({
               <Select
                 value={state.sortBy}
                 onChange={(value) => {
-                  dispatchReducer({
-                    type: "sort",
-                    payload: value,
-                  });
                   setSearchParams((prev) => ({
                     ...Object.fromEntries(prev),
-                    sortBy: value,
+                    sort: value,
                   }));
                 }}
                 data={[

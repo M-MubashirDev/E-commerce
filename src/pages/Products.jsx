@@ -1,81 +1,31 @@
 import { useEffect, useReducer } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Paper, Text, Loader, Pagination } from "@mantine/core";
 
-import { fetchProducts } from "../features/products/productsThunks";
 import ProductFilterSideBar from "../ui/ProductFilterSideBar";
 import ProductGrid from "../ui/ProductItemGrid";
 import SmallHero from "../components/SmallHero";
-import { useSearchParams } from "react-router-dom";
+import ErrorMessage from "../ui/ErrorMessage";
 
-const initialStates = {
-  page: 0,
-  limit: 20,
-  title: "",
-  category_id: null,
-  sortBy: "name",
-  price: {
-    lowerLimit: 0,
-    upperLimit: 2000,
-  },
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "category":
-      return {
-        ...state,
-        category_id: action.payload === "All" ? null : action.payload,
-      };
-    case "title":
-      return { ...state, title: action.payload };
-    case "price":
-      return {
-        ...state,
-        price: {
-          lowerLimit: action.payload[0],
-          upperLimit: action.payload[1],
-        },
-      };
-    case "page":
-      return { ...state, page: action.payload };
-    case "clearFilters":
-      return {
-        ...initialStates,
-        price: {
-          lowerLimit: 0,
-          upperLimit: action.payload,
-        },
-      };
-    case "sort":
-      return {
-        ...state,
-        sortBy: action.payload,
-      };
-    case "params":
-      return {
-        ...state,
-        page: action.payload.page || state.page,
-        title: action.payload.title || state.title,
-        category_id: action.payload.category || state.category_id,
-        sortBy: action.payload.sortBy || state.sortBy,
-      };
-    default:
-      return state;
-  }
-}
+import { fetchProducts } from "../features/products/productsThunks";
+import { ProductInitialStates, productReducer } from "../utilities/Reducers";
 
 const Products = () => {
   const dispatch = useDispatch();
-
-  const [state, dispatchReducer] = useReducer(reducer, initialStates);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const [state, dispatchReducer] = useReducer(
+    productReducer,
+    ProductInitialStates
+  );
 
   const {
     items: products,
     total,
     loading,
     maxPrice,
+    error,
   } = useSelector((state) => state.products);
 
   const { page, sort, title, category } = Object.fromEntries(searchParams);
@@ -83,6 +33,7 @@ const Products = () => {
 
   useEffect(() => {
     if (!page && !sort && !title && !category) return;
+
     dispatchReducer({
       type: "params",
       payload: {
@@ -105,6 +56,8 @@ const Products = () => {
     });
   }, [maxPrice]);
 
+  if (error) return <ErrorMessage error={error} />;
+
   return (
     <div className="min-h-screen bg-light-gray">
       <SmallHero />
@@ -115,6 +68,7 @@ const Products = () => {
             state={state}
             maxPrice={maxPrice}
             setSearchParams={setSearchParams}
+            searchParams={searchParams}
           />
 
           <div className="flex-1 relative">
@@ -156,9 +110,12 @@ const Products = () => {
               <Pagination
                 total={totalPages}
                 value={state.page + 1}
-                onChange={(page) =>
-                  dispatchReducer({ type: "page", payload: page - 1 })
-                }
+                onChange={(page) => {
+                  setSearchParams((prev) => ({
+                    ...Object.fromEntries(prev),
+                    page: page - 1,
+                  }));
+                }}
                 siblings={1}
                 boundaries={1}
                 className="mt-6 flex justify-center"
