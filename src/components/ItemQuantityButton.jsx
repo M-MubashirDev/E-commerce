@@ -44,6 +44,7 @@ function ItemQuantityButton({ item }) {
         <ActionIcon
           onClick={() => updateQuantity(item, "increase")}
           color="dark"
+          disabled={item?.currentQuantity >= item?.quantity}
           variant="subtle"
           size="sm"
         >

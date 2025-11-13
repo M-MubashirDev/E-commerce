@@ -3,7 +3,8 @@ import { calculateTotals } from "../../utilities/CalculatePrice";
 export function setCartItemReducer(state, action) {
   const id = String(action.payload.id);
   const existingItem = state.cart.items.find((val) => String(val.id) === id);
-
+  console.log(existingItem.quantity);
+  if (existingItem.currentQuantity >= existingItem.quantity) return state;
   if (existingItem) {
     existingItem.currentQuantity += 1;
   } else {
