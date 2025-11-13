@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createOrder,
   deleteOrder,
+  fetchOrderDetails,
   fetchOrders,
   fetchUserOrders,
   updateOrder,
@@ -70,7 +71,6 @@ const orderSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       // ✅ Delete order (admin)
       .addCase(deleteOrder.pending, (state) => {
         state.loading = true;
@@ -94,6 +94,18 @@ const orderSlice = createSlice({
         state.total = action.payload.count;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      }) // inside orderSlice extraReducers
+      .addCase(fetchOrderDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchOrderDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orderDetails = action.payload;
+      })
+      .addCase(fetchOrderDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

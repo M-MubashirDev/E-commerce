@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { getAuthToken } from "../categories/categoriesThunks";
 
 const API_BASE_URL = "http://localhost:3002/api/user";
 
@@ -50,7 +51,6 @@ export const signupAdmin = createAsyncThunk(
         password: userData.password,
       });
 
-      console.log(response, ".......");
       if (response.data.statusCode === 200) {
         return {
           userAdmin: response.data.result,
@@ -60,6 +60,31 @@ export const signupAdmin = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || error.data.message
+      );
+    }
+  }
+);
+// Update Admin Name
+export const updateAdminName = createAsyncThunk(
+  "auth/updateAdminName",
+  async (newName, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const response = await axios.put(
+        "http://localhost:3002/api/user/update",
+        { name: newName },
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // assuming backend returns updated user info
+      return response.data.result.user;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update name"
       );
     }
   }

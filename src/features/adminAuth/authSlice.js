@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUserAdmin, signupAdmin } from "./authThunks";
+import { loginUserAdmin, signupAdmin, updateAdminName } from "./authThunks";
 
 const initialState = {
   userAdmin: null,
@@ -54,6 +54,18 @@ const authSlice = createSlice({
       .addCase(signupAdmin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to sign up";
+      })
+      .addCase(updateAdminName.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAdminName.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userAdmin = action.payload;
+      })
+      .addCase(updateAdminName.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update admin name";
       });
   },
 });

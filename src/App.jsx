@@ -21,6 +21,7 @@ import CategoriesAction from "./pages/admin/CategoriesAction";
 import AdminProducts from "./pages/admin/Products";
 import Customer from "./pages/admin/Customer";
 import Orders from "./pages/admin/Orders";
+import Settings from "./pages/admin/Settings";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
             <Route path="adminProducts" element={<AdminProducts />} />
             <Route path="customers" element={<Customer />} />
             <Route path="Orders" element={<Orders />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </BrowserRouter>

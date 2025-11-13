@@ -26,7 +26,13 @@ function Home() {
     dispatch(fetchProducts({ limit: 50 }));
   }, [dispatch]);
 
-  console.log(".............", category, products, ".......products");
+  console.log(
+    ".............",
+    category,
+    categories,
+    products,
+    ".......products"
+  );
 
   //..........showing content accoring to current categories
   let content;

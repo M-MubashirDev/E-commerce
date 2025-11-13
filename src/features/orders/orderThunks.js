@@ -131,3 +131,29 @@ export const fetchOrders = createAsyncThunk(
     }
   }
 );
+
+// src/features/orders/orderThunks.js
+export const fetchOrderDetails = createAsyncThunk(
+  "orders/fetchOrderDetails",
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+
+      const response = await axios.get(
+        `http://localhost:3002/api/order/orderDetails/${orderId}`,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return response.data.result;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch order details"
+      );
+    }
+  }
+);

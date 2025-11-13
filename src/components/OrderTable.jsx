@@ -13,6 +13,9 @@ import {
 import { useState } from "react";
 import { FiSearch, FiEdit2 } from "react-icons/fi";
 import OrdersAction from "./OrdersAction";
+import ViewOrderDetailsDrawer from "./VIewOrderDetailsAdmin";
+import { fetchOrderDetails } from "../features/orders/orderThunks";
+import { useDispatch } from "react-redux";
 
 export default function OrdersTable({
   orders,
@@ -26,8 +29,12 @@ export default function OrdersTable({
   const [drawerOpened, setDrawerOpened] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  // 🔍 Debounced search filter
+  const dispatch = useDispatch();
 
+  const handleView = async (order) => {
+    setDrawerOpened(true);
+    await dispatch(fetchOrderDetails(order.id)).unwrap();
+  };
   function handleChangeTerm(values) {
     setSearchTerm(values);
     setTimeout(() => {
@@ -104,7 +111,13 @@ export default function OrdersTable({
                   </Table.Tr>
                 ) : (
                   orders.map((order) => (
-                    <Table.Tr key={order.id}>
+                    <Table.Tr
+                      key={order.id}
+                      onClick={() => {
+                        handleView(order);
+                      }}
+                      className="!cursor-pointer"
+                    >
                       <Table.Td>{order.id}</Table.Td>
                       <Table.Td>
                         <Tooltip label={order.address} withArrow>
@@ -165,7 +178,7 @@ export default function OrdersTable({
       <Drawer
         opened={drawerOpened}
         onClose={() => setDrawerOpened(false)}
-        title={selectedOrder ? "Edit Order" : "Add New Order"}
+        title={"Edit Order"}
         position="right"
         size="lg"
         overlayProps={{ opacity: 0.4, blur: 3 }}
@@ -175,6 +188,10 @@ export default function OrdersTable({
           onClose={() => setDrawerOpened(false)}
         />
       </Drawer>
+      <ViewOrderDetailsDrawer
+        opened={drawerOpened}
+        onClose={() => setDrawerOpened(false)}
+      />
     </>
   );
 }
