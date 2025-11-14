@@ -38,10 +38,16 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       // Fetch single product
+      .addCase(fetchProductById.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchProductById.fulfilled, (state, action) => {
         state.selectedProduct = action.payload;
+      })
+      .addCase(fetchProductById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
 
       // Add product

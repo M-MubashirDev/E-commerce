@@ -6,7 +6,7 @@ import { getAuthToken } from "../categories/categoriesThunks";
 
 // ✅ Get all products
 export const fetchProducts = createAsyncThunk(
-  "products/fetchProducts",
+  "products/fetchProducts", 
   async (filters, { rejectWithValue }) => {
     try {
       const response = await getProducts(filters);

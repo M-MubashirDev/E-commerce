@@ -18,14 +18,12 @@ function CartModel({
     >
       {selectedItem && (
         <div className="flex flex-col items-center gap-4">
-          {/* Carousel */}
           <ProductDetailCarousel
             images={selectedItem.images}
             activeIndex={activeIndex}
             setActiveIndex={setActiveIndex}
           />
 
-          {/* Thumbnails */}
           <div className="flex gap-3 justify-center items-center h-[70px] mt-2">
             {selectedItem.images?.map((image, ind) => (
               <img
@@ -42,7 +40,6 @@ function CartModel({
             ))}
           </div>
 
-          {/* Description */}
           <Text size="sm" className="text-dark-gray mt-4">
             {selectedItem.description}
           </Text>
