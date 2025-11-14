@@ -1,30 +1,13 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getAuthToken } from "../categories/categoriesThunks";
+import { adminApi } from "../../utilities/axiosInspector";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const API_BASE_URL = "http://localhost:3002/api/user";
-
-// Axios instance with default config
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("authToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
 // Login User
 export const loginUserAdmin = createAsyncThunk(
-  "auth/login",
+  "adminAuth/login",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await api.post("/login", { email, password });
+      const response = await adminApi.post("/user/login", { email, password });
 
       if (response.data.statusCode === 200) {
         const { userInfo, tokenInfo } = response.data.result;
@@ -42,10 +25,10 @@ export const loginUserAdmin = createAsyncThunk(
 );
 // Signup User
 export const signupAdmin = createAsyncThunk(
-  "auth/signup",
+  "adminAuth/signup",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/signup", {
+      const response = await adminApi.post("/user/signup", {
         name: userData.name,
         email: userData.email,
         password: userData.password,
@@ -66,25 +49,14 @@ export const signupAdmin = createAsyncThunk(
 );
 // Update Admin Name
 export const updateAdminName = createAsyncThunk(
-  "auth/updateAdminName",
+  "adminAuth/updateAdminName",
   async (newName, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
-      const response = await axios.put(
-        "http://localhost:3002/api/user/update",
-        { name: newName },
-        {
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // assuming backend returns updated user info
+      const response = await axios.put("/user/update", { name: newName });
       return response.data.result.user;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update name"
+        error.response?.data?.message || error.data.message
       );
     }
   }

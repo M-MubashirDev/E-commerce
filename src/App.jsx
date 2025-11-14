@@ -22,6 +22,7 @@ import AdminProducts from "./pages/admin/Products";
 import Customer from "./pages/admin/Customer";
 import Orders from "./pages/admin/Orders";
 import Settings from "./pages/admin/Settings";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -48,7 +49,13 @@ function App() {
           </Route>
 
           {/* admin */}
-          <Route element={<AdminLayout />}>
+          <Route
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="categories">
               <Route index element={<Categories />} />

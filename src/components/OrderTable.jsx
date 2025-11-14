@@ -27,6 +27,7 @@ export default function OrdersTable({
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [drawerOpened, setDrawerOpened] = useState(false);
+  const [drawerOpenedDetail, setDrawerOpenedDetail] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const dispatch = useDispatch();
@@ -189,8 +190,8 @@ export default function OrdersTable({
         />
       </Drawer>
       <ViewOrderDetailsDrawer
-        opened={drawerOpened}
-        onClose={() => setDrawerOpened(false)}
+        opened={drawerOpenedDetail}
+        onClose={() => setDrawerOpenedDetail(false)}
       />
     </>
   );

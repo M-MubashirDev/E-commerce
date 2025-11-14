@@ -1,18 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { adminApi } from "../../utilities/axiosInspector";
 
 export const fetchStats = createAsyncThunk(
   "stats/fetchStats",
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("authToken");
-      const response = await axios.get("http://localhost:3002/api/stats/all", {
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      });
+      const response = await adminApi.get("/stats/all");
       return response.data.result;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch stats"
+        error.response?.data?.message || error.data.message
       );
     }
   }

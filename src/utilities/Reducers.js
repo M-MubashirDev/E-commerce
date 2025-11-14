@@ -47,3 +47,24 @@ export function productReducer(state, action) {
       return state;
   }
 }
+export const AdminProductInitialStates = {
+  page: 0,
+  limit: 10,
+  title: "",
+  categoryId: null,
+  price: { lowerLimit: 0, upperLimit: 2500 },
+  sortBy: "name",
+};
+
+export function adminProductReducer(state, action) {
+  switch (action.type) {
+    case "setField":
+      return { ...state, [action.field]: action.value };
+    case "setPage":
+      return { ...state, page: action.payload };
+    case "reset":
+      return { ...AdminProductInitialStates };
+    default:
+      return state;
+  }
+}

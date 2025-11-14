@@ -23,8 +23,8 @@ function reducer(state, action) {
 
 export default function Orders() {
   const dispatch = useDispatch();
-  const { orders, total, loading } = useSelector((state) => state.orders);
   const [state, dispatchReducer] = useReducer(reducer, initialState);
+  const { orders, total, loading } = useSelector((state) => state.orders);
 
   const { page, limit, address } = state;
   const totalPages = Math.ceil(total / limit);

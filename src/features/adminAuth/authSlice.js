@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUserAdmin, signupAdmin, updateAdminName } from "./authThunks";
 
 const initialState = {
   userAdmin: null,
@@ -26,46 +25,46 @@ const authSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      .addCase(loginUserAdmin.pending, (state) => {
+      .addCase("adminAuth/login/pending", (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUserAdmin.fulfilled, (state, action) => {
+      .addCase("adminAuth/login/fulfilled", (state, action) => {
         state.loading = false;
         state.userAdmin = action.payload.userAdmin;
         state.accessToken = action.payload.accessToken;
         state.error = null;
       })
-      .addCase(loginUserAdmin.rejected, (state, action) => {
+      .addCase("adminAuth/login/rejected", (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to log in";
       });
 
     builder
-      .addCase(signupAdmin.pending, (state) => {
+      .addCase("adminAuth/signup/pending", (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(signupAdmin.fulfilled, (state, action) => {
+      .addCase("adminAuth/signup/fulfilled", (state, action) => {
         state.loading = false;
         state.pendingEmail = action.payload.email;
         state.error = null;
       })
-      .addCase(signupAdmin.rejected, (state, action) => {
+      .addCase("adminAuth/signup/rejected", (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to sign up";
       })
-      .addCase(updateAdminName.pending, (state) => {
+      .addCase("adminAuth/updateAdminName/pending", (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateAdminName.fulfilled, (state, action) => {
+      .addCase("adminAuth/updateAdminName/fulfilled", (state, action) => {
         state.loading = false;
         state.userAdmin = action.payload;
       })
-      .addCase(updateAdminName.rejected, (state, action) => {
+      .addCase("adminAuth/updateAdminName/rejected", (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to update admin name";
+        state.error = action.payload;
       });
   },
 });

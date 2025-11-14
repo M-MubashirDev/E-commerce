@@ -68,7 +68,9 @@ export default function CategoriesAction({ existingCategory = null, onClose }) {
     try {
       if (!existingCategory) return;
       await dispatch(deleteCategory(existingCategory.id)).unwrap();
-      dispatch(fetchCategories({ page: 0, title: "" }));
+      await dispatch(
+        fetchCategories({ page: 0, title: "", limit: 20 })
+      ).unwrap();
       onClose?.();
     } catch (err) {
       console.error(err);
