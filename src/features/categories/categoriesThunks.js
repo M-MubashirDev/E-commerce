@@ -2,7 +2,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getCategories } from "./catApi";
 import { adminApi } from "../../utilities/axiosInspector";
 
-// ✅ Helper to get the Bearer token from localStorage
 export const getAuthToken = () => {
   try {
     const authData = JSON.parse(localStorage.getItem("persist:adminAuth"));

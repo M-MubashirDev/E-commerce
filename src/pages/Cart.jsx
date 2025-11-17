@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 
 import SmallHero from "../components/SmallHero";
 import CartModel from "../components/CartModel";
-import CartOrderSummery from "../components/CartOrderSummery";
-import CartItemSection from "../components/CartItemSection";
 import EmptyCardCart from "../components/EmptyCardCart";
+import CartItemSection from "../components/CartItemSection";
+import CartOrderSummery from "../components/CartOrderSummery";
 
 const Cart = () => {
   const [opened, setOpened] = useState(false);

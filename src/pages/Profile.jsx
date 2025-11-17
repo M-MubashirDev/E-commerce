@@ -149,9 +149,12 @@ export default function Profile() {
                   />
                 </div>
 
-                <Group justify="flex-end" mt="md">
+                <div>
                   {editMode ? (
-                    <>
+                    <div className="flex  gap-2 ">
+                      <Button type="submit" loading={loading}>
+                        Save Changes
+                      </Button>
                       <Button
                         variant="outline"
                         onClick={() => {
@@ -161,10 +164,7 @@ export default function Profile() {
                       >
                         Cancel
                       </Button>
-                      <SubmitButton loading={loading}>
-                        Save Changes
-                      </SubmitButton>
-                    </>
+                    </div>
                   ) : (
                     <Button
                       leftSection={<FaEdit size={14} />}
@@ -173,7 +173,7 @@ export default function Profile() {
                       Edit Profile
                     </Button>
                   )}
-                </Group>
+                </div>
               </form>
             </FormProvider>
           </Tabs.Panel>

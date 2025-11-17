@@ -1,8 +1,4 @@
-// src/api/apiProduct.js
-import axios from "axios";
-
-// ✅ Your backend base URL
-const BASE_URL = "http://localhost:3002/api/product";
+import { adminApi } from "../../utilities/axiosInspector";
 
 // ✅ Fetch all products (with filters, pagination, etc.)
 export const getProducts = async (filters = {}) => {
@@ -18,7 +14,7 @@ export const getProducts = async (filters = {}) => {
       upperLimit: filters.price?.upperLimit || 0,
     },
   };
-  const { data } = await axios.post(`${BASE_URL}/view`, payload);
+  const { data } = await adminApi.post(`/product/view`, payload);
   const result = data.result;
   let sortedArray = [...result.rows];
 
@@ -46,6 +42,6 @@ export const getProducts = async (filters = {}) => {
 
 // ✅ Fetch single product by ID
 export const getProduct = async (id) => {
-  const { data } = await axios.get(`${BASE_URL}/view/${id}`);
+  const { data } = await adminApi.get(`/product/view/${id}`);
   return data.result;
 };
