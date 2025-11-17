@@ -1,4 +1,3 @@
-import axios from "axios";
 import { adminApi } from "../../utilities/axiosInspector";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -47,12 +46,13 @@ export const signupAdmin = createAsyncThunk(
     }
   }
 );
+
 // Update Admin Name
 export const updateAdminName = createAsyncThunk(
   "adminAuth/updateAdminName",
   async (newName, { rejectWithValue }) => {
     try {
-      const response = await axios.put("/user/update", { name: newName });
+      const response = await adminApi.put("/user/update", { name: newName });
       return response.data.result.user;
     } catch (error) {
       return rejectWithValue(

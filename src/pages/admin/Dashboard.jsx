@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { fetchStats } from "../../features/stats/statsThunk";
 import { Grid, Title } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchStats } from "../../features/stats/statsThunk";
 
 import ErrorMessage from "../../ui/ErrorMessage";
 import TwoLevelPieChart from "../../components/PieChart";

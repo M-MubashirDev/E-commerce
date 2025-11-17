@@ -1,22 +1,10 @@
+import { Title } from "@mantine/core";
 import { useEffect, useReducer } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Title } from "@mantine/core";
-import { getAllUsers } from "../../features/auth/authThunks";
+
 import CustomerTable from "../../components/CustomerTable";
-
-const initialState = {
-  page: 0,
-  limit: 20,
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "page":
-      return { ...state, page: action.payload };
-    default:
-      return state;
-  }
-}
+import { getAllUsers } from "../../features/auth/authThunks";
+import { customerInitialState, cutomerReducer } from "../../utilities/Reducers";
 
 export default function Customers() {
   const dispatch = useDispatch();
@@ -25,7 +13,10 @@ export default function Customers() {
     totalUsers = 0,
     loading,
   } = useSelector((state) => state.auth);
-  const [state, dispatchReducer] = useReducer(reducer, initialState);
+  const [state, dispatchReducer] = useReducer(
+    cutomerReducer,
+    customerInitialState
+  );
   const { page, limit } = state;
 
   const totalPages = Math.ceil(totalUsers / limit);

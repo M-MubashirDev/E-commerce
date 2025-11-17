@@ -1,6 +1,6 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getAuthToken } from "../categories/categoriesThunks";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { adminApi } from "../../utilities/axiosInspector";
 
 const API_BASE_URL = "http://localhost:3002/api/client";
 
@@ -315,23 +315,14 @@ export const getAllUsers = createAsyncThunk(
   "auth/getAllUsers",
   async ({ page = 0, limit = 10 }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
-      const response = await api.post(
-        "/view",
-        { page, limit },
-        {
-          headers: token,
-        }
-      );
+      const response = await adminApi.post("/client/view", { page, limit });
 
       if (response.data.statusCode === 200) {
         return response.data.result;
       }
-      return rejectWithValue(response.data.message || "Failed to fetch users");
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to fetch users. Please try again."
+        error.response?.data?.message || error.response.message
       );
     }
   }

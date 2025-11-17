@@ -3,28 +3,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { Title } from "@mantine/core";
 import { fetchCategories } from "../../features/categories/categoriesThunks";
 import CategoriesTable from "../../components/CategoriesTable";
-
-const initialState = {
-  page: 0,
-  limit: 20,
-  title: "",
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "title":
-      return { ...state, title: action.payload };
-    case "page":
-      return { ...state, page: action.payload };
-    default:
-      return state;
-  }
-}
+import {
+  categoryInitialState,
+  categoryReducer,
+} from "../../utilities/Reducers";
 
 export default function Categories() {
   const dispatch = useDispatch();
   const { categories, loading } = useSelector((state) => state.categories);
-  const [state, dispatchReducer] = useReducer(reducer, initialState);
+  const [state, dispatchReducer] = useReducer(
+    categoryReducer,
+    categoryInitialState
+  );
 
   const totalPages = Math.ceil(categories.count / state.limit);
   const { page, title, limit } = state;

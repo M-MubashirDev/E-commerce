@@ -28,18 +28,6 @@ export default function AdminProducts() {
 
   const totalPages = Math.max(1, Math.ceil(total / state.limit));
 
-  useEffect(() => {
-    dispatch(fetchProducts(state));
-  }, [dispatch, state]);
-
-  useEffect(() => {
-    dispatchReducer({
-      type: "setField",
-      field: "price",
-      value: { lowerLimit: 0, upperLimit: maxPrice },
-    });
-  }, [maxPrice]);
-
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setDrawerOpened(true);
@@ -76,6 +64,18 @@ export default function AdminProducts() {
   const handleSortChange = (val) => {
     dispatchReducer({ type: "setField", field: "sortBy", value: val });
   };
+
+  useEffect(() => {
+    dispatch(fetchProducts(state));
+  }, [dispatch, state]);
+
+  useEffect(() => {
+    dispatchReducer({
+      type: "setField",
+      field: "price",
+      value: { lowerLimit: 0, upperLimit: maxPrice },
+    });
+  }, [maxPrice]);
 
   return (
     <>

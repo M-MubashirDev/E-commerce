@@ -58,12 +58,60 @@ export const AdminProductInitialStates = {
 
 export function adminProductReducer(state, action) {
   switch (action.type) {
-    case "setField":
+    case "setField": {
+      console.log([action.field], action.value);
       return { ...state, [action.field]: action.value };
+    }
     case "setPage":
       return { ...state, page: action.payload };
     case "reset":
       return { ...AdminProductInitialStates };
+    default:
+      return state;
+  }
+}
+//.........orders
+export const orderInitialState = {
+  page: 0,
+  limit: 10,
+  address: "",
+};
+
+export function orderReducer(state, action) {
+  switch (action.type) {
+    case "address":
+      return { ...state, address: action.payload };
+    case "page":
+      return { ...state, page: action.payload };
+    default:
+      return state;
+  }
+}
+export const categoryInitialState = {
+  page: 0,
+  limit: 20,
+  title: "",
+};
+
+export function categoryReducer(state, action) {
+  switch (action.type) {
+    case "title":
+      return { ...state, title: action.payload };
+    case "page":
+      return { ...state, page: action.payload };
+    default:
+      return state;
+  }
+}
+export const customerInitialState = {
+  page: 0,
+  limit: 20,
+};
+
+export function cutomerReducer(state, action) {
+  switch (action.type) {
+    case "page":
+      return { ...state, page: action.payload };
     default:
       return state;
   }

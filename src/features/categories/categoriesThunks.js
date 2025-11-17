@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { getCategories } from "./catApi";
+import { adminApi } from "../../utilities/axiosInspector";
 
 // ✅ Helper to get the Bearer token from localStorage
 export const getAuthToken = () => {
@@ -28,26 +28,19 @@ export const fetchCategories = createAsyncThunk(
     }
   }
 );
-
+//below here do this
 // ✅ Add category
 export const addCategory = createAsyncThunk(
   "categories/addCategory",
   async (newCategory, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
-      const { data } = await axios.post(
-        "http://localhost:3002/api/product/category/add",
-        newCategory,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
+      const { data } = await adminApi.post(
+        "/product/category/add",
+        newCategory
       );
       return data;
     } catch (error) {
-      const backendMessage = error.response?.data?.message;
-      return rejectWithValue(backendMessage || error.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -57,15 +50,9 @@ export const updateCategory = createAsyncThunk(
   "categories/updateCategory",
   async ({ id, updates }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
-      const { data } = await axios.put(
-        `http://localhost:3002/api/product/category/update/${id}`,
-        updates,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
+      const { data } = await adminApi.put(
+        `/product/category/update/${id}`,
+        updates
       );
       return data;
     } catch (error) {
@@ -80,17 +67,7 @@ export const deleteCategory = createAsyncThunk(
   "categories/deleteCategory",
   async (id, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
-      console.log(token, id);
-      const { data } = await axios.put(
-        `http://localhost:3002/api/product/category/delete/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+      const { data } = await adminApi.put(`/product/category/delete/${id}`, {});
       return data;
     } catch (error) {
       const backendMessage = error.response?.data?.message;

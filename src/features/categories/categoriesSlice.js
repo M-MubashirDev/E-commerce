@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCategories } from "./categoriesThunks";
 
 const initialState = {
   categories: {
@@ -21,15 +20,48 @@ const categoriesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCategories.pending, (state) => {
+      .addCase("categories/fetchCategories/pending", (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchCategories.fulfilled, (state, action) => {
+      .addCase("categories/fetchCategories/fulfilled", (state, action) => {
         state.loading = false;
         state.categories = action.payload;
       })
-      .addCase(fetchCategories.rejected, (state, action) => {
+      .addCase("categories/fetchCategories/rejected", (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //add
+      .addCase("categories/addCategory/pending", (state) => {
+        state.loading = true;
+      })
+      .addCase("categories/addCategory/fulfilled", (state) => {
+        state.loading = false;
+      })
+      .addCase("categories/addCategory/rejected", (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //update
+      .addCase("categories/updateCategory/pending", (state) => {
+        state.loading = true;
+      })
+      .addCase("categories/updateCategory/fulfilled", (state) => {
+        state.loading = false;
+      })
+      .addCase("categories/updateCategory/rejected", (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //delete
+      .addCase("categories/deleteCategory/pending", (state) => {
+        state.loading = true;
+      })
+      .addCase("categories/deleteCategory/fulfilled", (state) => {
+        state.loading = false;
+      })
+      .addCase("categories/deleteCategory/rejected", (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

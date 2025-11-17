@@ -1,12 +1,11 @@
 // src/redux/thunks/productThunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { adminApi } from "../../utilities/axiosInspector";
 import { getProducts, getProduct } from "../products/apiProduct";
-import axios from "axios";
-import { getAuthToken } from "../categories/categoriesThunks";
 
 // ✅ Get all products
 export const fetchProducts = createAsyncThunk(
-  "products/fetchProducts", 
+  "products/fetchProducts",
   async (filters, { rejectWithValue }) => {
     try {
       const response = await getProducts(filters);
@@ -35,12 +34,9 @@ export const addProduct = createAsyncThunk(
   "products/addProduct",
   async (formData, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
-
-      const { data } = await axios.post(`${BASE_URL}/add`, formData, {
+      const { data } = await adminApi.post(`${BASE_URL}/add`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: token,
         },
       });
       return data.result;
@@ -54,13 +50,15 @@ export const updateProduct = createAsyncThunk(
   "products/updateProduct",
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
-      const { data } = await axios.put(`${BASE_URL}/update/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: token,
-        },
-      });
+      const { data } = await adminApi.put(
+        `${BASE_URL}/update/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       return data.result;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -72,17 +70,7 @@ export const deleteProduct = createAsyncThunk(
   "products/deleteProduct",
   async (id, { rejectWithValue }) => {
     try {
-      const token = getAuthToken();
-
-      await axios.put(
-        `${BASE_URL}/delete/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+      await adminApi.put(`${BASE_URL}/delete/${id}`, {});
       return { id };
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

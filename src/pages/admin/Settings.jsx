@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { Card, Text, TextInput, Button, Loader, Group } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { updateAdminName } from "../../features/adminAuth/authThunks";
+import { Card, Text, TextInput, Button, Loader, Group } from "@mantine/core";
+import toast from "react-hot-toast";
 
 export default function Settings() {
   const dispatch = useDispatch();
   const { userAdmin, loading } = useSelector((state) => state.adminAuth);
 
   const [name, setName] = useState(userAdmin?.name || "");
-
   const handleUpdate = async () => {
     await dispatch(updateAdminName(name)).unwrap();
+    toast.success("user name updated succesfully");
   };
 
   if (!userAdmin) {

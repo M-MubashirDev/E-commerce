@@ -41,6 +41,18 @@ const authSlice = createSlice({
       });
 
     builder
+      .addCase("adminAuth/updateAdminName/pending", (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase("adminAuth/updateAdminName/fulfilled", (state, action) => {
+        state.loading = false;
+        state.userAdmin = action.payload;
+      })
+      .addCase("adminAuth/updateAdminName/rejected", (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase("adminAuth/signup/pending", (state) => {
         state.loading = true;
         state.error = null;
@@ -53,18 +65,6 @@ const authSlice = createSlice({
       .addCase("adminAuth/signup/rejected", (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to sign up";
-      })
-      .addCase("adminAuth/updateAdminName/pending", (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase("adminAuth/updateAdminName/fulfilled", (state, action) => {
-        state.loading = false;
-        state.userAdmin = action.payload;
-      })
-      .addCase("adminAuth/updateAdminName/rejected", (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
   },
 });
