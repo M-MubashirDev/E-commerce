@@ -146,7 +146,7 @@ export default function Signup() {
           <p className="text-center text-sm text-dark-secondary mt-3">
             Already have an account?{" "}
             <Link
-              to="/login"
+              to={role ? `/login?role=${role}` : "/login"}
               state={fromCheckout}
               className="text-black font-medium hover:underline"
             >

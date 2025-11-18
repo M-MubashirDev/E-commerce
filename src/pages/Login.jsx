@@ -44,7 +44,7 @@ export default function Login() {
       await dispatch(
         loginUserAdmin({ email: data.email, password: data.password })
       ).unwrap();
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
       toast.error(error);
@@ -82,19 +82,21 @@ export default function Login() {
           />
 
           <div className="flex items-center justify-between text-sm">
-            <Link
-              to="/forgot-password"
-              className="text-dark hover:underline font-medium"
-            >
-              Forgot password?
-            </Link>
+            {!role && (
+              <Link
+                to="/forgot-password"
+                className="text-dark hover:underline font-medium"
+              >
+                Forgot password?
+              </Link>
+            )}{" "}
           </div>
 
           <SubmitButton loading={loading}>Login</SubmitButton>
           <p className="text-center text-sm text-dark-secondary">
             Don’t have an account?
             <Link
-              to="/signup"
+              to={role ? `/signup?role=${role}` : "/signup"}
               state={fromCheckout}
               className="text-dark ml-1 font-medium hover:underline"
             >

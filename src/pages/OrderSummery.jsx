@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { setLocation } from "../features/location/locationSlice";
 import { createOrder } from "../features/orders/orderThunks";
+import toast from "react-hot-toast";
 
 export default function OrderSummary() {
   const [opened, setOpened] = useState(false);
@@ -44,8 +45,10 @@ export default function OrderSummary() {
         }),
       };
       dispatch(createOrder(orderObject));
+      toast.success("Order Placed Successfully");
     } catch (error) {
       console.log(error);
+      toast.success(error.message);
     }
   }
 

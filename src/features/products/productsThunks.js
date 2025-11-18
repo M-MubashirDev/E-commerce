@@ -28,13 +28,13 @@ export const fetchProductById = createAsyncThunk(
     }
   }
 );
-const BASE_URL = "http://localhost:3002/api/product";
+// const BASE_URL = "";
 //................
 export const addProduct = createAsyncThunk(
   "products/addProduct",
   async (formData, { rejectWithValue }) => {
     try {
-      const { data } = await adminApi.post(`${BASE_URL}/add`, formData, {
+      const { data } = await adminApi.post(`/product/add`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -50,15 +50,11 @@ export const updateProduct = createAsyncThunk(
   "products/updateProduct",
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const { data } = await adminApi.put(
-        `${BASE_URL}/update/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const { data } = await adminApi.put(`/product/update/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return data.result;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -70,7 +66,7 @@ export const deleteProduct = createAsyncThunk(
   "products/deleteProduct",
   async (id, { rejectWithValue }) => {
     try {
-      await adminApi.put(`${BASE_URL}/delete/${id}`, {});
+      await adminApi.put(`/product/delete/${id}`, {});
       return { id };
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

@@ -91,11 +91,10 @@ const ProductCard = ({ item }) => {
             <span className="font-bold text-dark text-lg">
               {formatPrice(item.price)}
             </span>
-            {item.oldPrice && (
-              <span className="text-sm text-dark-gray line-through">
-                {formatPrice(item.oldPrice)}
-              </span>
-            )}
+
+            <span className="text-sm text-gray-400 line-through">
+              {formatPrice(item.price + item.discount)}
+            </span>
           </div>
         </div>
 

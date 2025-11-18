@@ -1,84 +1,75 @@
 import {
   Card,
-  TextInput,
-  Textarea,
-  NumberInput,
-  Button,
+  Text,
   Group,
   Modal,
-  Text,
-  FileInput,
+  NumberInput,
   Select,
+  Button,
+  Textarea,
+  TextInput,
+  FileInput,
 } from "@mantine/core";
-import { useReducer, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addProduct,
   updateProduct,
   deleteProduct,
+  fetchProducts,
 } from "../features/products/productsThunks";
-
-const initialState = {
-  title: "",
-  description: "",
-  price: 0,
-  discount: 0,
-  quantity: 0,
-  unitQuantity: "pcs",
-  categoryId: null,
-  uploadedFiles: [],
-  oldImages: [],
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "setField":
-      return { ...state, [action.field]: action.value };
-    case "setAll":
-      return { ...state, ...action.payload };
-    case "reset":
-      return { ...initialState };
-    default:
-      return state;
-  }
-}
+import { useForm, Controller } from "react-hook-form";
+import { AdminProductInitialStates } from "../utilities/Reducers";
 
 export default function AdminProductsAction({
   existingProduct = null,
   onClose,
 }) {
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => state.categories);
-
-  const [state, dispatchReducer] = useReducer(reducer, initialState);
   const [openDelete, setOpenDelete] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { categories } = useSelector((state) => state.categories);
+  const { loading } = useSelector((state) => state.products);
 
   const isEditMode = Boolean(existingProduct);
 
-  useEffect(() => {
-    if (existingProduct) {
-      dispatchReducer({
-        type: "setAll",
-        payload: {
-          title: existingProduct.title || "",
-          description: existingProduct.description || "",
-          price: existingProduct.price || 0,
-          discount: existingProduct.discount || 0,
-          quantity: existingProduct.quantity || 0,
-          unitQuantity: existingProduct.unitQuantity || "pcs",
-          categoryId: existingProduct.categoryId || null,
-          oldImages: existingProduct.productImages?.map((img) => img.url) || [],
-          uploadedFiles: [],
-        },
-      });
-    } else {
-      dispatchReducer({ type: "reset" });
-    }
-  }, [existingProduct]);
+  // ------------------ RHF FORM INSTANCE ------------------
+  const { register, handleSubmit, control, watch, formState } = useForm({
+    defaultValues: {
+      title: existingProduct.title || "",
+      description: existingProduct.description || "",
+      price: existingProduct.price || "",
+      discount: existingProduct.discount || "",
+      quantity: existingProduct.quantity || "",
+      unitQuantity: existingProduct.unitQuantity || "pcs",
+      categoryId: existingProduct.categoryId || "",
+      uploadedFiles: [],
+      oldImages: existingProduct.productImages?.map((img) => img.url) || [],
+    },
+  });
 
-  const handleSave = async () => {
+  // ------------------ Load Existing Data ------------------
+  // useEffect(() => {
+  //   if (existingProduct) {
+  //     reset({
+  //       // title: existingProduct.title,
+  //       description: existingProduct.description,
+  //       price: existingProduct.price,
+  //       discount: existingProduct.discount,
+  //       quantity: existingProduct.quantity,
+  //       unitQuantity: existingProduct.unitQuantity,
+  //       categoryId: existingProduct.categoryId,
+  //       uploadedFiles: [],
+  //       oldImages: existingProduct.productImages?.map((img) => img.url) || [],
+  //     });
+  //   } else {
+  //     reset();
+  //   }
+  // }, [existingProduct, reset]);
+
+  // ------------------ Submit Handler ------------------
+  const onSubmit = async (values) => {
     const formData = new FormData();
+
     for (const key of [
       "title",
       "description",
@@ -88,21 +79,18 @@ export default function AdminProductsAction({
       "unitQuantity",
       "categoryId",
     ]) {
-      formData.append(key, state[key]);
+      formData.append(key, values[key]);
     }
 
-    // ✅ Only include old images when editing
-    if (isEditMode && state.oldImages.length > 0) {
-      formData.append("url", JSON.stringify(state.oldImages));
+    if (isEditMode && values.oldImages.length > 0) {
+      formData.append("url", JSON.stringify(values.oldImages));
     }
 
-    // ✅ Add new uploads
-    state.uploadedFiles.forEach((file) =>
-      formData.append("uploaded_file", file)
-    );
+    values.uploadedFiles?.forEach((file) => {
+      formData.append("uploaded_file", file);
+    });
 
     try {
-      setLoading(true);
       if (isEditMode) {
         await dispatch(
           updateProduct({ id: existingProduct.id, formData })
@@ -110,26 +98,25 @@ export default function AdminProductsAction({
       } else {
         await dispatch(addProduct(formData)).unwrap();
       }
+      dispatch(fetchProducts(AdminProductInitialStates));
       onClose?.();
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
+  // ------------------ Delete Handler ------------------
   const handleDelete = async () => {
     if (!existingProduct) return;
     try {
-      setLoading(true);
       await dispatch(deleteProduct(existingProduct.id)).unwrap();
       onClose?.();
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
+
+  const oldImages = watch("oldImages");
 
   return (
     <div className="max-w-lg mx-auto mt-5">
@@ -138,146 +125,153 @@ export default function AdminProductsAction({
           {isEditMode ? "Edit Product" : "Add New Product"}
         </Text>
 
-        <TextInput
-          label="Title"
-          value={state.title}
-          onChange={(e) =>
-            dispatchReducer({
-              type: "setField",
-              field: "title",
-              value: e.target.value,
-            })
-          }
-          mb="sm"
-          required
-        />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Title */}
+          <TextInput
+            label="Title"
+            placeholder="Product title"
+            {...register("title", { required: "Title is required" })}
+            error={formState.errors.title?.message}
+          />
 
-        <Textarea
-          label="Description"
-          value={state.description}
-          onChange={(e) =>
-            dispatchReducer({
-              type: "setField",
-              field: "description",
-              value: e.target.value,
-            })
-          }
-          mb="sm"
-        />
+          {/* Description */}
+          <Textarea
+            label="Description"
+            placeholder="Product details..."
+            {...register("description")}
+            className="my-2"
+          />
 
-        <NumberInput
-          label="Price"
-          value={state.price}
-          onChange={(val) =>
-            dispatchReducer({ type: "setField", field: "price", value: val })
-          }
-          min={0}
-          mb="sm"
-        />
-        <NumberInput
-          label="Discount"
-          value={state.discount}
-          onChange={(val) =>
-            dispatchReducer({ type: "setField", field: "discount", value: val })
-          }
-          min={0}
-          max={100}
-          mb="sm"
-        />
-        <NumberInput
-          label="Quantity"
-          value={state.quantity}
-          onChange={(val) =>
-            dispatchReducer({ type: "setField", field: "quantity", value: val })
-          }
-          min={0}
-          mb="sm"
-        />
+          {/* Price */}
+          <Controller
+            name="price"
+            control={control}
+            rules={{ required: "Price is required" }}
+            render={({ field }) => (
+              <NumberInput
+                label="Price"
+                min={1}
+                {...field}
+                error={formState.errors.price?.message}
+                className="my-2"
+              />
+            )}
+          />
 
-        <TextInput
-          label="Unit"
-          value={state.unitQuantity}
-          onChange={(e) =>
-            dispatchReducer({
-              type: "setField",
-              field: "unitQuantity",
-              value: e.target.value,
-            })
-          }
-          mb="sm"
-        />
+          {/* Discount */}
+          <Controller
+            name="discount"
+            control={control}
+            render={({ field }) => (
+              <NumberInput
+                label="Discount %"
+                min={0}
+                max={100}
+                {...field}
+                className="my-2"
+              />
+            )}
+          />
 
-        <Select
-          label="Category"
-          value={state.categoryId?.toString() || ""}
-          onChange={(val) =>
-            dispatchReducer({
-              type: "setField",
-              field: "categoryId",
-              value: Number(val),
-            })
-          }
-          data={categories.rows.map((cat) => ({
-            value: cat.id.toString(),
-            label: cat.title,
-          }))}
-          mb="sm"
-        />
+          {/* Quantity */}
+          <Controller
+            name="quantity"
+            control={control}
+            rules={{ required: "Quantity is required" }}
+            render={({ field }) => (
+              <NumberInput
+                label="Quantity"
+                min={1}
+                {...field}
+                error={formState.errors.quantity?.message}
+                className="my-2"
+              />
+            )}
+          />
 
-        <FileInput
-          multiple
-          label="Upload Images"
-          placeholder="Select product images"
-          value={state.uploadedFiles}
-          onChange={(files) =>
-            dispatchReducer({
-              type: "setField",
-              field: "uploadedFiles",
-              value: files,
-            })
-          }
-          mb="sm"
-        />
+          {/* Unit */}
+          <TextInput
+            label="Unit"
+            placeholder="pcs, kg, box"
+            {...register("unitQuantity", { required: "Unit is required" })}
+            error={formState.errors.unitQuantity?.message}
+            className="my-2"
+          />
 
-        {isEditMode && state.oldImages.length > 0 && (
-          <div className="mb-3">
-            <Text size="sm" fw={500}>
-              Old Images:
-            </Text>
-            <div className="flex gap-2 mt-1 flex-wrap">
-              {state.oldImages.map((url, idx) => (
-                <div
-                  key={idx}
-                  className="w-16 h-16 border rounded overflow-hidden"
-                >
+          {/* Category */}
+          <Controller
+            name="categoryId"
+            control={control}
+            rules={{ required: "Category is required" }}
+            render={({ field }) => (
+              <Select
+                label="Category"
+                placeholder="Select category"
+                data={categories.rows.map((cat) => ({
+                  value: String(cat.id),
+                  label: cat.title,
+                }))}
+                value={field.value}
+                onChange={field.onChange}
+                error={formState.errors.categoryId?.message}
+                className="my-2"
+              />
+            )}
+          />
+
+          {/* Upload Images */}
+          <Controller
+            name="uploadedFiles"
+            control={control}
+            render={({ field }) => (
+              <FileInput
+                label="Upload Images"
+                placeholder="Choose images"
+                multiple
+                onChange={field.onChange}
+                className="my-2"
+                accept="image/*"
+              />
+            )}
+          />
+
+          {/* Old Images Preview */}
+          {isEditMode && oldImages?.length > 0 && (
+            <div className="my-3">
+              <Text size="sm" fw={500}>
+                Existing Images:
+              </Text>
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {oldImages.map((url, i) => (
                   <img
+                    key={i}
                     src={url}
-                    alt="old"
-                    className="w-full h-full object-cover"
+                    className="w-16 h-16 rounded border object-cover"
                   />
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-
-        <Group position="apart" mt="md">
-          <Button color="dark" onClick={handleSave} loading={loading}>
-            {isEditMode ? "Save Changes" : "Add Product"}
-          </Button>
-
-          {isEditMode && (
-            <Button
-              className="!bg-red-400"
-              onClick={() => setOpenDelete(true)}
-              loading={loading}
-            >
-              Delete
-            </Button>
           )}
-        </Group>
+
+          <Group justify="space-between" mt="md">
+            <Button type="submit" disabled={loading}>
+              {isEditMode ? "Save Changes" : "Add Product"}
+            </Button>
+
+            {isEditMode && (
+              <Button
+                className="!bg-red-400"
+                onClick={() => setOpenDelete(true)}
+                disabled={loading}
+              >
+                Delete
+              </Button>
+            )}
+          </Group>
+        </form>
       </Card>
 
+      {/* Confirm Delete Modal */}
       <Modal
         opened={openDelete}
         onClose={() => setOpenDelete(false)}
@@ -288,14 +282,14 @@ export default function AdminProductsAction({
           Are you sure you want to delete this product? This action cannot be
           undone.
         </Text>
-        <Group position="right">
+        <Group justify="flex-end">
           <Button variant="default" onClick={() => setOpenDelete(false)}>
             Cancel
           </Button>
           <Button
             className="!bg-red-400"
             onClick={handleDelete}
-            loading={loading}
+            disabled={loading}
           >
             Delete
           </Button>

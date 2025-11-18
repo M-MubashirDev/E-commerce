@@ -1,12 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { adminApi } from "../../utilities/axiosInspector";
+import { adminApi, userApi } from "../../utilities/axiosInspector";
 
 export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (orderData, { rejectWithValue }) => {
     try {
-      const response = await adminApi.post("/order/add", orderData);
+      const response = await userApi.post("/order/add", orderData);
 
       return response.data;
     } catch (error) {
@@ -22,23 +21,12 @@ export const fetchUserOrders = createAsyncThunk(
   "orders/fetchUserOrders",
   async ({ page = 0, limit = 10 }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("authToken");
-
-      const response = await axios.post(
-        "http://localhost:3002/api/order/history",
-        { page, limit },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await userApi.post("/order/history", { page, limit });
 
       return response.data.result;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch orders"
+        error.response?.data?.message || error?.data?.message
       );
     }
   }
