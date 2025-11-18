@@ -4,10 +4,10 @@ export const calculateTotals = (cart) => {
     (sum, item) => sum + item.currentQuantity,
     0
   );
-  cart.total = cart.items.reduce(
-    (sum, item) => sum + item.price * item.currentQuantity,
-    0
-  );
-  cart.shipping = cart.total > 100 ? 0 : 9.99;
-  cart.tax = cart.total * 0.08;
+  cart.total = cart.items.reduce((sum, item) => {
+    const discountedPrice = item.price - item.price * (item.discount / 100);
+    return sum + discountedPrice * item.currentQuantity;
+  }, 0);
+  cart.shipping = 0;
+  cart.tax = 0;
 };

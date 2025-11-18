@@ -20,13 +20,16 @@ const ProductCard = ({ item }) => {
       minimumFractionDigits: 2,
     }).format(price);
 
+  const discountedPrice = item.price - item.price * (item.discount / 100);
+
   function HandleAddTOCart() {
     if (isInCart) return;
     try {
       dispatch(setCartItem({ ...item }));
       toast.success(`${item.title} added to the cart`);
-    } catch {
+    } catch (error) {
       toast.error("Error adding to cart");
+      console.log(error);
     }
   }
 
@@ -89,12 +92,14 @@ const ProductCard = ({ item }) => {
 
           <div className="flex items-center gap-3">
             <span className="font-bold text-dark text-lg">
-              {formatPrice(item.price)}
+              {formatPrice(discountedPrice)}
             </span>
 
-            <span className="text-sm text-gray-400 line-through">
-              {formatPrice(item.price + item.discount)}
-            </span>
+            {item.discount > 0 && (
+              <span className="text-sm text-gray-400 line-through">
+                {formatPrice(item.price)}
+              </span>
+            )}
           </div>
         </div>
 

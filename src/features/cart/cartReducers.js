@@ -4,8 +4,8 @@ export function setCartItemReducer(state, action) {
   const id = String(action.payload.id);
   const existingItem = state.cart.items.find((val) => String(val.id) === id);
   if (
-    existingItem.quantity &&
-    existingItem.currentQuantity >= existingItem.quantity
+    existingItem?.quantity &&
+    existingItem.currentQuantity >= existingItem?.quantity
   )
     return state;
   if (existingItem) {

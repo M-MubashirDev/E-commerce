@@ -1,19 +1,39 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Divider, Text, Title, Group, Card } from "@mantine/core";
+import {
+  Button,
+  Divider,
+  Text,
+  Title,
+  Group,
+  Card,
+  Modal,
+} from "@mantine/core";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import LocationMapModal from "../components/MapModel";
-// import { setLocation } from "../features/location/locationSlice";
 import { useEffect, useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { setLocation } from "../features/location/locationSlice";
 import { createOrder } from "../features/orders/orderThunks";
+import PaymentForm from "../components/PaymentForm";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { clearCart } from "../features/cart/cartSlice";
+
+// Load Stripe outside component to avoid recreating on every render
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 export default function OrderSummary() {
   const [opened, setOpened] = useState(false);
+  const [paymentModalOpened, setPaymentModalOpened] = useState(false);
+  const [orderData, setOrderData] = useState(null);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
   const { location } = useSelector((state) => state.location);
   const { address, city, phone } = location;
+
   useEffect(() => {
     if (!address || !city || !phone) {
       setOpened(true);
@@ -25,31 +45,43 @@ export default function OrderSummary() {
     dispatch(setLocation(data));
     setOpened(false);
   }
-  function handleConfirmOrder() {
+
+  async function handleConfirmOrder() {
     try {
-      cart?.items.map((val) => {
-        return {
-          productId: val.id,
-          quantity: val.quantity,
-        };
-      });
       const orderObject = {
         address,
         city,
         phone,
-        items: cart?.items.map((val) => {
-          return {
-            productId: val.id,
-            quantity: val.quantity,
-          };
-        }),
+        items: cart?.items.map((val) => ({
+          productId: val.id,
+          quantity: val.currentQuantity,
+        })),
       };
-      dispatch(createOrder(orderObject));
-      toast.success("Order Placed Successfully");
+
+      // Create order and get client_secret
+      const response = await dispatch(createOrder(orderObject)).unwrap();
+
+      if (response.result && response.result.client_secret) {
+        setOrderData({
+          clientSecret: response.result.client_secret,
+          orderId: response.result.orderId,
+          amount: response.result.amount,
+        });
+        setPaymentModalOpened(true);
+      } else {
+        toast.error("Failed to create order");
+      }
     } catch (error) {
-      console.log(error);
-      toast.success(error.message);
+      console.error(error);
+      toast.error(error.message || "Failed to create order");
     }
+  }
+
+  function handlePaymentSuccess() {
+    setPaymentModalOpened(false);
+    toast.success("Order placed and payment confirmed!");
+    dispatch(clearCart());
+    navigate("/order-success");
   }
 
   const formatPrice = (price) =>
@@ -58,9 +90,8 @@ export default function OrderSummary() {
       currency: "USD",
     }).format(price);
 
-  console.log(cart);
   return (
-    <section className="section-spacing  bg-light-gray flex items-center justify-center min-h-screen">
+    <section className="section-spacing bg-light-gray flex items-center justify-center min-h-screen">
       <div className="w-full !max-w-4xl rounded-lg shadow-md bg-light content-spacing transition-hover hover:shadow-xl">
         {/* Page Title */}
         <div className="text-center pt-6 sm:pt-8 md:pt-10 px-4 sm:px-6 md:px-8">
@@ -72,60 +103,78 @@ export default function OrderSummary() {
               Order Summary
             </Title>
           </Group>
-          <Text c="textGray" size="sm" className="mt-2 sm:text-base">
+          <Text size="sm" className="mt-2 sm:text-base">
             Please review your order before confirming
           </Text>
         </div>
 
         {/* Cart Items */}
+        {/* Cart Items */}
         <div className="px-4 sm:px-6 md:px-8 py-6 space-y-4 sm:space-y-6">
           {cart.items.length === 0 ? (
-            <Text c="textGray" size="md" ta="center" my="lg">
+            <Text size="md" ta="center" my="lg">
               Your cart is empty
             </Text>
           ) : (
-            cart.items.map((item) => (
-              <div
-                key={item.id}
-                className="bg-light-gray/50 rounded-xl p-3 space-y-2 sm:p-4 transition-hover hover:bg-light-gray sm:flex sm:flex-row sm:items-center sm:gap-6"
-              >
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0">
-                  <img
-                    src={"/batman.jpg"}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div spacing={4} className="flex-1">
+            cart.items.map((item) => {
+              const discountedPrice =
+                item.price - item.price * (item.discount / 100);
+              const totalItemPrice = discountedPrice * item.currentQuantity;
+
+              return (
+                <div
+                  key={item.id}
+                  className="bg-light-gray/50 rounded-xl p-3 space-y-2 sm:p-4 transition-hover hover:bg-light-gray sm:flex sm:flex-row sm:items-center sm:gap-6"
+                >
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      src={"/batman.jpg"}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <Text
+                      size="sm"
+                      fw={600}
+                      c="dark"
+                      className="sm:text-base"
+                      lineClamp={2}
+                    >
+                      {item.title}
+                    </Text>
+                    <Text size="xs" className="sm:text-sm">
+                      Qty: {item.currentQuantity} ×{" "}
+                      <span className="line-through text-gray-400 mr-1">
+                        {item.discount > 0 ? formatPrice(item.price) : ""}
+                      </span>
+                      <span className="font-semibold text-dark">
+                        {formatPrice(discountedPrice)}
+                      </span>
+                    </Text>
+                    {item.discount > 0 && (
+                      <Text size="xs" c="red" className="sm:text-xs">
+                        Discount: {item.discount}%
+                      </Text>
+                    )}
+                  </div>
                   <Text
                     size="sm"
-                    fw={600}
+                    fw={700}
                     c="dark"
-                    className="sm:text-base"
-                    lineClamp={2}
+                    className="sm:text-base text-right"
                   >
-                    {item.title}
-                  </Text>
-                  <Text size="xs" c="textGray" className="sm:text-sm">
-                    Qty: {item.currentQuantity} × {formatPrice(item.price)}
+                    {formatPrice(totalItemPrice)}
                   </Text>
                 </div>
-                <Text
-                  size="sm"
-                  fw={700}
-                  c="dark"
-                  className="sm:text-base text-right"
-                >
-                  {formatPrice(item.price * item.currentQuantity)}
-                </Text>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
         {/* Location & Details */}
         <div className="px-4 sm:px-6 md:px-8 pb-6 sm:pb-8">
-          <Divider my="md" color="gray.0" />
+          <Divider my="md" />
           <Card
             withBorder
             radius="md"
@@ -152,18 +201,13 @@ export default function OrderSummary() {
                     <Text size="sm" c="dark">
                       <strong>Phone:</strong> {phone}
                     </Text>
-                    <Text size="sm" c="dark">
-                      <strong>Landmark:</strong>
-                    </Text>
-                    <Text size="xs" c="textGray">
+                    <Text size="xs">
                       Lat: {location.lat?.toFixed(4)} | Lng:{" "}
                       {location.lng?.toFixed(4)}
                     </Text>
                   </div>
                 ) : (
-                  <Text size="sm" c="textGray">
-                    No delivery location or details added
-                  </Text>
+                  <Text size="sm">No delivery location or details added</Text>
                 )}
               </div>
 
@@ -208,7 +252,7 @@ export default function OrderSummary() {
               </Text>
             </Group>
           </div>
-          <Divider my="md" color="gray.0" />
+          <Divider my="md" />
           <Group justify="space-between" className="mt-4">
             <Text fw={700} size="md" c="dark" className="sm:text-lg">
               Total
@@ -228,15 +272,36 @@ export default function OrderSummary() {
             fullWidth
             className="transition-hover hover:bg-dark-gray sm:size-lg"
             disabled={cart.items.length === 0 || !address || !city || !phone}
-            aria-label="Confirm your order"
+            aria-label="Proceed to payment"
           >
-            Confirm Order
+            Proceed to Payment
           </Button>
         </div>
       </div>
 
       {/* Location Modal */}
       <LocationMapModal opened={opened} onSave={handleLocationSave} />
+
+      {/* Payment Modal - Wrapped with Elements provider */}
+      <Modal
+        opened={paymentModalOpened}
+        onClose={() => setPaymentModalOpened(false)}
+        title="Complete Payment"
+        size="md"
+        centered
+      >
+        {orderData && (
+          <Elements stripe={stripePromise}>
+            <div>
+              <PaymentForm
+                clientSecret={orderData.clientSecret}
+                orderId={orderData.orderId}
+                onSuccess={handlePaymentSuccess}
+              />
+            </div>
+          </Elements>
+        )}
+      </Modal>
     </section>
   );
 }

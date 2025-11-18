@@ -7,6 +7,7 @@ import {
   Group,
   Modal,
   Text,
+  FileInput,
 } from "@mantine/core";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -17,36 +18,23 @@ import {
   deleteCategory,
   fetchCategories,
 } from "../../features/categories/categoriesThunks";
+import { uploadToCloudinary } from "../../utilities/uploadCloudinary";
 
 export default function CategoriesAction({ existingCategory = null, onClose }) {
   const dispatch = useDispatch();
   const isEditMode = Boolean(existingCategory);
+  const [uploading, setUploading] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
   // ------------------ RHF FORM INSTANCE ------------------
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, watch, setValue } = useForm({
     defaultValues: {
       title: existingCategory?.title || "",
       description: existingCategory?.description || "",
-      icon: "https://cdn-icons-png.flaticon.com/512/1040/1040230.png",
+      icon: existingCategory?.icon || "",
     },
   });
-
-  // // Populate fields when editing
-  // useEffect(() => {
-  //   if (existingCategory) {
-  //     reset({
-  //       title: existingCategory.title || "",
-  //       description: existingCategory.description || "",
-  //       icon:
-  //         existingCategory.icon ||
-  //         "https://cdn-icons-png.flaticon.com/512/1040/1040230.png",
-  //     });
-  //   } else {
-  //     reset();
-  //   }
-  // }, [existingCategory, reset]);
-
+  const iconValue = watch("icon");
   // ------------------ Save Handler ------------------
   const onSubmit = async (data) => {
     try {
@@ -110,10 +98,42 @@ export default function CategoriesAction({ existingCategory = null, onClose }) {
             mb="md"
           />
 
-          <TextInput label="Icon URL" {...register("icon")} mb="lg" />
+          <FileInput
+            label="Icon Image"
+            placeholder="Upload icon"
+            accept="image/*"
+            clearable
+            disabled={uploading}
+            onChange={async (file) => {
+              if (!file) {
+                setValue("icon", ""); // clear icon
+                return;
+              }
+              setUploading(true);
+              try {
+                const url = await uploadToCloudinary(file);
+                setValue("icon", url); // store cloudinary URL into form value
+              } finally {
+                setUploading(false);
+              }
+            }}
+            mb="md"
+          />
+          {iconValue && (
+            <div className="mb-4">
+              <img
+                src={iconValue}
+                alt="Uploaded icon"
+                className="w-20 h-20 object-cover rounded-md border"
+              />
+              <Text size="xs" mt={4}>
+                Preview
+              </Text>
+            </div>
+          )}
 
           <Group justify="space-between">
-            <Button type="submit">
+            <Button type="submit" disabled={uploading}>
               {isEditMode ? "Save Changes" : "Create Category"}
             </Button>
 
@@ -121,6 +141,7 @@ export default function CategoriesAction({ existingCategory = null, onClose }) {
               <Button
                 className="!bg-red-400"
                 variant="filled"
+                disabled={uploading}
                 onClick={() => setOpenDelete(true)}
               >
                 Delete

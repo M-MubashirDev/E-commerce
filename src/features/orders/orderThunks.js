@@ -31,6 +31,22 @@ export const fetchUserOrders = createAsyncThunk(
     }
   }
 );
+export const confirmPayment = createAsyncThunk(
+  "orders/confirmPayment",
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const response = await userApi.post("/order/confirmPayment", {
+        orderId: orderId,
+      });
+
+      return response.data.result;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || error?.data?.message
+      );
+    }
+  }
+);
 
 export const updateOrder = createAsyncThunk(
   "orders/updateOrder",
