@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
 import {
   updateOrder,
   deleteOrder,
@@ -19,26 +20,24 @@ import {
 export default function OrdersAction({ existingOrder, onClose }) {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-
   const { loading } = useSelector((state) => state.orders);
 
-  const [form, setForm] = useState({
-    address: existingOrder?.address || "",
-    city: existingOrder?.city || "",
-    phone: existingOrder?.phone || "",
-    status: existingOrder?.status || "pending",
+  // ------------------ RHF FORM INSTANCE ------------------
+  const { register, handleSubmit, watch, formState, setValue } = useForm({
+    defaultValues: {
+      address: existingOrder?.address || "",
+      city: existingOrder?.city || "",
+      phone: existingOrder?.phone || "",
+      status: existingOrder?.status || "pending",
+    },
   });
 
-  const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
+  const watchStatus = watch("status");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // ------------------ Submit Handler ------------------
+  const onSubmit = async (data) => {
     try {
-      await dispatch(
-        updateOrder({ id: existingOrder.id, data: form })
-      ).unwrap();
+      await dispatch(updateOrder({ id: existingOrder.id, data })).unwrap();
       await dispatch(
         fetchOrders({
           page: 0,
@@ -52,6 +51,7 @@ export default function OrdersAction({ existingOrder, onClose }) {
     }
   };
 
+  // ------------------ Delete Handler ------------------
   const handleDelete = async () => {
     try {
       await dispatch(deleteOrder(existingOrder.id)).unwrap();
@@ -70,34 +70,42 @@ export default function OrdersAction({ existingOrder, onClose }) {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <LoadingOverlay visible={loading} />
 
         <Stack>
           <TextInput
             label="Address"
             placeholder="Enter address"
-            value={form.address}
-            onChange={(e) => handleChange("address", e.target.value)}
-            required
+            {...register("address", { required: "Address is required" })}
+            error={formState.errors.address?.message}
           />
-
           <TextInput
             label="City"
             placeholder="Enter city"
-            value={form.city}
-            onChange={(e) => handleChange("city", e.target.value)}
-            required
+            {...register("city", { required: "City is required" })}
+            error={formState.errors.city?.message}
           />
-
           <TextInput
             label="Phone"
             placeholder="Enter phone number"
-            value={form.phone}
-            onChange={(e) => handleChange("phone", e.target.value)}
-            required
+            {...register("phone", {
+              required: "Phone number is required",
+              pattern: {
+                value: /^[0-9]+$/,
+                message: "Phone number must contain only digits",
+              },
+              minLength: {
+                value: 7,
+                message: "Phone number must be at least 7 digits",
+              },
+              maxLength: {
+                value: 15,
+                message: "Phone number cannot exceed 15 digits",
+              },
+            })}
+            error={formState.errors.phone?.message}
           />
-
           <Select
             label="Status"
             data={[
@@ -106,8 +114,8 @@ export default function OrdersAction({ existingOrder, onClose }) {
               { value: "delivered", label: "Delivered" },
               { value: "cancelled", label: "Cancelled" },
             ]}
-            value={form.status}
-            onChange={(value) => handleChange("status", value)}
+            value={watchStatus}
+            onChange={(value) => setValue("status", value)}
           />
 
           <Group mt="md">

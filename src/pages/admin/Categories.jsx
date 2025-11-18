@@ -37,9 +37,7 @@ export default function Categories() {
         onPageChange={(page) =>
           dispatchReducer({ type: "page", payload: page })
         }
-        onSearch={(term) => {
-          dispatchReducer({ type: "title", payload: term });
-        }}
+        dispatchReducer={dispatchReducer}
       />
     </div>
   );

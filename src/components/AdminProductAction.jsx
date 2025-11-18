@@ -10,7 +10,7 @@ import {
   TextInput,
   FileInput,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addProduct,
@@ -32,44 +32,54 @@ export default function AdminProductsAction({
 
   const isEditMode = Boolean(existingProduct);
 
-  // ------------------ RHF FORM INSTANCE ------------------
-  const { register, handleSubmit, control, watch, formState } = useForm({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState,
+    setError,
+    clearErrors,
+  } = useForm({
     defaultValues: {
-      title: existingProduct.title || "",
-      description: existingProduct.description || "",
-      price: existingProduct.price || "",
-      discount: existingProduct.discount || "",
-      quantity: existingProduct.quantity || "",
-      unitQuantity: existingProduct.unitQuantity || "pcs",
-      categoryId: existingProduct.categoryId || "",
+      title: existingProduct?.title || "",
+      description: existingProduct?.description || "",
+      price: existingProduct?.price || "",
+      discount: existingProduct?.discount || "",
+      quantity: existingProduct?.quantity || "",
+      unitQuantity: existingProduct?.unitQuantity || "pcs",
+      categoryId: existingProduct?.categoryId || "",
       uploadedFiles: [],
-      oldImages: existingProduct.productImages?.map((img) => img.url) || [],
+      oldImages: existingProduct?.productImages?.map((img) => img.url) || [],
     },
   });
 
-  // ------------------ Load Existing Data ------------------
-  // useEffect(() => {
-  //   if (existingProduct) {
-  //     reset({
-  //       // title: existingProduct.title,
-  //       description: existingProduct.description,
-  //       price: existingProduct.price,
-  //       discount: existingProduct.discount,
-  //       quantity: existingProduct.quantity,
-  //       unitQuantity: existingProduct.unitQuantity,
-  //       categoryId: existingProduct.categoryId,
-  //       uploadedFiles: [],
-  //       oldImages: existingProduct.productImages?.map((img) => img.url) || [],
-  //     });
-  //   } else {
-  //     reset();
-  //   }
-  // }, [existingProduct, reset]);
+  const oldImages = watch("oldImages");
 
-  // ------------------ Submit Handler ------------------
+  const removeOldImage = (url) => {
+    setValue(
+      "oldImages",
+      oldImages.filter((img) => img !== url),
+      { shouldValidate: true }
+    );
+  };
+
   const onSubmit = async (values) => {
-    const formData = new FormData();
+    if (
+      (values.oldImages?.length || 0) + (values.uploadedFiles?.length || 0) ===
+      0
+    ) {
+      setError("uploadedFiles", {
+        type: "manual",
+        message: "At least one image is required",
+      });
+      return;
+    } else {
+      clearErrors("uploadedFiles");
+    }
 
+    const formData = new FormData();
     for (const key of [
       "title",
       "description",
@@ -82,7 +92,7 @@ export default function AdminProductsAction({
       formData.append(key, values[key]);
     }
 
-    if (isEditMode && values.oldImages.length > 0) {
+    if (values.oldImages.length > 0) {
       formData.append("url", JSON.stringify(values.oldImages));
     }
 
@@ -105,7 +115,6 @@ export default function AdminProductsAction({
     }
   };
 
-  // ------------------ Delete Handler ------------------
   const handleDelete = async () => {
     if (!existingProduct) return;
     try {
@@ -116,8 +125,6 @@ export default function AdminProductsAction({
     }
   };
 
-  const oldImages = watch("oldImages");
-
   return (
     <div className="max-w-lg mx-auto mt-5">
       <Card shadow="sm" radius="md" p="lg" withBorder>
@@ -126,7 +133,6 @@ export default function AdminProductsAction({
         </Text>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Title */}
           <TextInput
             label="Title"
             placeholder="Product title"
@@ -134,7 +140,6 @@ export default function AdminProductsAction({
             error={formState.errors.title?.message}
           />
 
-          {/* Description */}
           <Textarea
             label="Description"
             placeholder="Product details..."
@@ -142,7 +147,6 @@ export default function AdminProductsAction({
             className="my-2"
           />
 
-          {/* Price */}
           <Controller
             name="price"
             control={control}
@@ -158,7 +162,6 @@ export default function AdminProductsAction({
             )}
           />
 
-          {/* Discount */}
           <Controller
             name="discount"
             control={control}
@@ -173,7 +176,6 @@ export default function AdminProductsAction({
             )}
           />
 
-          {/* Quantity */}
           <Controller
             name="quantity"
             control={control}
@@ -189,7 +191,6 @@ export default function AdminProductsAction({
             )}
           />
 
-          {/* Unit */}
           <TextInput
             label="Unit"
             placeholder="pcs, kg, box"
@@ -198,7 +199,6 @@ export default function AdminProductsAction({
             className="my-2"
           />
 
-          {/* Category */}
           <Controller
             name="categoryId"
             control={control}
@@ -219,7 +219,6 @@ export default function AdminProductsAction({
             )}
           />
 
-          {/* Upload Images */}
           <Controller
             name="uploadedFiles"
             control={control}
@@ -228,14 +227,18 @@ export default function AdminProductsAction({
                 label="Upload Images"
                 placeholder="Choose images"
                 multiple
-                onChange={field.onChange}
+                onChange={(files) => {
+                  field.onChange(files);
+                  if (files.length + (oldImages?.length || 0) > 0)
+                    clearErrors("uploadedFiles");
+                }}
                 className="my-2"
                 accept="image/*"
+                error={formState.errors.uploadedFiles?.message}
               />
             )}
           />
 
-          {/* Old Images Preview */}
           {isEditMode && oldImages?.length > 0 && (
             <div className="my-3">
               <Text size="sm" fw={500}>
@@ -243,11 +246,19 @@ export default function AdminProductsAction({
               </Text>
               <div className="flex gap-2 mt-2 flex-wrap">
                 {oldImages.map((url, i) => (
-                  <img
-                    key={i}
-                    src={url}
-                    className="w-16 h-16 rounded border object-cover"
-                  />
+                  <div key={i} className="relative">
+                    <img
+                      src={url}
+                      className="w-16 h-16 rounded border object-cover"
+                    />
+                    <Button
+                      size="xs"
+                      className="absolute -top-2 -right-2 !bg-red-400"
+                      onClick={() => removeOldImage(url)}
+                    >
+                      X
+                    </Button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -271,7 +282,6 @@ export default function AdminProductsAction({
         </form>
       </Card>
 
-      {/* Confirm Delete Modal */}
       <Modal
         opened={openDelete}
         onClose={() => setOpenDelete(false)}

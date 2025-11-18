@@ -50,7 +50,6 @@ export default function OrdersTable({
   return (
     <>
       <Card shadow="none" p={0} radius="lg" withBorder>
-        {/* Header */}
         <div className="flex items-center flex-col justify-between sm:flex-row p-4 border-b border-gray-200">
           <Text fw={600} size="lg" c="#111827" className="sm:inline hidden">
             Orders List
@@ -67,7 +66,6 @@ export default function OrdersTable({
           </div>
         </div>
 
-        {/* Table */}
         <ScrollArea h={400}>
           {loading ? (
             <div style={{ padding: "2rem", textAlign: "center" }}>
@@ -162,7 +160,6 @@ export default function OrdersTable({
           )}
         </ScrollArea>
 
-        {/* Pagination */}
         {!loading && (
           <div className="py-3 flex justify-center border-t border-gray-200">
             <Pagination
@@ -174,8 +171,6 @@ export default function OrdersTable({
           </div>
         )}
       </Card>
-
-      {/* Drawer for Add/Edit */}
       <Drawer
         opened={drawerOpened}
         onClose={() => setDrawerOpened(false)}

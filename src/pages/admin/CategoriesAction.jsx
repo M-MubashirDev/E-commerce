@@ -8,8 +8,9 @@ import {
   Modal,
   Text,
 } from "@mantine/core";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
 import {
   addCategory,
   updateCategory,
@@ -19,44 +20,44 @@ import {
 
 export default function CategoriesAction({ existingCategory = null, onClose }) {
   const dispatch = useDispatch();
-
   const isEditMode = Boolean(existingCategory);
+  const [openDelete, setOpenDelete] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [icon, setIcon] = useState(
-    "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"
-  );
-  const [open, setOpen] = useState(false);
+  // ------------------ RHF FORM INSTANCE ------------------
+  const { register, handleSubmit, formState } = useForm({
+    defaultValues: {
+      title: existingCategory?.title || "",
+      description: existingCategory?.description || "",
+      icon: "https://cdn-icons-png.flaticon.com/512/1040/1040230.png",
+    },
+  });
 
-  // Populate fields when editing
-  useEffect(() => {
-    if (existingCategory) {
-      setTitle(existingCategory.title || "");
-      setDescription(existingCategory.description || "");
-      setIcon(
-        existingCategory.icon ||
-          "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"
-      );
-    } else {
-      setTitle("");
-      setDescription("");
-      setIcon("https://cdn-icons-png.flaticon.com/512/1040/1040230.png");
-    }
-  }, [existingCategory]);
+  // // Populate fields when editing
+  // useEffect(() => {
+  //   if (existingCategory) {
+  //     reset({
+  //       title: existingCategory.title || "",
+  //       description: existingCategory.description || "",
+  //       icon:
+  //         existingCategory.icon ||
+  //         "https://cdn-icons-png.flaticon.com/512/1040/1040230.png",
+  //     });
+  //   } else {
+  //     reset();
+  //   }
+  // }, [existingCategory, reset]);
 
-  const handleSave = async () => {
+  // ------------------ Save Handler ------------------
+  const onSubmit = async (data) => {
     try {
       if (isEditMode) {
         await dispatch(
-          updateCategory({
-            id: existingCategory.id,
-            updates: { title, description, icon },
-          })
+          updateCategory({ id: existingCategory.id, updates: data })
         ).unwrap();
       } else {
-        await dispatch(addCategory({ title, description, icon })).unwrap();
+        await dispatch(addCategory(data)).unwrap();
       }
+
       dispatch(fetchCategories({ page: 0, title: "" }));
       onClose?.();
     } catch (err) {
@@ -64,13 +65,12 @@ export default function CategoriesAction({ existingCategory = null, onClose }) {
     }
   };
 
+  // ------------------ Delete Handler ------------------
   const handleDelete = async () => {
+    if (!existingCategory) return;
     try {
-      if (!existingCategory) return;
       await dispatch(deleteCategory(existingCategory.id)).unwrap();
-      await dispatch(
-        fetchCategories({ page: 0, title: "", limit: 20 })
-      ).unwrap();
+      await dispatch(fetchCategories({ page: 0, title: "" })).unwrap();
       onClose?.();
     } catch (err) {
       console.error(err);
@@ -88,46 +88,50 @@ export default function CategoriesAction({ existingCategory = null, onClose }) {
           {isEditMode ? "Edit Category" : "Add New Category"}
         </Title>
 
-        <TextInput
-          label="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          mb="md"
-          required
-        />
-        <Textarea
-          label="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          mb="md"
-        />
-        <TextInput
-          label="Icon URL"
-          value={icon}
-          onChange={(e) => setIcon(e.target.value)}
-          mb="lg"
-        />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TextInput
+            label="Title"
+            placeholder="Category title"
+            {...register("title", {
+              required: "Title is required",
+              minLength: {
+                value: 3,
+                message: "Title must be at least 3 characters",
+              },
+            })}
+            error={formState.errors.title?.message}
+            mb="md"
+          />
 
-        <Group justify="space-between">
-          <Button color="dark" onClick={handleSave}>
-            {isEditMode ? "Save Changes" : "Create Category"}
-          </Button>
+          <Textarea
+            label="Description"
+            placeholder="Category description"
+            {...register("description")}
+            mb="md"
+          />
 
-          {isEditMode && (
-            <Button
-              className="!bg-red-400"
-              variant="filled"
-              onClick={() => setOpen(true)}
-            >
-              Delete
+          <TextInput label="Icon URL" {...register("icon")} mb="lg" />
+
+          <Group justify="space-between">
+            <Button type="submit">
+              {isEditMode ? "Save Changes" : "Create Category"}
             </Button>
-          )}
-        </Group>
-      </Card>
 
+            {isEditMode && (
+              <Button
+                className="!bg-red-400"
+                variant="filled"
+                onClick={() => setOpenDelete(true)}
+              >
+                Delete
+              </Button>
+            )}
+          </Group>
+        </form>
+      </Card>
       <Modal
-        opened={open}
-        onClose={() => setOpen(false)}
+        opened={openDelete}
+        onClose={() => setOpenDelete(false)}
         title="Confirm Deletion"
         centered
       >
@@ -136,14 +140,10 @@ export default function CategoriesAction({ existingCategory = null, onClose }) {
           undone.
         </Text>
         <Group justify="flex-end">
-          <Button variant="default" onClick={() => setOpen(false)}>
+          <Button variant="default" onClick={() => setOpenDelete(false)}>
             Cancel
           </Button>
-          <Button
-            className="!bg-red-400"
-            variant="filled"
-            onClick={handleDelete}
-          >
+          <Button className="!bg-red-400" onClick={handleDelete}>
             Delete
           </Button>
         </Group>

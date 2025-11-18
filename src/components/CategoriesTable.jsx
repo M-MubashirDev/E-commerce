@@ -12,7 +12,7 @@ import {
   ActionIcon,
   Table,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiSearch, FiEdit2 } from "react-icons/fi";
 import CategoriesAction from "../pages/admin/CategoriesAction";
 
@@ -22,18 +22,22 @@ export default function CategoriesTable({
   totalPages,
   currentPage,
   onPageChange,
-  onSearch,
+  dispatchReducer,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [drawerOpened, setDrawerOpened] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      onSearch(searchTerm);
+  // useEffect(() => {
+  //      //     onSearch(searchTerm);
+
+  //   return () => clearTimeout(delay);
+  // }, [searchTerm, onSearch]);
+  function handleSearch(search) {
+    setTimeout(() => {
+      dispatchReducer({ type: "title", payload: search });
     }, 500);
-    return () => clearTimeout(delay);
-  }, [searchTerm, onSearch]);
+  }
 
   const handleEdit = (cat) => {
     setSelectedCategory(cat);
@@ -48,7 +52,6 @@ export default function CategoriesTable({
   return (
     <>
       <Card shadow="none" p={0} radius="lg" withBorder>
-        {/* Header */}
         <div className="flex items-center flex-col justify-between sm:flex-row p-4 border-b border-gray-200">
           <Text fw={600} size="lg" c="#111827" className="sm:inline hidden">
             Category List
@@ -58,7 +61,10 @@ export default function CategoriesTable({
               placeholder="Search category..."
               leftSection={<FiSearch size={16} />}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                handleSearch(e.target.value);
+              }}
               radius="md"
               className="sm:w-[250px] w-[200px]"
             />
@@ -68,7 +74,6 @@ export default function CategoriesTable({
           </div>
         </div>
 
-        {/* Table Header */}
         <ScrollArea h={400}>
           {loading ? (
             <div style={{ padding: "2rem", textAlign: "center" }}>
@@ -167,7 +172,6 @@ export default function CategoriesTable({
           )}
         </ScrollArea>
 
-        {/* Pagination */}
         {!loading && (
           <div className="py-3 flex justify-center border-t border-gray-200">
             <Pagination
@@ -180,7 +184,6 @@ export default function CategoriesTable({
         )}
       </Card>
 
-      {/* 🔹 Drawer for Add/Edit actions */}
       <Drawer
         opened={drawerOpened}
         onClose={() => setDrawerOpened(false)}
