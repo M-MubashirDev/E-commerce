@@ -7,39 +7,27 @@ import toast from "react-hot-toast";
 function SingleProductDetail({
   title,
   id,
-  categoryId,
   price,
   discount,
   description,
   selectedProduct,
-  productImages,
 }) {
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.cart);
   const cartItem = cart.items.find((item) => String(item.id) === String(id));
 
-  console.log(selectedProduct);
   function HandleAddTOCart() {
     if (!selectedProduct) return;
-    console.log(selectedProduct);
+
     try {
-      dispatch(
-        setCartItem({
-          id: String(id),
-          categoryId: categoryId,
-          images: productImages?.map((img) => img.url) || [],
-          price,
-          title,
-          description,
-          discount,
-        })
-      );
+      dispatch(setCartItem(selectedProduct));
       toast.success(`${title} added to the cart`);
     } catch (error) {
       console.error("Add to cart error:", error);
       toast.error("Something went wrong.");
     }
   }
+
   return (
     <div className="w-full lg:w-1/2 p-6 flex flex-col space-y-1">
       <span className="text-xs sm:text-sm text-gray-500 uppercase tracking-wide">
@@ -51,12 +39,20 @@ function SingleProductDetail({
       </h1>
 
       <div className="flex items-baseline gap-3">
-        <span className="text-2xl sm:text-3xl font-semibold text-primary">
-          ${price}
-        </span>
-        <span className="text-sm sm:text-base text-gray-400 line-through">
-          ${price + discount}
-        </span>
+        {discount > 0 ? (
+          <>
+            <span className="text-2xl sm:text-3xl font-semibold text-primary">
+              ${(price - (price * discount) / 100).toFixed(2)}
+            </span>
+            <span className="text-sm sm:text-base text-gray-400 line-through">
+              ${price.toFixed(2)}
+            </span>
+          </>
+        ) : (
+          <span className="text-2xl sm:text-3xl font-semibold text-primary">
+            ${price.toFixed(2)}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col gap-3 py-4 my-2 md:px-4 md:border border-medium-gray rounded-md md:shadow-sm">

@@ -51,7 +51,7 @@ const LocationDetails = ({ lat, lng, address, onSave }) => {
             rules={{ required: "This field is required" }}
           />
 
-          <Button type="submit" disabled={!allFilled} fullWidth>
+          <Button type="submit" disabled={!allFilled}>
             Confirm Details
           </Button>
         </form>

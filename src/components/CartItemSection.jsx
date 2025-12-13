@@ -36,10 +36,9 @@ function CartItemSection({
             <div className="flex flex-col sm:flex-row  items-center gap-4 p-4">
               <div className="w-20 h-20 rounded-xl overflow-hidden bg-white/20 border border-white/30 flex-shrink-0">
                 <Image
-                  src={cart?.productImageUrl || item.productImages[0]?.url}
+                  src={cart?.productImageUrl || item?.productImages?.[0]?.url}
                   alt={item.title}
                   className="w-full h-full object-cover"
-                  fallbackSrc="https://via.placeholder.com/80x80"
                 />
               </div>
 

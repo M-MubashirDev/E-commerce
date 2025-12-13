@@ -108,8 +108,6 @@ export default function OrderSummary() {
           </Text>
         </div>
 
-        {/* Cart Items */}
-        {/* Cart Items */}
         <div className="px-4 sm:px-6 md:px-8 py-6 space-y-4 sm:space-y-6">
           {cart.items.length === 0 ? (
             <Text size="md" ta="center" my="lg">
@@ -269,8 +267,7 @@ export default function OrderSummary() {
             size="md"
             radius="md"
             onClick={handleConfirmOrder}
-            fullWidth
-            className="transition-hover hover:bg-dark-gray sm:size-lg"
+            className="transition-hover hover:bg-dark-gray !w-fit"
             disabled={cart.items.length === 0 || !address || !city || !phone}
             aria-label="Proceed to payment"
           >

@@ -42,6 +42,20 @@ export function ProductDetailCarousel({ images, activeIndex, setActiveIndex }) {
       emblaOptions={{ align: "start", loop: true, dragFree: false }}
       slideGap="md"
       className="!rounded-lg xl:max-w-[70vh] overflow-hidden"
+      classNames={{
+        control:
+          "!bg-white !text-black shadow-lg hover:bg-gray-100 transition rounded-full",
+      }}
+      styles={{
+        control: {
+          width: 36,
+          height: 36,
+          border: "none",
+        },
+        controls: {
+          padding: "0 12px",
+        },
+      }}
     >
       {images.map((image, index) => (
         <Carousel.Slide

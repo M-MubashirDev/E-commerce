@@ -62,7 +62,7 @@ function CartOrderSummery({ formatPrice, cart }) {
                 </Text>
               </Group>
 
-              <Button onClick={handleProceedCheckOut}>
+              <Button className="!w-fit" onClick={handleProceedCheckOut}>
                 Proceed to Checkout
               </Button>
             </Stack>

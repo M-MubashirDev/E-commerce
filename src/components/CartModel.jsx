@@ -26,10 +26,10 @@ function CartModel({
           />
 
           <div className="flex gap-3 justify-center items-center h-[70px] mt-2">
-            {selectedItem.images?.map((image, ind) => (
+            {selectedItem.productImages?.map((image, ind) => (
               <img
                 key={ind}
-                src={image}
+                src={image?.url}
                 alt={`thumb-${ind}`}
                 className={`h-full rounded-md w-auto object-contain cursor-pointer transition ${
                   activeIndex === ind

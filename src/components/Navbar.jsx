@@ -49,7 +49,12 @@ export default function HeaderNav() {
       >
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <img src="/mainLogo.png" className="w-40" alt="neo cart" />
+          <img
+            src="/mainLogo.png"
+            className="w-40 cursor-pointer"
+            alt="neo cart"
+            onClick={() => navigate("/")}
+          />
 
           {/* Desktop Navigation (hidden on < lg) */}
           <div className="hidden lg:flex">

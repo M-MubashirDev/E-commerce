@@ -23,12 +23,13 @@ import Orders from "./pages/admin/Orders";
 import Settings from "./pages/admin/Settings";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { lazy, Suspense } from "react";
+import { Spinner } from "./ui/Spinners";
 const OrderSummery = lazy(() => import("./pages/OrderSummery"));
 
 function App() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spinner />}>
         <BrowserRouter>
           <Routes>
             <Route path="login" element={<Login />} />
