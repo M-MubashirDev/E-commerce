@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Paper, Text, Loader, Pagination } from "@mantine/core";
@@ -15,6 +15,8 @@ import { Spinner } from "../ui/Spinners";
 const Products = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const prevStateRef = useRef(null);
+  const isFirstRender = useRef(true);
 
   const [state, dispatchReducer] = useReducer(
     productReducer,
@@ -29,36 +31,71 @@ const Products = () => {
     error,
   } = useSelector((state) => state.products);
 
-  const { page, sort, title, category } = Object.fromEntries(searchParams);
   const totalPages = Math.max(1, Math.ceil(total / state.limit));
 
+  // Sync URL params to state
   useEffect(() => {
-    if (!page && !sort && !title && !category) return;
+    const params = Object.fromEntries(searchParams);
 
     dispatchReducer({
-      type: "params",
+      type: "syncFromUrl",
       payload: {
-        page,
-        title,
-        category,
-        sortBy: sort,
+        page: params.page,
+        title: params.title,
+        category: params.category,
+        sortBy: params.sort,
+        minPrice: params.minPrice,
+        maxPrice: params.maxPrice,
       },
     });
-  }, [page, category, title, sort]);
+  }, [searchParams]);
 
+  // Initialize max price once when loaded
   useEffect(() => {
-    dispatch(fetchProducts(state));
+    if (maxPrice && state.price.upperLimit === 2000) {
+      const params = Object.fromEntries(searchParams);
+      if (!params.maxPrice) {
+        dispatchReducer({
+          type: "setMaxPrice",
+          payload: maxPrice,
+        });
+      }
+    }
+  }, [maxPrice, state.price.upperLimit, searchParams]);
+
+  // Fetch products only when relevant state changes
+  useEffect(() => {
+    // Skip first render
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      dispatch(fetchProducts(state));
+      prevStateRef.current = state;
+      return;
+    }
+
+    // Check if relevant fields changed
+    const prev = prevStateRef.current;
+    const hasChanged =
+      !prev ||
+      prev.page !== state.page ||
+      prev.title !== state.title ||
+      prev.category_id !== state.category_id ||
+      prev.sortBy !== state.sortBy ||
+      prev.price.lowerLimit !== state.price.lowerLimit ||
+      prev.price.upperLimit !== state.price.upperLimit;
+
+    if (hasChanged) {
+      dispatch(fetchProducts(state));
+      prevStateRef.current = state;
+    }
   }, [dispatch, state]);
 
-  useEffect(() => {
-    dispatchReducer({
-      type: "price",
-      payload: [0, maxPrice],
-    });
-  }, [maxPrice]);
+  const handleClearFilters = () => {
+    setSearchParams({});
+  };
 
   if (error) return <ErrorMessage error={error} />;
-  if (loading) return <Spinner />;
+  if (loading && products.length === 0) return <Spinner />;
 
   return (
     <div className="min-h-screen bg-light-gray">
@@ -66,11 +103,9 @@ const Products = () => {
       <div className="content-spacing h-full py-6">
         <div className="flex flex-col h-full md:flex-row gap-8">
           <ProductFilterSideBar
-            dispatchReducer={dispatchReducer}
             state={state}
             maxPrice={maxPrice}
             setSearchParams={setSearchParams}
-            searchParams={searchParams}
           />
 
           <div className="flex-1 relative">
@@ -97,7 +132,7 @@ const Products = () => {
                   Try adjusting your filters or search terms
                 </Text>
                 <Button
-                  onClick={() => dispatchReducer({ type: "clearFilters" })}
+                  onClick={handleClearFilters}
                   variant="filled"
                   className="mt-3"
                 >
@@ -108,7 +143,7 @@ const Products = () => {
               <ProductGrid paginatedProducts={products} />
             )}
 
-            {loading || (
+            {!loading && products.length > 0 && (
               <Pagination
                 total={totalPages}
                 value={state.page + 1}

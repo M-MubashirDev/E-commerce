@@ -14,11 +14,11 @@ export default function ExploreCategories() {
   const { categories, loading, error, selectedCategory } = useSelector(
     (state) => state.categories
   );
-
   useEffect(() => {
-    console.log("Home useEffect - calling fetchProducts");
+    console.log("CatergorySlider useEffect - calling fetchCategories");
+    if (categories.rows.length) return;
     dispatch(fetchCategories());
-  }, [dispatch]);
+  }, [dispatch, categories.rows.length]);
 
   if (loading) return <Spinner />;
   if (error) return <ErrorMessage error={error} />;

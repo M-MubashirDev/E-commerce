@@ -9,44 +9,46 @@ export const ProductInitialStates = {
     upperLimit: 2000,
   },
 };
+
 export function productReducer(state, action) {
   switch (action.type) {
-    case "price":
+    case "syncFromUrl": {
+      const { page, title, category, sortBy, minPrice, maxPrice } =
+        action.payload;
+
+      const pageNum = page ? parseInt(page) : 0;
+      const cat = category === "All" || !category ? null : category;
+      const lowerLimit = minPrice ? parseInt(minPrice) : 0;
+      const upperLimit = maxPrice ? parseInt(maxPrice) : state.price.upperLimit;
+
+      return {
+        ...state,
+        page: pageNum,
+        title: title || "",
+        category_id: cat,
+        sortBy: sortBy || "name",
+        price: {
+          lowerLimit,
+          upperLimit,
+        },
+      };
+    }
+
+    case "setMaxPrice":
       return {
         ...state,
         price: {
-          lowerLimit: action.payload[0],
-          upperLimit: action.payload[1],
-        },
-      };
-    case "page":
-      return { ...state, page: action.payload };
-    case "clearFilters":
-      return {
-        ...ProductInitialStates,
-        price: {
-          lowerLimit: 0,
+          ...state.price,
           upperLimit: action.payload,
         },
       };
-    case "params": {
-      const { page, title, category, sortBy } = action.payload;
-
-      const cat = category === "All" || !category ? null : category;
-
-      return {
-        ...state,
-        page: page ?? state.page,
-        title: title ?? state.title,
-        category_id: cat,
-        sortBy: sortBy ?? state.sortBy,
-      };
-    }
 
     default:
       return state;
   }
 }
+
+// ...............
 export const AdminProductInitialStates = {
   page: 0,
   limit: 10,
