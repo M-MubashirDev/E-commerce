@@ -23,7 +23,6 @@ export default function Profile() {
   const { user, loading } = useSelector((state) => state.auth);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  console.log(user, "user");
   const profileMethods = useForm({
     defaultValues: {
       name: user?.name || "",
@@ -229,11 +228,11 @@ export default function Profile() {
                 certain.
               </Text>
               <Button
-                color="black"
+                className="!bg-red-400 !w-fit"
                 leftSection={<FaTrash size={14} />}
                 onClick={() => setDeleteModalOpen(true)}
               >
-                Delete My Account
+                Delete Account
               </Button>
             </Card>
           </Tabs.Panel>
@@ -261,7 +260,11 @@ export default function Profile() {
           <Button variant="outline" onClick={() => setDeleteModalOpen(false)}>
             Cancel
           </Button>
-          <Button color="dark" onClick={handleDeleteAccount} loading={loading}>
+          <Button
+            className="!bg-red-400"
+            onClick={handleDeleteAccount}
+            loading={loading}
+          >
             Delete Account
           </Button>
         </Group>

@@ -18,8 +18,10 @@ function SingleProductDetail({
   const { cart } = useSelector((state) => state.cart);
   const cartItem = cart.items.find((item) => String(item.id) === String(id));
 
+  console.log(selectedProduct);
   function HandleAddTOCart() {
     if (!selectedProduct) return;
+    console.log(selectedProduct);
     try {
       dispatch(
         setCartItem({
@@ -70,8 +72,11 @@ function SingleProductDetail({
         {cartItem ? (
           <ItemQuantityButton item={cartItem} />
         ) : (
-          <Button fullWidth onClick={HandleAddTOCart}>
-            Add To Cart
+          <Button
+            onClick={HandleAddTOCart}
+            disabled={!selectedProduct?.quantity}
+          >
+            {!selectedProduct?.quantity ? "Out of stock" : "Add To Cart"}
           </Button>
         )}
       </div>

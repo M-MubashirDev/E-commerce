@@ -46,7 +46,7 @@ export default function AdminProductsAction({
       title: existingProduct?.title || "",
       description: existingProduct?.description || "",
       price: existingProduct?.price || "",
-      discount: existingProduct?.discount || "",
+      discount: existingProduct?.discount || 0,
       quantity: existingProduct?.quantity || "",
       unitQuantity: existingProduct?.unitQuantity || "pcs",
       categoryId: existingProduct?.categoryId || "",

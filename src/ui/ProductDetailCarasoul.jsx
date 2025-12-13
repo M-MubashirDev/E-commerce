@@ -49,7 +49,7 @@ export function ProductDetailCarousel({ images, activeIndex, setActiveIndex }) {
           className="bg-light-gray !rounded-lg flex justify-center"
         >
           <img
-            src={"/pay.png"}
+            src={image?.url}
             alt={`product-${image.id || index}`}
             className="max-h-[60vh] w-auto object-contain !rounded-lg"
           />

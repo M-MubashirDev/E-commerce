@@ -8,6 +8,7 @@ function CartModel({
   setActiveIndex,
   setOpened,
 }) {
+  console.log("CartModel selectedItem:", selectedItem);
   return (
     <Modal
       opened={opened}
@@ -19,7 +20,7 @@ function CartModel({
       {selectedItem && (
         <div className="flex flex-col items-center gap-4">
           <ProductDetailCarousel
-            images={selectedItem.images}
+            images={selectedItem.productImages}
             activeIndex={activeIndex}
             setActiveIndex={setActiveIndex}
           />

@@ -10,6 +10,7 @@ import ErrorMessage from "../ui/ErrorMessage";
 
 import { fetchProducts } from "../features/products/productsThunks";
 import { ProductInitialStates, productReducer } from "../utilities/Reducers";
+import { Spinner } from "../ui/Spinners";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -57,6 +58,7 @@ const Products = () => {
   }, [maxPrice]);
 
   if (error) return <ErrorMessage error={error} />;
+  if (loading) return <Spinner />;
 
   return (
     <div className="min-h-screen bg-light-gray">

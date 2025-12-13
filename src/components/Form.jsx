@@ -102,7 +102,7 @@ export function SubmitButton({ children, loading }) {
   return (
     <Button
       type="submit"
-      fullWidth
+      // fullWidth
       loaderProps={{ type: "bars" }}
       loading={loading}
     >

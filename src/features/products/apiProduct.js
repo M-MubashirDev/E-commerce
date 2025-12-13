@@ -2,7 +2,6 @@ import { adminApi } from "../../utilities/axiosInspector";
 
 // ✅ Fetch all products (with filters, pagination, etc.)
 export const getProducts = async (filters = {}) => {
-  console.log(filters);
   const payload = {
     page: filters.page || 0,
     limit: filters.limit || 12,

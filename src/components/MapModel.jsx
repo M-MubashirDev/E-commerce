@@ -36,8 +36,6 @@ const LocationMapModal = ({ opened = true, onSave, onClose }) => {
     });
   };
 
-  console.log(position, ".....");
-
   useEffect(() => {
     if (
       isLoaded &&

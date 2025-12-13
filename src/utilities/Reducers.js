@@ -59,7 +59,6 @@ export const AdminProductInitialStates = {
 export function adminProductReducer(state, action) {
   switch (action.type) {
     case "setField": {
-      console.log([action.field], action.value);
       return { ...state, [action.field]: action.value };
     }
     case "setPage":

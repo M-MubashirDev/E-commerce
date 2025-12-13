@@ -5,8 +5,13 @@ import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
 
 function ItemQuantityButton({ item }) {
   const dispatch = useDispatch();
-
   const updateQuantity = (item, type) => {
+    console.log(
+      "Updating quantity:",
+      item,
+      item?.currentQuantity,
+      item?.quantity
+    );
     if (type === "increase") {
       dispatch(setCartItem({ ...item }));
     } else {

@@ -3,7 +3,7 @@ import { ProductDetailCarousel } from "../ui/ProductDetailCarasoul";
 
 function SingleProductCarousel({ productImages }) {
   const [activeIndex, setActiveIndex] = useState(0);
-
+  console.log(productImages);
   return (
     <div className="w-full lg:w-1/2 flex flex-col">
       <div className="flex justify-center ">
@@ -18,7 +18,7 @@ function SingleProductCarousel({ productImages }) {
         {productImages?.map((image, index) => (
           <img
             key={image.id}
-            src={"/batman.jpg"}
+            src={image?.url}
             alt={`product-thumb-${image.id}`}
             className={`h-full rounded-md w-auto object-contain cursor-pointer transition ${
               activeIndex === index

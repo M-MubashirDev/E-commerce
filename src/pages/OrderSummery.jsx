@@ -81,7 +81,7 @@ export default function OrderSummary() {
     setPaymentModalOpened(false);
     toast.success("Order placed and payment confirmed!");
     dispatch(clearCart());
-    navigate("/order-success");
+    navigate("/");
   }
 
   const formatPrice = (price) =>

@@ -16,6 +16,7 @@ export default function ExploreCategories() {
   );
 
   useEffect(() => {
+    console.log("Home useEffect - calling fetchProducts");
     dispatch(fetchCategories());
   }, [dispatch]);
 

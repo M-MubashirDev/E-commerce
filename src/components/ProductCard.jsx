@@ -24,6 +24,7 @@ const ProductCard = ({ item }) => {
 
   function HandleAddTOCart() {
     if (isInCart) return;
+    console.log(item);
     try {
       dispatch(setCartItem({ ...item }));
       toast.success(`${item.title} added to the cart`);
@@ -36,40 +37,20 @@ const ProductCard = ({ item }) => {
   const safeTitle = item.title?.slice(0, 100) || "Untitled Product";
   const safeDescription =
     item.description?.slice(0, 150) || "No description available";
-
   return (
     <div className="bg-white max-w-[17rem] sm:max-w-[16rem] font-secondary min-w-[17rem] sm:min-w-[14rem] mx-auto backdrop-blur-sm rounded-2xl relative group hover:shadow-xl transition-shadow shadow-md h-88 flex flex-col">
-      {/* Wishlist */}
-      <button className="absolute top-2 right-2 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors">
-        <svg
-          className="w-4 h-4 hover:text-red-500"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-          />
-        </svg>
-      </button>
-
-      {/* Image */}
       <div
         onClick={() => navigate(`/Product/${item?.id}`)}
         className="h-48 rounded-t-2xl cursor-pointer overflow-hidden flex-shrink-0"
       >
         <img
-          src={item.images?.[0] || item.image}
+          src={item?.productImages[0]?.url}
           alt={item.title || item.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
         />
       </div>
 
-      {/* Content */}
       <div className="p-4 flex-grow flex flex-col justify-between relative">
         <div className="space-y-3">
           <h3 className="font-semibold text-dark text-base leading-tight truncate">
@@ -103,11 +84,14 @@ const ProductCard = ({ item }) => {
           </div>
         </div>
 
-        {/* Button */}
         <div className="absolute -bottom-3 left-[40%]">
-          <Button onClick={HandleAddTOCart} disabled={isInCart}>
-            {isInCart ? "Added" : "Add to Cart"}
-          </Button>
+          {item?.quantity === 0 ? (
+            <Button disabled={!item?.quantity}>Out of Stock</Button>
+          ) : (
+            <Button onClick={HandleAddTOCart} disabled={isInCart}>
+              {isInCart ? "Added" : "Add to Cart"}
+            </Button>
+          )}
         </div>
       </div>
     </div>

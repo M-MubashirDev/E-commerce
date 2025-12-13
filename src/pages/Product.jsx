@@ -21,7 +21,6 @@ function Product() {
   useEffect(() => {
     dispatch(fetchProductById(id));
   }, [dispatch, id]);
-  console.log(loading, error);
   return (
     <section
       style={{
