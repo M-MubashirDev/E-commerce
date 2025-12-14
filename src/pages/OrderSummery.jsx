@@ -1,26 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Button,
-  Divider,
-  Text,
-  Title,
-  Group,
-  Card,
-  Modal,
-} from "@mantine/core";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import { Button, Divider, Text, Title, Group, Card } from "@mantine/core";
 import { useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { createOrder } from "../features/orders/orderThunks";
-import PaymentForm from "../components/PaymentForm";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { clearCart } from "../features/cart/cartSlice";
 import LocationDetails from "../components/LocationDetail";
-
-// Load Stripe outside component to avoid recreating on every render
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 export default function OrderSummary() {
   const { location } = useSelector((state) => state.location);
@@ -29,22 +14,27 @@ export default function OrderSummary() {
   const [opened, setOpened] = useState(() => {
     return !address || !city || !phone;
   });
-
-  const [paymentModalOpened, setPaymentModalOpened] = useState(false);
-  const [orderData, setOrderData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
 
   async function handleConfirmOrder() {
-    try {
-      if (!address || !city || !phone) {
-        toast.error("Please add delivery details before proceeding");
-        setOpened(true); // open location modal
-        return;
-      }
+    if (!address || !city || !phone) {
+      toast.error("Please add delivery details before proceeding");
+      setOpened(true);
+      return;
+    }
 
+    if (cart.items.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
       const orderObject = {
         address,
         city,
@@ -59,26 +49,22 @@ export default function OrderSummary() {
       const response = await dispatch(createOrder(orderObject)).unwrap();
 
       if (response.result && response.result.client_secret) {
-        setOrderData({
-          clientSecret: response.result.client_secret,
-          orderId: response.result.orderId,
-          amount: response.result.amount,
+        // Navigate to separate payment page with order data
+        navigate("/payment", {
+          state: {
+            clientSecret: response.result.client_secret,
+            orderId: response.result.orderId,
+          },
         });
-        setPaymentModalOpened(true);
       } else {
-        toast.error("Failed to create order");
+        toast.error("Failed to create order. Please try again.");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Order creation error:", error);
       toast.error(error.message || "Failed to create order");
+    } finally {
+      setLoading(false);
     }
-  }
-
-  function handlePaymentSuccess() {
-    setPaymentModalOpened(false);
-    toast.success("Order placed and payment confirmed!");
-    dispatch(clearCart());
-    navigate("/");
   }
 
   const formatPrice = (price) =>
@@ -107,9 +93,14 @@ export default function OrderSummary() {
 
         <div className="px-4 sm:px-6 md:px-8 py-6 space-y-4 sm:space-y-6">
           {cart.items.length === 0 ? (
-            <Text size="md" ta="center" my="lg">
-              Your cart is empty
-            </Text>
+            <div className="text-center py-12">
+              <Text size="lg" mb="md">
+                Your cart is empty
+              </Text>
+              <Button onClick={() => navigate("/products")}>
+                Continue Shopping
+              </Button>
+            </div>
           ) : (
             cart.items.map((item) => {
               const discountedPrice =
@@ -123,7 +114,7 @@ export default function OrderSummary() {
                 >
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0">
                     <img
-                      src={"/batman.jpg"}
+                      src={item.images?.[0] || "/batman.jpg"}
                       alt={item.title}
                       className="w-full h-full object-cover"
                     />
@@ -191,18 +182,16 @@ export default function OrderSummary() {
                       <strong>Address:</strong> {address}
                     </Text>
                     <Text size="sm" c="dark">
-                      <strong>City Name:</strong> {city}
+                      <strong>City:</strong> {city}
                     </Text>
                     <Text size="sm" c="dark">
                       <strong>Phone:</strong> {phone}
                     </Text>
-                    <Text size="xs">
-                      Lat: {location.lat?.toFixed(4)} | Lng:{" "}
-                      {location.lng?.toFixed(4)}
-                    </Text>
                   </div>
                 ) : (
-                  <Text size="sm">No delivery location or details added</Text>
+                  <Text size="sm" c="red">
+                    Please add delivery details to continue
+                  </Text>
                 )}
               </div>
 
@@ -264,11 +253,12 @@ export default function OrderSummary() {
             size="md"
             radius="md"
             onClick={handleConfirmOrder}
-            className="transition-hover hover:bg-dark-gray !w-fit"
-            disabled={cart.items.length === 0}
+            loading={loading}
+            className="transition-hover hover:bg-dark-gray !w-full sm:!w-fit"
+            disabled={cart.items.length === 0 || !address || !city || !phone}
             aria-label="Proceed to payment"
           >
-            Proceed to Payment
+            {loading ? "Creating Order..." : "Proceed to Payment"}
           </Button>
         </div>
       </div>
@@ -276,29 +266,15 @@ export default function OrderSummary() {
       <LocationDetails
         opened={opened}
         location={location}
-        onClose={() => setOpened(false)}
+        onClose={() => {
+          // Only close if details are complete
+          if (address && city && phone) {
+            setOpened(false);
+          } else {
+            toast.error("Please complete all delivery details");
+          }
+        }}
       />
-
-      {/* Payment Modal - Wrapped with Elements provider */}
-      <Modal
-        opened={paymentModalOpened}
-        onClose={() => setPaymentModalOpened(false)}
-        title="Complete Payment"
-        size="md"
-        centered
-      >
-        {orderData && (
-          <Elements stripe={stripePromise}>
-            <div>
-              <PaymentForm
-                clientSecret={orderData.clientSecret}
-                orderId={orderData.orderId}
-                onSuccess={handlePaymentSuccess}
-              />
-            </div>
-          </Elements>
-        )}
-      </Modal>
     </section>
   );
 }

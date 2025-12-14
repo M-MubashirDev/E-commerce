@@ -24,7 +24,10 @@ import Settings from "./pages/admin/Settings";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { lazy, Suspense } from "react";
 import { Spinner } from "./ui/Spinners";
+import PaymentSuccess from "./pages/Success";
+import PaymentFailure from "./pages/Failure";
 const OrderSummery = lazy(() => import("./pages/OrderSummery"));
+const Payment = lazy(() => import("./pages/Payment"));
 
 function App() {
   return (
@@ -48,6 +51,9 @@ function App() {
               <Route path="about" element={<About />} />
               <Route path="cart" element={<Cart />} />
               <Route path="ordersummery" element={<OrderSummery />} />
+              <Route path="payment" element={<Payment />} />
+              <Route path="paymentSuccess" element={<PaymentSuccess />} />
+              <Route path="failure" element={<PaymentFailure />} />
               <Route path="profile" element={<Profile />} />
             </Route>
 

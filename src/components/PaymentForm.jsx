@@ -1,95 +1,166 @@
-// src/components/PaymentForm.jsx
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import { Button, Alert } from "@mantine/core";
-import toast from "react-hot-toast";
+import { Button, Alert, Text } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { confirmPayment } from "../features/orders/orderThunks";
+import { clearCart } from "../features/cart/cartSlice";
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
     base: {
       fontSize: "16px",
       color: "#424770",
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
       "::placeholder": {
         color: "#aab7c4",
       },
     },
     invalid: {
-      color: "#9e2146",
+      color: "#fa755a",
+      iconColor: "#fa755a",
     },
   },
 };
 
-export default function PaymentForm({ clientSecret, orderId, onSuccess }) {
+export default function PaymentForm({ clientSecret, orderId }) {
   const stripe = useStripe();
   const elements = useElements();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const isProcessing = useRef(false); // Prevent double submission
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+      setError(null);
+      isProcessing.current = false;
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!stripe || !elements) {
+    // Prevent double submission
+    if (isProcessing.current) {
       return;
     }
 
+    if (!stripe || !elements) {
+      setError("Payment system not ready. Please refresh the page.");
+      return;
+    }
+
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) {
+      setError("Payment form not loaded properly.");
+      return;
+    }
+
+    isProcessing.current = true;
     setLoading(true);
     setError(null);
 
     try {
-      // Confirm the payment with Stripe
+      // Confirm payment with Stripe
       const { error: stripeError, paymentIntent } =
         await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
-            card: elements.getElement(CardElement),
+            card: cardElement,
           },
         });
 
       if (stripeError) {
         setError(stripeError.message);
-        toast.error(stripeError.message);
         setLoading(false);
+        isProcessing.current = false;
         return;
       }
 
-      if (paymentIntent.status === "succeeded") {
-        // Now call your backend to confirm the payment
+      if (paymentIntent && paymentIntent.status === "succeeded") {
+        // Confirm payment with backend
+        try {
+          await dispatch(confirmPayment(orderId)).unwrap();
 
-        await dispatch(confirmPayment(orderId)).unwrap();
-        onSuccess();
+          // Clear cart and navigate to success
+          dispatch(clearCart());
+          navigate("/paymentSuccess", {
+            replace: true,
+            state: {
+              orderId,
+              amount: paymentIntent.amount / 100,
+            },
+          });
+        } catch (backendError) {
+          console.error("Backend confirmation error:", backendError);
+          navigate("/failure", {
+            replace: true,
+            state: {
+              error:
+                "Payment processed but order confirmation failed. Please contact support.",
+              orderId,
+            },
+          });
+        }
+      } else {
+        setError("Payment could not be completed. Please try again.");
+        setLoading(false);
+        isProcessing.current = false;
       }
     } catch (err) {
       console.error("Payment error:", err);
-      setError("An unexpected error occurred");
-      toast.error("An unexpected error occurred");
-    } finally {
+      setError("An unexpected error occurred. Please try again.");
       setLoading(false);
+      isProcessing.current = false;
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="p-4 border border-gray-300 rounded-md bg-white">
-        <CardElement options={CARD_ELEMENT_OPTIONS} />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <Text size="sm" fw={500} mb="xs" className="text-dark">
+          Card Information
+        </Text>
+        <div className="p-4 border-2 border-gray-300 rounded-lg bg-white focus-within:border-dark transition-colors">
+          <CardElement options={CARD_ELEMENT_OPTIONS} />
+        </div>
       </div>
 
       {error && (
-        <Alert color="red" title="Payment Error">
-          {error}
+        <Alert
+          color="red"
+          title="Payment Error"
+          radius="md"
+          className="border-2 border-red-300"
+        >
+          <Text size="sm" className="text-red-900">
+            {error}
+          </Text>
         </Alert>
       )}
 
-      <Button
-        type="submit"
-        fullWidth
-        size="lg"
-        loading={loading}
-        disabled={!stripe || loading}
-      >
-        {loading ? "Processing..." : "Pay Now"}
-      </Button>
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          onClick={() => navigate("/ordersummery")}
+          disabled={loading || isProcessing.current}
+          className="text-gray-600 hover:text-dark"
+        >
+          Back
+        </Button>
+        <Button
+          type="submit"
+          loading={loading}
+          disabled={!stripe || loading || isProcessing.current}
+          className="transition-all hover:scale-[1.02] bg-dark text-white"
+        >
+          {loading ? "Processing Payment..." : "Pay Now"}
+        </Button>
+      </div>
     </form>
   );
 }
