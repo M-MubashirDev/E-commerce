@@ -52,14 +52,14 @@ export default function AdminProducts() {
     dispatchReducer({ type: "setPage", payload: 0 });
   };
 
-  const handlePriceChange = (val) => {
-    dispatchReducer({
-      type: "setField",
-      field: "price",
-      value: { lowerLimit: val[0], upperLimit: val[1] },
-    });
-    dispatchReducer({ type: "setPage", payload: 0 });
-  };
+  // const handlePriceChange = (val) => {
+  //   dispatchReducer({
+  //     type: "setField",
+  //     field: "price",
+  //     value: { lowerLimit: val[0], upperLimit: val[1] },
+  //   });
+  //   dispatchReducer({ type: "setPage", payload: 0 });
+  // };
 
   const handleSortChange = (val) => {
     dispatchReducer({ type: "setField", field: "sortBy", value: val });
@@ -88,8 +88,8 @@ export default function AdminProducts() {
           state={state}
           handleSearchChange={handleSearchChange}
           handleAdd={handleAdd}
-          maxPrice={maxPrice}
-          handlePriceChange={handlePriceChange}
+          // maxPrice={maxPrice}
+          // handlePriceChange={handlePriceChange}
           handleSortChange={handleSortChange}
         />
         <ProductAdminTable

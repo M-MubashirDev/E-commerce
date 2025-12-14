@@ -54,7 +54,7 @@ export default function CustomerTable({
       </div>
 
       {/* Table */}
-      <ScrollArea h={400}>
+      <ScrollArea>
         {loading ? (
           <Center p="lg">
             <Loader color="dark" size="lg" />

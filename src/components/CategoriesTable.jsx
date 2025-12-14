@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import { FiSearch, FiEdit2 } from "react-icons/fi";
 import CategoriesAction from "../pages/admin/CategoriesAction";
+import { useDebouncedCallback } from "@mantine/hooks";
 
 export default function CategoriesTable({
   categories,
@@ -24,21 +25,18 @@ export default function CategoriesTable({
   onPageChange,
   dispatchReducer,
 }) {
+  const debouncedSearch = useDebouncedCallback((value) => {
+    dispatchReducer({ type: "title", payload: value });
+  }, 500);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [drawerOpened, setDrawerOpened] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // useEffect(() => {
-  //      //     onSearch(searchTerm);
-
-  //   return () => clearTimeout(delay);
-  // }, [searchTerm, onSearch]);
-  function handleSearch(search) {
-    setTimeout(() => {
-      dispatchReducer({ type: "title", payload: search });
-    }, 500);
-  }
-
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    debouncedSearch(value);
+  };
   const handleEdit = (cat) => {
     setSelectedCategory(cat);
     setDrawerOpened(true);
@@ -61,10 +59,7 @@ export default function CategoriesTable({
               placeholder="Search category..."
               leftSection={<FiSearch size={16} />}
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                handleSearch(e.target.value);
-              }}
+              onChange={(e) => handleSearch(e.target.value)}
               radius="md"
               className="sm:w-[250px] w-[200px]"
             />
@@ -74,7 +69,7 @@ export default function CategoriesTable({
           </div>
         </div>
 
-        <ScrollArea h={400}>
+        <ScrollArea>
           {loading ? (
             <div style={{ padding: "2rem", textAlign: "center" }}>
               <Loader color="dark" size="lg" />

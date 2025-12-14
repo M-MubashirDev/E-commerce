@@ -17,6 +17,7 @@ import OrdersAction from "./OrdersAction";
 import ViewOrderDetailsDrawer from "./VIewOrderDetailsAdmin";
 import { fetchOrderDetails } from "../features/orders/orderThunks";
 import { useDispatch } from "react-redux";
+import { useDebouncedCallback } from "@mantine/hooks";
 
 export default function OrdersTable({
   orders,
@@ -26,6 +27,10 @@ export default function OrdersTable({
   onPageChange,
   onSearch,
 }) {
+  const debouncedSearch = useDebouncedCallback((value) => {
+    onSearch(value);
+  }, 500);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [drawerOpened, setDrawerOpened] = useState(false);
   const [drawerOpenedDetail, setDrawerOpenedDetail] = useState(false);
@@ -37,12 +42,10 @@ export default function OrdersTable({
     setDrawerOpenedDetail(true);
     await dispatch(fetchOrderDetails(order.id)).unwrap();
   };
-  function handleChangeTerm(values) {
-    setSearchTerm(values);
-    setTimeout(() => {
-      onSearch(searchTerm);
-    }, 500);
-  }
+  const handleChangeTerm = (value) => {
+    setSearchTerm(value);
+    debouncedSearch(value);
+  };
   const handleEdit = (order) => {
     setSelectedOrder(order);
     setDrawerOpened(true);
@@ -132,8 +135,36 @@ export default function OrdersTable({
                       <Table.Td>${order.amount}</Table.Td>
                       <Table.Td>{order.status}</Table.Td>
                       <Table.Td>
-                        {new Date(order.dateOrderPlaced).toLocaleDateString()}
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "2px",
+                          }}
+                        >
+                          <span>
+                            {new Date(order.dateOrderPlaced).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "2-digit",
+                                month: "numeric",
+                                year: "2-digit",
+                              }
+                            )}
+                          </span>
+                          <span className="font-semibold text-gray-700">
+                            {new Date(order.dateOrderPlaced).toLocaleTimeString(
+                              "en-GB",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: false,
+                              }
+                            )}
+                          </span>
+                        </div>
                       </Table.Td>
+
                       <Table.Td align="center">
                         <Menu shadow="sm" withArrow>
                           <Menu.Target>

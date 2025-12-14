@@ -10,7 +10,7 @@ import { FiEdit2 } from "react-icons/fi";
 
 function ProductAdminTable({ loading, products, handleEdit }) {
   return (
-    <ScrollArea h={400}>
+    <ScrollArea>
       {loading ? (
         <div style={{ padding: "2rem", textAlign: "center" }}>
           <Loader color="dark" size="lg" />

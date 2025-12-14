@@ -104,6 +104,14 @@ export default function CategoriesAction({ existingCategory = null, onClose }) {
             accept="image/*"
             clearable
             disabled={uploading}
+            {...register("icon", {
+              validate: (value) => {
+                if (!isEditMode && !value) {
+                  return "Icon is required for new category";
+                }
+                return true;
+              },
+            })}
             onChange={async (file) => {
               if (!file) {
                 setValue("icon", ""); // clear icon
@@ -112,13 +120,15 @@ export default function CategoriesAction({ existingCategory = null, onClose }) {
               setUploading(true);
               try {
                 const url = await uploadToCloudinary(file);
-                setValue("icon", url); // store cloudinary URL into form value
+                setValue("icon", url);
               } finally {
                 setUploading(false);
               }
             }}
             mb="md"
+            error={formState.errors.icon?.message}
           />
+
           {iconValue && (
             <div className="mb-4">
               <img
