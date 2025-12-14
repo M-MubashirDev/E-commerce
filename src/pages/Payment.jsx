@@ -1,44 +1,19 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { Card, Text, Title, Loader, Center, Accordion } from "@mantine/core";
+import { Card, Text, Title, Accordion } from "@mantine/core";
 import PaymentForm from "../components/PaymentForm";
 import { useSelector } from "react-redux";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 export default function Payment() {
-  const navigate = useNavigate();
-  const location = useLocation();
   const { cart } = useSelector((state) => state.cart);
-
-  const [paymentData, setPaymentData] = useState(null);
-
-  useEffect(() => {
-    const { clientSecret, orderId } = location.state || {};
-
-    if (!clientSecret || !orderId) {
-      navigate("/ordersummery", { replace: true });
-      return;
-    }
-
-    setPaymentData({ clientSecret, orderId });
-  }, [location.state, navigate]);
 
   const formatPrice = (price) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
     }).format(price);
-
-  if (!paymentData) {
-    return (
-      <Center className="min-h-screen bg-light-gray">
-        <Loader size="lg" color="dark" />
-      </Center>
-    );
-  }
 
   const totalAmount = cart.total + cart.shipping + cart.tax;
 
@@ -77,23 +52,8 @@ export default function Payment() {
               Payment Details
             </Title>
 
-            <Elements
-              stripe={stripePromise}
-              options={{
-                clientSecret: paymentData.clientSecret,
-                appearance: {
-                  theme: "stripe",
-                  variables: {
-                    colorPrimary: "#000000",
-                    borderRadius: "8px",
-                  },
-                },
-              }}
-            >
-              <PaymentForm
-                clientSecret={paymentData.clientSecret}
-                orderId={paymentData.orderId}
-              />
+            <Elements stripe={stripePromise} key="payment-elements">
+              <PaymentForm />
             </Elements>
           </div>
         </div>

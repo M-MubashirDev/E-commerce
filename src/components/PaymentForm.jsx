@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import { Button, Alert, Text } from "@mantine/core";
+import { Button, Text, Paper } from "@mantine/core";
 import { useDispatch } from "react-redux";
-import { confirmPayment } from "../features/orders/orderThunks";
 import { clearCart } from "../features/cart/cartSlice";
+import { createOrder, confirmPayment } from "../features/orders/orderThunks";
+import { useSelector } from "react-redux";
+import { FiAlertCircle } from "react-icons/fi";
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
@@ -23,11 +25,13 @@ const CARD_ELEMENT_OPTIONS = {
   },
 };
 
-export default function PaymentForm({ clientSecret, orderId }) {
+export default function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { cart } = useSelector((state) => state.cart);
+  const { location: delivery } = useSelector((state) => state.location);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -45,19 +49,10 @@ export default function PaymentForm({ clientSecret, orderId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prevent double submission
-    if (isProcessing.current) {
-      return;
-    }
+    if (isProcessing.current) return;
 
     if (!stripe || !elements) {
-      setError("Payment system not ready. Please refresh the page.");
-      return;
-    }
-
-    const cardElement = elements.getElement(CardElement);
-    if (!cardElement) {
-      setError("Payment form not loaded properly.");
+      setError("Payment system not ready");
       return;
     }
 
@@ -66,54 +61,86 @@ export default function PaymentForm({ clientSecret, orderId }) {
     setError(null);
 
     try {
-      // Confirm payment with Stripe
+      // 1️⃣ Create order ONLY when user pays
+      const orderObject = {
+        address: delivery.address,
+        city: delivery.city,
+        phone: delivery.phone,
+        items: cart.items.map((item) => ({
+          productId: item.id,
+          quantity: item.currentQuantity,
+        })),
+      };
+
+      const orderRes = await dispatch(createOrder(orderObject)).unwrap();
+
+      const { client_secret, orderId } = orderRes.result;
+
+      // 2️⃣ Confirm Stripe payment
       const { error: stripeError, paymentIntent } =
-        await stripe.confirmCardPayment(clientSecret, {
+        await stripe.confirmCardPayment(client_secret, {
           payment_method: {
-            card: cardElement,
+            card: elements.getElement(CardElement),
           },
         });
 
       if (stripeError) {
-        setError(stripeError.message);
+        let userMessage = stripeError.message;
+
+        switch (stripeError.code) {
+          case "card_declined":
+            userMessage =
+              "Your card was declined. Please try another card or contact your bank.";
+            break;
+          case "expired_card":
+            userMessage = "Your card has expired. Please use a different card.";
+            break;
+          case "insufficient_funds":
+            userMessage = "Insufficient funds. Please try another card.";
+            break;
+          case "incorrect_cvc":
+            userMessage = "Incorrect CVC. Please check and try again.";
+            break;
+          case "processing_error":
+            userMessage = "Processing error. Please try again in a moment.";
+            break;
+          default:
+            userMessage = "Payment failed. Please try again.";
+        }
+
+        setError(userMessage);
         setLoading(false);
         isProcessing.current = false;
         return;
       }
 
-      if (paymentIntent && paymentIntent.status === "succeeded") {
-        // Confirm payment with backend
-        try {
-          await dispatch(confirmPayment(orderId)).unwrap();
+      // 3️⃣ Backend confirmation
+      if (paymentIntent.status === "succeeded") {
+        await dispatch(confirmPayment(orderId)).unwrap();
 
-          // Clear cart and navigate to success
-          dispatch(clearCart());
-          navigate("/paymentSuccess", {
-            replace: true,
-            state: {
-              orderId,
-              amount: paymentIntent.amount / 100,
-            },
-          });
-        } catch (backendError) {
-          console.error("Backend confirmation error:", backendError);
-          navigate("/failure", {
-            replace: true,
-            state: {
-              error:
-                "Payment processed but order confirmation failed. Please contact support.",
-              orderId,
-            },
-          });
-        }
-      } else {
-        setError("Payment could not be completed. Please try again.");
-        setLoading(false);
-        isProcessing.current = false;
+        dispatch(clearCart());
+
+        navigate("/paymentSuccess", {
+          replace: true,
+          state: {
+            orderId,
+            amount: paymentIntent.amount / 100,
+          },
+        });
       }
     } catch (err) {
-      console.error("Payment error:", err);
-      setError("An unexpected error occurred. Please try again.");
+      console.error(err);
+      setError(err.message || "Payment failed");
+      navigate("/failure", {
+        replace: true,
+        state: {
+          error:
+            err.message ||
+            "Something went wrong while processing your order. Please try again.",
+          orderId: err?.orderId,
+        },
+      });
+    } finally {
       setLoading(false);
       isProcessing.current = false;
     }
@@ -131,16 +158,22 @@ export default function PaymentForm({ clientSecret, orderId }) {
       </div>
 
       {error && (
-        <Alert
-          color="red"
-          title="Payment Error"
-          radius="md"
-          className="border-2 border-red-300"
-        >
-          <Text size="sm" className="text-red-900">
-            {error}
-          </Text>
-        </Alert>
+        <Paper p="md" radius="md" className="bg-red-50 border-2 border-red-400">
+          <div className="flex items-start gap-3">
+            <FiAlertCircle
+              size={24}
+              className="text-red-600 flex-shrink-0 mt-1"
+            />
+            <div>
+              <Text size="sm" fw={600} className="text-red-900 mb-1">
+                Payment Error
+              </Text>
+              <Text size="sm" className="text-red-800">
+                {error}
+              </Text>
+            </div>
+          </div>
+        </Paper>
       )}
 
       <div className="flex items-center gap-4">
@@ -156,9 +189,8 @@ export default function PaymentForm({ clientSecret, orderId }) {
           type="submit"
           loading={loading}
           disabled={!stripe || loading || isProcessing.current}
-          className="transition-all hover:scale-[1.02] bg-dark text-white"
         >
-          {loading ? "Processing Payment..." : "Pay Now"}
+          Pay Now
         </Button>
       </div>
     </form>

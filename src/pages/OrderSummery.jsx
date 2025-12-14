@@ -1,8 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Button, Divider, Text, Title, Group, Card } from "@mantine/core";
 import { useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { createOrder } from "../features/orders/orderThunks";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import LocationDetails from "../components/LocationDetail";
@@ -14,9 +13,7 @@ export default function OrderSummary() {
   const [opened, setOpened] = useState(() => {
     return !address || !city || !phone;
   });
-  const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
 
@@ -32,39 +29,7 @@ export default function OrderSummary() {
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const orderObject = {
-        address,
-        city,
-        phone,
-        items: cart?.items.map((val) => ({
-          productId: val.id,
-          quantity: val.currentQuantity,
-        })),
-      };
-
-      // Create order and get client_secret
-      const response = await dispatch(createOrder(orderObject)).unwrap();
-
-      if (response.result && response.result.client_secret) {
-        // Navigate to separate payment page with order data
-        navigate("/payment", {
-          state: {
-            clientSecret: response.result.client_secret,
-            orderId: response.result.orderId,
-          },
-        });
-      } else {
-        toast.error("Failed to create order. Please try again.");
-      }
-    } catch (error) {
-      console.error("Order creation error:", error);
-      toast.error(error.message || "Failed to create order");
-    } finally {
-      setLoading(false);
-    }
+    navigate("/payment");
   }
 
   const formatPrice = (price) =>
@@ -253,12 +218,11 @@ export default function OrderSummary() {
             size="md"
             radius="md"
             onClick={handleConfirmOrder}
-            loading={loading}
             className="transition-hover hover:bg-dark-gray !w-full sm:!w-fit"
             disabled={cart.items.length === 0 || !address || !city || !phone}
             aria-label="Proceed to payment"
           >
-            {loading ? "Creating Order..." : "Proceed to Payment"}
+            {"Proceed to Payment"}
           </Button>
         </div>
       </div>
