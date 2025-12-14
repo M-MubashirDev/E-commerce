@@ -1,62 +1,73 @@
-import { Button } from "@mantine/core";
-import { useSelector } from "react-redux";
+import { Button, Modal } from "@mantine/core";
+import { useDispatch } from "react-redux";
 import { useForm, FormProvider } from "react-hook-form";
 import { TextInputField } from "./Form";
+import { useGeolocation } from "../hooks/useGeolocation";
+import { setLocation } from "../features/location/locationSlice";
 
-const LocationDetails = ({ lat, lng, address, onSave }) => {
-  const { location } = useSelector((state) => state.location);
+const LocationDetails = ({ location, opened, onClose }) => {
+  const dispatch = useDispatch();
+
+  const { position } = useGeolocation();
+  const { lat, lng } = position;
+  console.log(position);
 
   const methods = useForm({
     defaultValues: {
-      address: address || location.address || "",
+      address: location.address || "",
       city: location.city || "",
       phone: location.phone || "",
     },
   });
 
-  const { watch, handleSubmit } = methods;
-
-  const watchAddress = watch("address");
-  const watchCity = watch("city");
-  const watchPhone = watch("phone");
-
-  const allFilled =
-    watchAddress?.trim() && watchCity?.trim() && watchPhone?.trim();
+  const { handleSubmit } = methods;
 
   const handleFormSubmit = (data) => {
     const dataObject = { lat, lng, ...data };
-    onSave(dataObject);
+    dispatch(setLocation(dataObject));
+    onClose();
   };
 
   return (
-    <div className="mt-4 space-y-2">
-      <FormProvider {...methods}>
-        <h1 className="font-bold text-gray-800">
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title="Select Your Location"
+      size="xl"
+      radius="lg"
+      centered
+      overlayProps={{ blur: 2 }}
+      // closeOnClickOutside={false}
+      // withCloseButton={false}
+      // closeOnEscape={false}
+    >
+      <div className="mt-4 space-y-2">
+        <FormProvider {...methods}>
+          {/* <h1 className="font-bold text-gray-800">
           {address ? address : "Choose an address"}
-        </h1>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-3">
-          <TextInputField
-            name="address"
-            placeholder="Address *"
-            rules={{ required: "This field is required" }}
-          />
-          <TextInputField
-            name="city"
-            placeholder="City *"
-            rules={{ required: "This field is required" }}
-          />
-          <TextInputField
-            name="phone"
-            placeholder="Phone *"
-            rules={{ required: "This field is required" }}
-          />
+        </h1> */}
+          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-3">
+            <TextInputField
+              name="address"
+              placeholder="Address *"
+              rules={{ required: "This field is required" }}
+            />
+            <TextInputField
+              name="city"
+              placeholder="City *"
+              rules={{ required: "This field is required" }}
+            />
+            <TextInputField
+              name="phone"
+              placeholder="Phone *"
+              rules={{ required: "This field is required" }}
+            />
 
-          <Button type="submit" disabled={!allFilled}>
-            Confirm Details
-          </Button>
-        </form>
-      </FormProvider>
-    </div>
+            <Button type="submit">Confirm Details</Button>
+          </form>
+        </FormProvider>
+      </div>
+    </Modal>
   );
 };
 

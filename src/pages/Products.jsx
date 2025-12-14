@@ -69,7 +69,14 @@ const Products = () => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       dispatch(fetchProducts(state));
-      prevStateRef.current = state;
+      prevStateRef.current = {
+        page: state.page,
+        title: state.title,
+        category_id: state.category_id,
+        sortBy: state.sortBy,
+        lowerLimit: state.price.lowerLimit,
+        upperLimit: state.price.upperLimit,
+      };
       return;
     }
 
@@ -81,14 +88,31 @@ const Products = () => {
       prev.title !== state.title ||
       prev.category_id !== state.category_id ||
       prev.sortBy !== state.sortBy ||
-      prev.price.lowerLimit !== state.price.lowerLimit ||
-      prev.price.upperLimit !== state.price.upperLimit;
+      prev.lowerLimit !== state.price.lowerLimit ||
+      prev.upperLimit !== state.price.upperLimit;
 
     if (hasChanged) {
+      console.log("Fetching products with state:", state);
       dispatch(fetchProducts(state));
-      prevStateRef.current = state;
+      prevStateRef.current = {
+        page: state.page,
+        title: state.title,
+        category_id: state.category_id,
+        sortBy: state.sortBy,
+        lowerLimit: state.price.lowerLimit,
+        upperLimit: state.price.upperLimit,
+      };
     }
-  }, [dispatch, state]);
+  }, [
+    dispatch,
+    state,
+    state.page,
+    state.title,
+    state.category_id,
+    state.sortBy,
+    state.price.lowerLimit,
+    state.price.upperLimit,
+  ]);
 
   const handleClearFilters = () => {
     setSearchParams({});

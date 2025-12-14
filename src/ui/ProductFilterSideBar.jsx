@@ -139,18 +139,17 @@ function ProductFilterSideBar({ state, maxPrice, setSearchParams }) {
             delete params.minPrice;
           }
 
-          if (val[1] !== maxPrice) {
-            params.maxPrice = val[1];
-          } else {
-            delete params.maxPrice;
-          }
+          // if (val[1] !== maxPrice) {
+          // }changed
+
+          params.maxPrice = val[1];
 
           delete params.page;
           return params;
         });
       }, 300);
     },
-    [setSearchParams, maxPrice]
+    [setSearchParams]
   );
 
   const handleClearFilters = useCallback(() => {
@@ -166,8 +165,11 @@ function ProductFilterSideBar({ state, maxPrice, setSearchParams }) {
       clearTimeout(priceDebounceTimer.current);
     }
 
-    // Clear URL params
-    setSearchParams({});
+    // Set URL params to default values instead of clearing completely
+    setSearchParams({
+      minPrice: "0",
+      maxPrice: String(maxPrice || 2000),
+    });
   }, [maxPrice, setSearchParams]);
 
   return (

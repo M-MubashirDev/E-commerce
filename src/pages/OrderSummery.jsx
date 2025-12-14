@@ -10,44 +10,41 @@ import {
 } from "@mantine/core";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import LocationMapModal from "../components/MapModel";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { setLocation } from "../features/location/locationSlice";
 import { createOrder } from "../features/orders/orderThunks";
 import PaymentForm from "../components/PaymentForm";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { clearCart } from "../features/cart/cartSlice";
+import LocationDetails from "../components/LocationDetail";
 
 // Load Stripe outside component to avoid recreating on every render
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 export default function OrderSummary() {
-  const [opened, setOpened] = useState(false);
+  const { location } = useSelector((state) => state.location);
+  const { address, city, phone } = location;
+
+  const [opened, setOpened] = useState(() => {
+    return !address || !city || !phone;
+  });
+
   const [paymentModalOpened, setPaymentModalOpened] = useState(false);
   const [orderData, setOrderData] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
-  const { location } = useSelector((state) => state.location);
-  const { address, city, phone } = location;
-
-  useEffect(() => {
-    if (!address || !city || !phone) {
-      setOpened(true);
-    }
-  }, [address, city, phone]);
-
-  function handleLocationSave(data) {
-    console.log(data);
-    dispatch(setLocation(data));
-    setOpened(false);
-  }
 
   async function handleConfirmOrder() {
     try {
+      if (!address || !city || !phone) {
+        toast.error("Please add delivery details before proceeding");
+        setOpened(true); // open location modal
+        return;
+      }
+
       const orderObject = {
         address,
         city,
@@ -268,7 +265,7 @@ export default function OrderSummary() {
             radius="md"
             onClick={handleConfirmOrder}
             className="transition-hover hover:bg-dark-gray !w-fit"
-            disabled={cart.items.length === 0 || !address || !city || !phone}
+            disabled={cart.items.length === 0}
             aria-label="Proceed to payment"
           >
             Proceed to Payment
@@ -276,8 +273,11 @@ export default function OrderSummary() {
         </div>
       </div>
 
-      {/* Location Modal */}
-      <LocationMapModal opened={opened} onSave={handleLocationSave} />
+      <LocationDetails
+        opened={opened}
+        location={location}
+        onClose={() => setOpened(false)}
+      />
 
       {/* Payment Modal - Wrapped with Elements provider */}
       <Modal

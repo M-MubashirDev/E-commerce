@@ -13,9 +13,8 @@ export const ProductInitialStates = {
 export function productReducer(state, action) {
   switch (action.type) {
     case "syncFromUrl": {
-      const { page, title, category, sortBy, minPrice, maxPrice } =
-        action.payload;
-
+      const { page, title, category, sortBy, minPrice, maxPrice } = action.payload;
+      
       const pageNum = page ? parseInt(page) : 0;
       const cat = category === "All" || !category ? null : category;
       const lowerLimit = minPrice ? parseInt(minPrice) : 0;
