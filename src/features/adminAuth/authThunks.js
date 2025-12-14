@@ -20,7 +20,7 @@ export const loginUserAdmin = createAsyncThunk(
         error.response?.data?.message || error.data.message
       );
     }
-  }
+  } 
 );
 // Signup User
 export const signupAdmin = createAsyncThunk(

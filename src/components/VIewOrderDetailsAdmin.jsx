@@ -6,12 +6,13 @@ import {
   Table,
   Tooltip,
   LoadingOverlay,
+  Group,
 } from "@mantine/core";
 import { useSelector } from "react-redux";
 
 export default function ViewOrderDetailsDrawer({ opened, onClose }) {
   const { orderDetails, loading } = useSelector((state) => state.orders);
-
+  console.log("......");
   return (
     <Drawer
       opened={opened}
@@ -26,26 +27,85 @@ export default function ViewOrderDetailsDrawer({ opened, onClose }) {
       {!loading && orderDetails && (
         <Stack spacing="md">
           {/* Client Information */}
-          <div>
-            <Text weight={600}>Client Information</Text>
-            <Text>Name: {orderDetails.client?.name}</Text>
-            <Text>Email: {orderDetails.client?.email}</Text>
-            <Text>Phone: {orderDetails.client?.phone || "N/A"}</Text>
-          </div>
+          <div className="space-y-6">
+            {/* Client Information */}
+            <div className="p-4 bg-gray-50 rounded-md shadow-sm">
+              <Text
+                weight={700}
+                size="lg"
+                className="mb-2 border-b border-gray-200 pb-1"
+              >
+                Client Information
+              </Text>
+              <Stack spacing="xs" className="mt-2">
+                <Group position="apart">
+                  <Text className="!text-black">Name:</Text>
+                  <Text weight={500}>{orderDetails.client?.name || "N/A"}</Text>
+                </Group>
+                <Group position="apart">
+                  <Text className="!text-black">Email:</Text>
+                  <Text weight={500}>
+                    {orderDetails.client?.email || "N/A"}
+                  </Text>
+                </Group>
+                <Group position="apart">
+                  <Text className="!text-black">Phone:</Text>
+                  <Text weight={500}>
+                    {orderDetails.client?.phone || "N/A"}
+                  </Text>
+                </Group>
+              </Stack>
+            </div>
 
-          <Divider />
-
-          {/* Order Information */}
-          <div>
-            <Text weight={600}>Order Information</Text>
-            <Text>Address: {orderDetails.address}</Text>
-            <Text>City: {orderDetails.city}</Text>
-            <Text>Phone: {orderDetails.phone}</Text>
-            <Text>Status: {orderDetails.status}</Text>
-            <Text>Amount: ${orderDetails.amount}</Text>
-            <Text>
-              Date: {new Date(orderDetails.dateOrderPlaced).toLocaleString()}
-            </Text>
+            {/* Order Information */}
+            <div className="p-4 bg-gray-50 rounded-md shadow-sm">
+              <Text
+                weight={700}
+                size="lg"
+                className="mb-2 border-b border-gray-200 pb-1"
+              >
+                Order Information
+              </Text>
+              <Stack spacing="xs" className="mt-2">
+                <Group position="apart">
+                  <Text className="!text-black">Address:</Text>
+                  <Text weight={500}>{orderDetails.address}</Text>
+                </Group>
+                <Group position="apart">
+                  <Text className="!text-black">City:</Text>
+                  <Text weight={500}>{orderDetails.city}</Text>
+                </Group>
+                <Group position="apart">
+                  <Text className="!text-black">Phone:</Text>
+                  <Text weight={500}>{orderDetails.phone}</Text>
+                </Group>
+                <Group position="apart">
+                  <Text className="!text-black">Status:</Text>
+                  <Text
+                    weight={500}
+                    className={
+                      orderDetails.status === "delivered"
+                        ? "text-green-600"
+                        : orderDetails.status === "pending"
+                        ? "text-yellow-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {orderDetails.status}
+                  </Text>
+                </Group>
+                <Group position="apart">
+                  <Text className="!text-black">Amount:</Text>
+                  <Text weight={500}>${orderDetails.amount}</Text>
+                </Group>
+                <Group position="apart">
+                  <Text className="!text-black">Date:</Text>
+                  <Text weight={500}>
+                    {new Date(orderDetails.dateOrderPlaced).toLocaleString()}
+                  </Text>
+                </Group>
+              </Stack>
+            </div>
           </div>
 
           <Divider />

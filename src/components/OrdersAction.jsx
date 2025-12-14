@@ -22,6 +22,7 @@ export default function OrdersAction({ existingOrder, onClose }) {
   const [open, setOpen] = useState(false);
   const { loading } = useSelector((state) => state.orders);
 
+  console.log(existingOrder, "existinOrder");
   // ------------------ RHF FORM INSTANCE ------------------
   const { register, handleSubmit, watch, formState, setValue } = useForm({
     defaultValues: {

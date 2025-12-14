@@ -32,7 +32,7 @@ export default function RecentOrdersTable({ orders = [] }) {
     <Card
       shadow="none"
       p={0}
-      radius="lg"
+      radius="md"
       withBorder
       style={{
         borderColor: "#e5e7eb",

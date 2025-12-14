@@ -10,6 +10,7 @@ export default function Orders() {
   const [state, dispatchReducer] = useReducer(orderReducer, orderInitialState);
   const { orders, total, loading } = useSelector((state) => state.orders);
 
+  console.log(orders);
   const { page, limit, address } = state;
   const totalPages = Math.ceil(total / limit);
 

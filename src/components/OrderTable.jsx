@@ -10,8 +10,9 @@ import {
   Table,
   Tooltip,
 } from "@mantine/core";
+import { Menu } from "@mantine/core";
+import { FiSearch, FiEdit2, FiMoreVertical, FiEye } from "react-icons/fi";
 import { useState } from "react";
-import { FiSearch, FiEdit2 } from "react-icons/fi";
 import OrdersAction from "./OrdersAction";
 import ViewOrderDetailsDrawer from "./VIewOrderDetailsAdmin";
 import { fetchOrderDetails } from "../features/orders/orderThunks";
@@ -33,7 +34,7 @@ export default function OrdersTable({
   const dispatch = useDispatch();
 
   const handleView = async (order) => {
-    setDrawerOpened(true);
+    setDrawerOpenedDetail(true);
     await dispatch(fetchOrderDetails(order.id)).unwrap();
   };
   function handleChangeTerm(values) {
@@ -66,7 +67,7 @@ export default function OrdersTable({
           </div>
         </div>
 
-        <ScrollArea h={400}>
+        <ScrollArea>
           {loading ? (
             <div style={{ padding: "2rem", textAlign: "center" }}>
               <Loader color="dark" size="lg" />
@@ -98,7 +99,6 @@ export default function OrdersTable({
                   <Table.Th style={{ textAlign: "center" }}>ACTION</Table.Th>
                 </Table.Tr>
               </Table.Thead>
-
               <Table.Tbody>
                 {orders.length === 0 ? (
                   <Table.Tr>
@@ -110,13 +110,7 @@ export default function OrdersTable({
                   </Table.Tr>
                 ) : (
                   orders.map((order) => (
-                    <Table.Tr
-                      key={order.id}
-                      onClick={() => {
-                        handleView(order);
-                      }}
-                      className="!cursor-pointer"
-                    >
+                    <Table.Tr key={order.id}>
                       <Table.Td>{order.id}</Table.Td>
                       <Table.Td>
                         <Tooltip label={order.address} withArrow>
@@ -141,16 +135,32 @@ export default function OrdersTable({
                         {new Date(order.dateOrderPlaced).toLocaleDateString()}
                       </Table.Td>
                       <Table.Td align="center">
-                        <div className="flex justify-center gap-2">
-                          <ActionIcon
-                            color="dark"
-                            variant="light"
-                            radius="xl"
-                            onClick={() => handleEdit(order)}
-                          >
-                            <FiEdit2 size={18} />
-                          </ActionIcon>
-                        </div>
+                        <Menu shadow="sm" withArrow>
+                          <Menu.Target>
+                            <ActionIcon
+                              color="dark"
+                              variant="light"
+                              radius="xl"
+                            >
+                              <FiMoreVertical size={18} />
+                            </ActionIcon>
+                          </Menu.Target>
+
+                          <Menu.Dropdown>
+                            <Menu.Item
+                              leftSection={<FiEye size={16} />}
+                              onClick={() => handleView(order)}
+                            >
+                              View
+                            </Menu.Item>
+                            <Menu.Item
+                              leftSection={<FiEdit2 size={16} />}
+                              onClick={() => handleEdit(order)}
+                            >
+                              Edit
+                            </Menu.Item>
+                          </Menu.Dropdown>
+                        </Menu>
                       </Table.Td>
                     </Table.Tr>
                   ))
